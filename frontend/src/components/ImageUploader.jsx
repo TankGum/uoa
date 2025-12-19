@@ -1,0 +1,239 @@
+import { useState, useRef, useImperativeHandle, forwardRef } from 'react'
+import { authService } from '../services/auth'
+
+const ImageUploader = forwardRef(function ImageUploader({ onFileSelect, onProgress, multiple = false }, ref) {
+  const [selectedFiles, setSelectedFiles] = useState([])
+  const [uploading, setUploading] = useState(false)
+  const [uploadProgress, setUploadProgress] = useState(0)
+  const [error, setError] = useState(null)
+  const fileInputRef = useRef(null)
+  const retryCountRef = useRef(0)
+  const maxRetries = 3
+
+  // Expose upload function to parent component
+  useImperativeHandle(ref, () => ({
+    upload: async () => {
+      if (selectedFiles.length === 0) {
+        throw new Error('No files selected')
+      }
+      return await uploadImages(selectedFiles)
+    },
+    getFiles: () => selectedFiles,
+    clearFiles: () => {
+      setSelectedFiles([])
+      setError(null)
+      setUploadProgress(0)
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ''
+      }
+    },
+    isUploading: () => uploading
+  }))
+
+  const uploadImages = async (files, retryAttempt = 0) => {
+    try {
+      setUploading(true)
+      setError(null)
+      setUploadProgress(0)
+
+      const uploadPromises = files.map(async (file, index) => {
+        const formData = new FormData()
+        formData.append('file', file)
+
+        return new Promise((resolve, reject) => {
+          const xhr = new XMLHttpRequest()
+
+          // Track upload progress
+          xhr.upload.addEventListener('progress', (e) => {
+            if (e.lengthComputable) {
+              const percentComplete = (e.loaded / e.total) * 100
+              const totalProgress = ((index + e.loaded / e.total) / files.length) * 100
+              setUploadProgress(Math.round(totalProgress))
+              if (onProgress) {
+                onProgress(Math.round(totalProgress))
+              }
+            }
+          })
+
+          // Handle completion
+          xhr.addEventListener('load', () => {
+            if (xhr.status === 200) {
+              const response = JSON.parse(xhr.responseText)
+              resolve(response.data)
+            } else {
+              reject(new Error(`Upload failed with status ${xhr.status}`))
+            }
+          })
+
+          // Handle errors
+          xhr.addEventListener('error', () => {
+            reject(new Error('Network error during upload'))
+          })
+
+          xhr.addEventListener('abort', () => {
+            reject(new Error('Upload was aborted'))
+          })
+
+          xhr.open('POST', '/api/upload/image')
+          // Add authorization header
+          const token = authService.getToken()
+          if (token) {
+            xhr.setRequestHeader('Authorization', `Bearer ${token}`)
+          }
+          xhr.send(formData)
+        })
+      })
+
+      const results = await Promise.all(uploadPromises)
+      setUploadProgress(100)
+      setUploading(false)
+      retryCountRef.current = 0
+      return results
+    } catch (err) {
+      handleUploadError(err, () => {})
+      throw err
+    }
+  }
+
+  const handleUploadError = (err, reject) => {
+    setError(err.message)
+    setUploading(false)
+    
+    if (retryCountRef.current < maxRetries) {
+      retryCountRef.current += 1
+      setTimeout(() => {
+        if (selectedFiles.length > 0) {
+          uploadImages(selectedFiles, retryCountRef.current)
+            .then(resolve => resolve)
+            .catch(reject)
+        }
+      }, 2000 * retryCountRef.current) // Exponential backoff
+    } else {
+      retryCountRef.current = 0
+      if (reject) {
+        reject(err)
+      }
+    }
+  }
+
+  const handleFileSelect = (e) => {
+    const files = Array.from(e.target.files || [])
+    if (files.length === 0) return
+
+    // Validate file types
+    const invalidFiles = files.filter(file => !file.type.startsWith('image/'))
+    if (invalidFiles.length > 0) {
+      setError('Please select only image files')
+      return
+    }
+    
+    // Validate file sizes (e.g., max 10MB per image)
+    const maxSize = 10 * 1024 * 1024 // 10MB
+    const oversizedFiles = files.filter(file => file.size > maxSize)
+    if (oversizedFiles.length > 0) {
+      setError(`Some files exceed 10MB limit: ${oversizedFiles.map(f => f.name).join(', ')}`)
+      return
+    }
+
+    if (multiple) {
+      setSelectedFiles(prev => [...prev, ...files])
+    } else {
+      setSelectedFiles(files.slice(0, 1))
+    }
+    
+    setError(null)
+    retryCountRef.current = 0
+    
+    if (onFileSelect) {
+      onFileSelect(multiple ? files : files[0])
+    }
+  }
+
+  const removeFile = (index) => {
+    setSelectedFiles(prev => prev.filter((_, i) => i !== index))
+  }
+
+  return (
+    <div className="w-full">
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        onChange={handleFileSelect}
+        disabled={uploading}
+        multiple={multiple}
+        className="hidden"
+        id="image-upload"
+      />
+      <label
+        htmlFor="image-upload"
+        className={`inline-block px-6 py-3 rounded cursor-pointer transition-colors duration-300 ${
+          uploading
+            ? 'bg-gray-400 cursor-not-allowed'
+            : 'bg-primary text-white hover:bg-[#333]'
+        }`}
+      >
+        {uploading ? 'Uploading...' : selectedFiles.length > 0 ? `Change Image${multiple ? 's' : ''}` : `Select Image${multiple ? 's' : ''}`}
+      </label>
+
+      {selectedFiles.length > 0 && !uploading && (
+        <div className="mt-4 space-y-2">
+          {selectedFiles.map((file, index) => (
+            <div key={index} className="relative p-4 rounded bg-blue-50 border border-blue-200 flex items-center gap-4 min-w-0">
+              <img
+                src={URL.createObjectURL(file)}
+                alt={file.name}
+                className="w-20 h-20 object-cover rounded flex-shrink-0"
+              />
+              <div className="flex-1 text-sm text-blue-700 min-w-0">
+                <p className="font-medium truncate" title={file.name}>{file.name}</p>
+                <p className="truncate">Size: {(file.size / 1024 / 1024).toFixed(2)} MB</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => removeFile(index)}
+                className="absolute top-2 left-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors flex-shrink-0 shadow-md"
+                title="Remove"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          ))}
+          <p className="text-xs text-blue-600">
+            Image{selectedFiles.length > 1 ? 's' : ''} will be uploaded when you save the post
+          </p>
+        </div>
+      )}
+
+      {uploading && (
+        <div className="mt-4">
+          <div className="w-full bg-gray-200 rounded-full h-2.5">
+            <div
+              className="bg-primary h-2.5 rounded-full transition-all duration-300"
+              style={{ width: `${uploadProgress}%` }}
+            ></div>
+          </div>
+          <p className="text-sm text-text-light mt-2">
+            Uploading: {uploadProgress}%
+            {retryCountRef.current > 0 && (
+              <span className="ml-2 text-orange-600">
+                (Retry attempt {retryCountRef.current}/{maxRetries})
+              </span>
+            )}
+          </p>
+        </div>
+      )}
+
+      {error && !uploading && (
+        <div className="mt-4 p-4 rounded bg-red-50 border border-red-200">
+          <p className="text-red-800">{error}</p>
+        </div>
+      )}
+    </div>
+  )
+})
+
+export default ImageUploader
+

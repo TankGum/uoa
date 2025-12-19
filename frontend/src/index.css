@@ -1,0 +1,114 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply box-border;
+  }
+
+  html {
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+  }
+
+  html::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+  }
+
+  body {
+    @apply antialiased text-text bg-white leading-relaxed;
+    /* Hide scrollbar but keep functionality */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+  }
+
+  body::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+  }
+
+  a {
+    @apply no-underline text-inherit;
+  }
+
+  img {
+    @apply max-w-full h-auto block;
+  }
+}
+
+@layer components {
+  .container {
+    @apply max-w-[1200px] mx-auto px-5;
+  }
+
+  .btn {
+    @apply px-6 py-3 rounded border-none text-base font-medium cursor-pointer transition-all duration-300 inline-block;
+  }
+
+  .btn-primary {
+    @apply bg-primary text-white;
+  }
+
+  .btn-primary:hover {
+    @apply bg-[#333];
+  }
+
+  .btn-secondary {
+    @apply bg-transparent text-primary border-2 border-primary;
+  }
+
+  .btn-secondary:hover {
+    @apply bg-primary text-white;
+  }
+
+  .spinner {
+    @apply border-[3px] border-border border-t-primary rounded-full w-10 h-10 animate-spin my-8 mx-auto;
+  }
+
+  .category-badge {
+    @apply px-3 py-1 bg-secondary rounded-full text-sm text-text;
+  }
+
+  .status-badge {
+    @apply px-3 py-1 rounded-full text-sm font-medium;
+  }
+
+  .status-draft {
+    @apply bg-[#fff3cd] text-[#856404];
+  }
+
+  .status-published {
+    @apply bg-[#d4edda] text-[#155724];
+  }
+
+  .status-pending {
+    @apply bg-[#fff3cd] text-[#856404];
+  }
+
+  .status-confirmed {
+    @apply bg-[#d4edda] text-[#155724];
+  }
+
+  .status-canceled {
+    @apply bg-[#f8d7da] text-[#721c24];
+  }
+}
+
+@layer utilities {
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .scrollbar-hide {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+  }
+}
