@@ -96,7 +96,7 @@ SECRET_KEY=your-secret-key-for-jwt-change-in-production
 
 #### 3. Start Services with Docker
 
-Start PostgreSQL database and FastAPI backend:
+Start all services (PostgreSQL database, FastAPI backend, and React frontend):
 
 ```bash
 docker-compose up -d
@@ -105,27 +105,13 @@ docker-compose up -d
 This will start:
 - **PostgreSQL database** on port `5432`
 - **FastAPI backend** on port `8000`
+- **React frontend** on port `5173`
 
 The database schema is automatically initialized when the PostgreSQL container starts using `backend/db/init.sql`.
 
-#### 4. Start Frontend
-
-Navigate to the frontend directory and install dependencies:
-
-```bash
-cd frontend
-npm install
-```
-
-Start the development server:
-
-```bash
-npm run dev
-```
-
-The frontend will be available at `http://localhost:5173`
-
 ### Accessing the Application
+
+After starting Docker containers, access:
 
 - **Frontend**: http://localhost:5173
 - **Backend API**: http://localhost:8000
@@ -227,15 +213,25 @@ docker-compose exec -T db psql -U postgres -d portfolio_db < backup.sql
 ### Container Management
 
 ```bash
-# Access backend container shell
+# Access container shells
 docker-compose exec backend bash
+docker-compose exec frontend sh
 
 # Check container status
 docker-compose ps
 
-# Restart a specific service
+# Restart specific services
 docker-compose restart backend
+docker-compose restart frontend
 docker-compose restart db
+
+# View logs for all services
+docker-compose logs -f
+
+# View logs for specific service
+docker-compose logs -f frontend
+docker-compose logs -f backend
+docker-compose logs -f db
 ```
 
 ## Troubleshooting
@@ -254,10 +250,12 @@ docker-compose restart db
 - Restart database: `docker-compose restart db`
 
 **Frontend can't connect to backend:**
-- Verify backend is running: `docker-compose ps backend`
+- Verify both containers are running: `docker-compose ps`
+- Check frontend logs: `docker-compose logs frontend`
 - Check backend logs: `docker-compose logs backend`
 - Ensure backend is accessible at http://localhost:8000
 - Check CORS settings in `backend/main.py`
+- Verify frontend proxy configuration in `frontend/vite.config.js`
 
 **Upload errors:**
 - Verify Cloudinary credentials in `.env` file

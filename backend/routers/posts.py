@@ -195,7 +195,7 @@ def create_post(post: PostCreate, db: Session = Depends(get_db), current_user: s
     
     # Add media from Cloudinary
     if post.media:
-        for media_data in post.media:
+        for idx, media_data in enumerate(post.media):
             # Determine media type based on format or duration
             # Images typically don't have duration, videos do
             media_type = "video" if media_data.duration else "image"

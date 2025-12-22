@@ -6,7 +6,9 @@ const ImageUploader = forwardRef(function ImageUploader({ onFileSelect, onProgre
   const [uploading, setUploading] = useState(false)
   const [uploadProgress, setUploadProgress] = useState(0)
   const [error, setError] = useState(null)
+  const [isDragging, setIsDragging] = useState(false)
   const fileInputRef = useRef(null)
+  const dropZoneRef = useRef(null)
   const retryCountRef = useRef(0)
   const maxRetries = 3
 
@@ -116,12 +118,12 @@ const ImageUploader = forwardRef(function ImageUploader({ onFileSelect, onProgre
     }
   }
 
-  const handleFileSelect = (e) => {
-    const files = Array.from(e.target.files || [])
-    if (files.length === 0) return
+  const processFiles = (files) => {
+    const fileArray = Array.from(files)
+    if (fileArray.length === 0) return
 
     // Validate file types
-    const invalidFiles = files.filter(file => !file.type.startsWith('image/'))
+    const invalidFiles = fileArray.filter(file => !file.type.startsWith('image/'))
     if (invalidFiles.length > 0) {
       setError('Please select only image files')
       return
@@ -129,23 +131,57 @@ const ImageUploader = forwardRef(function ImageUploader({ onFileSelect, onProgre
     
     // Validate file sizes (e.g., max 10MB per image)
     const maxSize = 10 * 1024 * 1024 // 10MB
-    const oversizedFiles = files.filter(file => file.size > maxSize)
+    const oversizedFiles = fileArray.filter(file => file.size > maxSize)
     if (oversizedFiles.length > 0) {
       setError(`Some files exceed 10MB limit: ${oversizedFiles.map(f => f.name).join(', ')}`)
       return
     }
 
     if (multiple) {
-      setSelectedFiles(prev => [...prev, ...files])
+      setSelectedFiles(prev => [...prev, ...fileArray])
     } else {
-      setSelectedFiles(files.slice(0, 1))
+      setSelectedFiles(fileArray.slice(0, 1))
     }
     
     setError(null)
     retryCountRef.current = 0
     
     if (onFileSelect) {
-      onFileSelect(multiple ? files : files[0])
+      onFileSelect(multiple ? fileArray : fileArray[0])
+    }
+  }
+
+  const handleFileSelect = (e) => {
+    processFiles(e.target.files || [])
+  }
+
+  const handleDragOver = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (!uploading) {
+      setIsDragging(true)
+    }
+  }
+
+  const handleDragLeave = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    // Only set isDragging to false if we're leaving the drop zone
+    if (!dropZoneRef.current?.contains(e.relatedTarget)) {
+      setIsDragging(false)
+    }
+  }
+
+  const handleDrop = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setIsDragging(false)
+
+    if (uploading) return
+
+    const files = e.dataTransfer.files
+    if (files && files.length > 0) {
+      processFiles(files)
     }
   }
 
@@ -165,16 +201,35 @@ const ImageUploader = forwardRef(function ImageUploader({ onFileSelect, onProgre
         className="hidden"
         id="image-upload"
       />
-      <label
-        htmlFor="image-upload"
-        className={`inline-block px-6 py-3 rounded cursor-pointer transition-colors duration-300 ${
-          uploading
-            ? 'bg-gray-400 cursor-not-allowed'
-            : 'bg-primary text-white hover:bg-[#333]'
-        }`}
+      <div
+        ref={dropZoneRef}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+        className={`border-2 border-dashed rounded-lg p-6 transition-all duration-300 ${
+          isDragging
+            ? 'border-[#cfb970] bg-[#cfb970]/10'
+            : 'border-gray-300 bg-gray-50'
+        } ${uploading ? 'opacity-50 pointer-events-none' : ''}`}
       >
-        {uploading ? 'Uploading...' : selectedFiles.length > 0 ? `Change Image${multiple ? 's' : ''}` : `Select Image${multiple ? 's' : ''}`}
-      </label>
+        <div className="text-center">
+          <label
+            htmlFor="image-upload"
+            className={`inline-block px-6 py-3 rounded cursor-pointer transition-colors duration-300 ${
+              uploading
+                ? 'bg-gray-400 cursor-not-allowed'
+                : 'bg-primary text-white hover:bg-[#333]'
+            }`}
+          >
+            {uploading ? 'Uploading...' : selectedFiles.length > 0 ? `Add Image${multiple ? 's' : ''}` : `Select Image${multiple ? 's' : ''}`}
+          </label>
+          {!uploading && (
+            <p className="mt-2 text-sm text-gray-600">
+              or drag and drop image{multiple ? 's' : ''} here
+            </p>
+          )}
+        </div>
+      </div>
 
       {selectedFiles.length > 0 && !uploading && (
         <div className="mt-4 space-y-2">

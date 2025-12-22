@@ -6,7 +6,9 @@ const VideoUploader = forwardRef(function VideoUploader({ onFileSelect, onProgre
   const [uploading, setUploading] = useState(false)
   const [uploadProgress, setUploadProgress] = useState(0)
   const [error, setError] = useState(null)
+  const [isDragging, setIsDragging] = useState(false)
   const fileInputRef = useRef(null)
+  const dropZoneRef = useRef(null)
   const retryCountRef = useRef(0)
   const maxRetries = 3
 
@@ -112,29 +114,63 @@ const VideoUploader = forwardRef(function VideoUploader({ onFileSelect, onProgre
     }
   }
 
+  const processFile = (file) => {
+    if (!file) return
+
+    // Validate file type
+    if (!file.type.startsWith('video/')) {
+      setError('Please select a video file')
+      return
+    }
+    
+    // Validate file size (e.g., max 500MB)
+    const maxSize = 500 * 1024 * 1024 // 500MB
+    if (file.size > maxSize) {
+      setError('File size must be less than 500MB')
+      return
+    }
+
+    setSelectedFile(file)
+    setError(null)
+    retryCountRef.current = 0
+    
+    if (onFileSelect) {
+      onFileSelect(file)
+    }
+  }
+
   const handleFileSelect = (e) => {
     const file = e.target.files?.[0]
-    if (file) {
-      // Validate file type
-      if (!file.type.startsWith('video/')) {
-        setError('Please select a video file')
-        return
-      }
-      
-      // Validate file size (e.g., max 500MB)
-      const maxSize = 500 * 1024 * 1024 // 500MB
-      if (file.size > maxSize) {
-        setError('File size must be less than 500MB')
-        return
-      }
+    processFile(file)
+  }
 
-      setSelectedFile(file)
-      setError(null)
-      retryCountRef.current = 0
-      
-      if (onFileSelect) {
-        onFileSelect(file)
-      }
+  const handleDragOver = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (!uploading) {
+      setIsDragging(true)
+    }
+  }
+
+  const handleDragLeave = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    // Only set isDragging to false if we're leaving the drop zone
+    if (!dropZoneRef.current?.contains(e.relatedTarget)) {
+      setIsDragging(false)
+    }
+  }
+
+  const handleDrop = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setIsDragging(false)
+
+    if (uploading) return
+
+    const file = e.dataTransfer.files?.[0]
+    if (file) {
+      processFile(file)
     }
   }
 
@@ -149,16 +185,35 @@ const VideoUploader = forwardRef(function VideoUploader({ onFileSelect, onProgre
         className="hidden"
         id="video-upload"
       />
-      <label
-        htmlFor="video-upload"
-        className={`inline-block px-6 py-3 rounded cursor-pointer transition-colors duration-300 ${
-          uploading
-            ? 'bg-gray-400 cursor-not-allowed'
-            : 'bg-primary text-white hover:bg-[#333]'
-        }`}
+      <div
+        ref={dropZoneRef}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+        className={`border-2 border-dashed rounded-lg p-6 transition-all duration-300 ${
+          isDragging
+            ? 'border-[#cfb970] bg-[#cfb970]/10'
+            : 'border-gray-300 bg-gray-50'
+        } ${uploading ? 'opacity-50 pointer-events-none' : ''}`}
       >
-        {uploading ? 'Uploading...' : selectedFile ? 'Change Video File' : 'Select Video File'}
-      </label>
+        <div className="text-center">
+          <label
+            htmlFor="video-upload"
+            className={`inline-block px-6 py-3 rounded cursor-pointer transition-colors duration-300 ${
+              uploading
+                ? 'bg-gray-400 cursor-not-allowed'
+                : 'bg-primary text-white hover:bg-[#333]'
+            }`}
+          >
+            {uploading ? 'Uploading...' : selectedFile ? 'Change Video File' : 'Select Video File'}
+          </label>
+          {!uploading && (
+            <p className="mt-2 text-sm text-gray-600">
+              or drag and drop video file here
+            </p>
+          )}
+        </div>
+      </div>
 
       {selectedFile && !uploading && (
         <div className="mt-4 p-4 rounded bg-blue-50 border border-blue-200">

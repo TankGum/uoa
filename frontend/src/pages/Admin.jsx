@@ -229,17 +229,17 @@ function Admin() {
   const SortIcon = ({ column, sortColumn, sortDirection }) => {
     if (sortColumn !== column) {
       return (
-        <svg className="w-4 h-4 inline-block ml-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-4 h-4 inline-block ml-1" style={{ color: '#999' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
         </svg>
       )
     }
     return sortDirection === 'asc' ? (
-      <svg className="w-4 h-4 inline-block ml-1 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg className="w-4 h-4 inline-block ml-1" style={{ color: '#001f3f' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
       </svg>
     ) : (
-      <svg className="w-4 h-4 inline-block ml-1 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg className="w-4 h-4 inline-block ml-1" style={{ color: '#001f3f' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
       </svg>
     )
@@ -561,23 +561,29 @@ function Admin() {
                             <td className="p-2 md:p-4 text-left border-b border-border">
                               <div className="flex gap-1 md:gap-2">
                                 <button
-                                  className="p-1 md:p-2 rounded hover:bg-secondary transition-colors duration-200"
+                                  className="p-1 md:p-2 rounded transition-colors duration-200"
+                                  style={{ color: '#001f3f' }}
+                                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(207, 185, 112, 0.1)'}
+                                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                                   onClick={() => {
                                     setEditingPost(post)
                                     setShowPostForm(true)
                                   }}
                                   title="Edit"
                                 >
-                                  <svg className="w-4 h-4 md:w-5 md:h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                   </svg>
                                 </button>
                                 <button
-                                  className="p-1 md:p-2 rounded hover:bg-red-50 transition-colors duration-200"
+                                  className="p-1 md:p-2 rounded transition-colors duration-200"
+                                  style={{ color: '#001f3f' }}
+                                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(207, 185, 112, 0.1)'}
+                                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                                   onClick={() => handleDeletePost(post.id)}
                                   title="Delete"
                                 >
-                                  <svg className="w-4 h-4 md:w-5 md:h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                   </svg>
                                 </button>
@@ -765,23 +771,29 @@ function Admin() {
                           <td className="p-2 md:p-4 text-left border-b border-border">
                             <div className="flex gap-1 md:gap-2">
                               <button
-                                className="p-1 md:p-2 rounded hover:bg-secondary transition-colors duration-200"
+                                className="p-1 md:p-2 rounded transition-colors duration-200"
+                                style={{ color: '#001f3f' }}
+                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(207, 185, 112, 0.1)'}
+                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                                 onClick={() => {
                                   setEditingBooking(booking)
                                   setShowBookingForm(true)
                                 }}
                                 title="Edit"
                               >
-                                <svg className="w-4 h-4 md:w-5 md:h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                 </svg>
                               </button>
                               <button
-                                className="p-1 md:p-2 rounded hover:bg-red-50 transition-colors duration-200"
+                                className="p-1 md:p-2 rounded transition-colors duration-200"
+                                style={{ color: '#001f3f' }}
+                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(207, 185, 112, 0.1)'}
+                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                                 onClick={() => handleDeleteBooking(booking.id)}
                                 title="Delete"
                               >
-                                <svg className="w-4 h-4 md:w-5 md:h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                 </svg>
                               </button>
@@ -918,11 +930,14 @@ function Admin() {
                           <td className="p-2 md:p-4 text-left border-b border-border text-xs md:text-sm whitespace-nowrap hidden md:table-cell">{formatDate(category.created_at)}</td>
                           <td className="p-2 md:p-4 text-left border-b border-border">
                             <button
-                              className="p-1 md:p-2 rounded hover:bg-red-50 transition-colors duration-200"
+                              className="p-1 md:p-2 rounded transition-colors duration-200"
+                              style={{ color: '#001f3f' }}
+                              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(207, 185, 112, 0.1)'}
+                              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                               onClick={() => handleDeleteCategory(category.id)}
                               title="Delete"
                             >
-                              <svg className="w-4 h-4 md:w-5 md:h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                               </svg>
                             </button>
@@ -961,6 +976,9 @@ function PostForm({ onClose, onSuccess, post }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [existingMedia, setExistingMedia] = useState(post?.media || []) // Media hiện có của post
+  const [categoryDropdownOpen, setCategoryDropdownOpen] = useState(false)
+  const [categorySearch, setCategorySearch] = useState('')
+  const categoryDropdownRef = useRef(null)
   const videoUploaderRef = useRef(null)
   const imageUploaderRef = useRef(null)
 
@@ -1005,6 +1023,24 @@ function PostForm({ onClose, onSuccess, post }) {
       setExistingMedia([])
     }
   }, [post?.id]) // Only reload when post.id changes
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (categoryDropdownRef.current && !categoryDropdownRef.current.contains(event.target)) {
+        setCategoryDropdownOpen(false)
+        setCategorySearch('') // Reset search when closing
+      }
+    }
+
+    if (categoryDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [categoryDropdownOpen])
 
   const fetchCategories = async () => {
     try {
@@ -1117,6 +1153,11 @@ function PostForm({ onClose, onSuccess, post }) {
     }
   }
 
+
+  const handleRemoveExistingMedia = (mediaId) => {
+    setExistingMedia(prev => prev.filter(m => m.id !== mediaId))
+  }
+
   const handleCategoryToggle = (categoryId) => {
     setFormData({
       ...formData,
@@ -1126,9 +1167,10 @@ function PostForm({ onClose, onSuccess, post }) {
     })
   }
 
-  const handleRemoveExistingMedia = (mediaId) => {
-    setExistingMedia(prev => prev.filter(m => m.id !== mediaId))
-  }
+  // Filter categories based on search
+  const filteredCategories = categories.filter(cat =>
+    cat.name.toLowerCase().includes(categorySearch.toLowerCase())
+  )
 
   const handleSetFeatured = (mediaId) => {
     console.log('Setting featured for media:', mediaId)
@@ -1192,18 +1234,93 @@ function PostForm({ onClose, onSuccess, post }) {
           </div>
           <div className="mb-6">
             <label className="block mb-2 font-medium" style={{ color: '#001f3f' }}>Tags/Categories</label>
-            <div className="flex flex-wrap gap-2">
-              {categories.map((cat) => (
-                <label key={cat.id} className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={formData.category_ids.includes(cat.id)}
-                    onChange={() => handleCategoryToggle(cat.id)}
-                  />
-                  {cat.name}
-                </label>
-              ))}
+            <div ref={categoryDropdownRef} className="relative">
+              <button
+                type="button"
+                onClick={() => setCategoryDropdownOpen(!categoryDropdownOpen)}
+                className="w-full p-3 border rounded transition-colors duration-300 text-base focus:outline-none text-left flex items-center justify-between"
+                style={{ 
+                  borderColor: categoryDropdownOpen ? '#cfb970' : '#e0e0e0',
+                  color: '#001f3f'
+                }}
+              >
+                <span className="truncate">
+                  {formData.category_ids.length > 0
+                    ? `${formData.category_ids.length} categor${formData.category_ids.length === 1 ? 'y' : 'ies'} selected`
+                    : 'Select categories...'}
+                </span>
+                <svg 
+                  className={`w-5 h-5 transition-transform duration-200 ${categoryDropdownOpen ? 'rotate-180' : ''}`}
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              {categoryDropdownOpen && (
+                <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg">
+                  {/* Search input */}
+                  <div className="p-2 border-b border-gray-200">
+                    <input
+                      type="text"
+                      placeholder="Search categories..."
+                      value={categorySearch}
+                      onChange={(e) => setCategorySearch(e.target.value)}
+                      onClick={(e) => e.stopPropagation()}
+                      className="w-full p-2 border rounded text-sm focus:outline-none"
+                      style={{ 
+                        borderColor: '#e0e0e0',
+                        color: '#001f3f'
+                      }}
+                      onFocus={(e) => e.currentTarget.style.borderColor = '#cfb970'}
+                      onBlur={(e) => e.currentTarget.style.borderColor = '#e0e0e0'}
+                    />
+                  </div>
+                  {/* Categories list */}
+                  <div className="max-h-60 overflow-y-auto">
+                    {filteredCategories.length > 0 ? (
+                      filteredCategories.map((cat) => (
+                        <label
+                          key={cat.id}
+                          className="flex items-center gap-2 p-3 hover:bg-gray-50 cursor-pointer"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={formData.category_ids.includes(cat.id)}
+                            onChange={() => handleCategoryToggle(cat.id)}
+                            className="w-4 h-4"
+                            style={{ accentColor: '#cfb970' }}
+                          />
+                          <span style={{ color: '#001f3f' }}>{cat.name}</span>
+                        </label>
+                      ))
+                    ) : (
+                      <div className="p-3 text-gray-500 text-center">
+                        {categorySearch ? 'No categories found' : 'No categories available'}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
+            {formData.category_ids.length > 0 && (
+              <div className="mt-2 flex flex-wrap gap-2">
+                {formData.category_ids.map((catId) => {
+                  const cat = categories.find(c => c.id === catId)
+                  return cat ? (
+                    <span
+                      key={catId}
+                      className="px-2 py-1 text-xs rounded"
+                      style={{ backgroundColor: '#cfb970', color: '#001f3f' }}
+                    >
+                      {cat.name}
+                    </span>
+                  ) : null
+                })}
+              </div>
+            )}
           </div>
           {/* Hiển thị media hiện có khi edit */}
           {post && existingMedia.length > 0 && (
@@ -1234,18 +1351,26 @@ function PostForm({ onClose, onSuccess, post }) {
                           <button
                             type="button"
                             onClick={() => handleSetFeatured(media.id)}
-                            className={`px-4 py-2 rounded text-sm font-medium ${
-                              media.is_featured 
-                                ? 'bg-yellow-500 text-white hover:bg-yellow-600' 
-                                : 'bg-blue-500 text-white hover:bg-blue-600'
-                            }`}
+                            className="px-4 py-2 rounded text-sm font-medium transition-all duration-300"
+                            style={{
+                              backgroundColor: media.is_featured ? '#cfb970' : '#cfb970',
+                              color: '#001f3f'
+                            }}
+                            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#b8a55f'}
+                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#cfb970'}
                           >
                             {media.is_featured ? 'Featured' : 'Set Featured'}
                           </button>
                           <button
                             type="button"
                             onClick={() => handleRemoveExistingMedia(media.id)}
-                            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 text-sm font-medium"
+                            className="px-4 py-2 rounded text-sm font-medium transition-all duration-300"
+                            style={{
+                              backgroundColor: '#001f3f',
+                              color: '#ffffff'
+                            }}
+                            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#003366'}
+                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#001f3f'}
                           >
                             Remove
                           </button>
@@ -1272,18 +1397,26 @@ function PostForm({ onClose, onSuccess, post }) {
                           <button
                             type="button"
                             onClick={() => handleSetFeatured(media.id)}
-                            className={`px-4 py-2 rounded text-sm font-medium ${
-                              media.is_featured 
-                                ? 'bg-yellow-500 text-white hover:bg-yellow-600' 
-                                : 'bg-blue-500 text-white hover:bg-blue-600'
-                            }`}
+                            className="px-4 py-2 rounded text-sm font-medium transition-all duration-300"
+                            style={{
+                              backgroundColor: media.is_featured ? '#cfb970' : '#cfb970',
+                              color: '#001f3f'
+                            }}
+                            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#b8a55f'}
+                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#cfb970'}
                           >
                             {media.is_featured ? 'Featured' : 'Set Featured'}
                           </button>
                           <button
                             type="button"
                             onClick={() => handleRemoveExistingMedia(media.id)}
-                            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 text-sm font-medium"
+                            className="px-4 py-2 rounded text-sm font-medium transition-all duration-300"
+                            style={{
+                              backgroundColor: '#001f3f',
+                              color: '#ffffff'
+                            }}
+                            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#003366'}
+                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#001f3f'}
                           >
                             Remove
                           </button>
