@@ -25,8 +25,22 @@ CREATE TABLE IF NOT EXISTS media (
     format VARCHAR,
     size BIGINT,
     metadata JSONB,
+    is_featured BOOLEAN DEFAULT FALSE,
+    display_order INTEGER DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Add columns if they don't exist (for existing databases)
+ALTER TABLE media 
+ADD COLUMN IF NOT EXISTS is_featured BOOLEAN DEFAULT FALSE;
+
+ALTER TABLE media 
+ADD COLUMN IF NOT EXISTS display_order INTEGER DEFAULT 0;
+
+-- Create indexes for better query performance
+CREATE INDEX IF NOT EXISTS idx_media_is_featured ON media(is_featured);
+CREATE INDEX IF NOT EXISTS idx_media_display_order ON media(display_order);
+CREATE INDEX IF NOT EXISTS idx_media_post_featured ON media(post_id, is_featured);
 
 -- Create categories table
 CREATE TABLE IF NOT EXISTS categories (
