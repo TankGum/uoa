@@ -166,137 +166,134 @@ function Navbar() {
 
       {/* Desktop Navbar */}
       <nav 
-        className="hidden md:block text-[#001f3f] py-3 md:py-4 z-[1000] shadow-md" 
+        className="hidden md:block text-[#001f3f] py-2 z-[1000] shadow-lg" 
         style={{ 
           backgroundColor: '#cfb970'
         }}
       >
-        <div className="container">
-          {/* Brand */}
-          <div className="flex items-center justify-center mb-2 md:mb-3">
+        <div className="container mx-auto px-4 max-w-7xl">
+          <div className="flex items-center justify-between">
+            {/* Brand - Left */}
             <Link 
-              to="/home" 
-              className="flex flex-col items-center gap-2 md:flex-row md:gap-2"
+              to="/" 
+              className="flex items-center gap-3 group"
               onClick={closeMenu}
             >
               <img 
                 src="/logo.png" 
                 alt="ÚÒa Production Logo" 
-                className="h-8 md:h-10 object-contain"
+                className="h-10 lg:h-12 object-contain transition-transform duration-300 group-hover:scale-105"
               />
-              <span className="text-xl md:text-2xl font-light tracking-wide text-[#001f3f] uppercase text-center">
-                ÚÒa Production
-              </span>
             </Link>
-          </div>
 
-          {/* Menu items */}
-          <ul className="flex flex-row list-none gap-3 md:gap-4 lg:gap-6 items-center justify-center">
-          <li>
-            <Link 
-              to="/home" 
-              onClick={closeMenu}
-              className={`transition-all duration-300 font-light text-xs md:text-sm uppercase tracking-[1px] block py-2 md:py-0 relative ${
-                isActive('/home') 
-                  ? 'text-[#001f3f] font-medium border-b-2 border-[#001f3f] pb-1' 
-                  : 'text-[#001f3f]/80'
-              }`}
-            >
-              Home
-            </Link>
-          </li>
-          <li>
-            <Link 
-              to="/gallery" 
-              onClick={closeMenu}
-              className={`transition-all duration-300 font-light text-xs md:text-sm uppercase tracking-[1px] block py-2 md:py-0 relative ${
-                isActive('/gallery') 
-                  ? 'text-[#001f3f] font-medium border-b-2 border-[#001f3f] pb-1' 
-                  : 'text-[#001f3f]/80'
-              }`}
-            >
-              Projects
-            </Link>
-          </li>
-          <li>
-            <Link 
-              to="/images" 
-              onClick={closeMenu}
-              className={`transition-all duration-300 font-light text-xs md:text-sm uppercase tracking-[1px] block py-2 md:py-0 relative ${
-                isActive('/images') 
-                  ? 'text-[#001f3f] font-medium border-b-2 border-[#001f3f] pb-1' 
-                  : 'text-[#001f3f]/80'
-              }`}
-            >
-              Images
-            </Link>
-          </li>
-          <li>
-            <Link 
-              to="/videos" 
-              onClick={closeMenu}
-              className={`transition-all duration-300 font-light text-xs md:text-sm uppercase tracking-[1px] block py-2 md:py-0 relative ${
-                isActive('/videos') 
-                  ? 'text-[#001f3f] font-medium border-b-2 border-[#001f3f] pb-1' 
-                  : 'text-[#001f3f]/80'
-              }`}
-            >
-              Videos
-            </Link>
-          </li>
-          <li>
-            <Link 
-              to="/booking" 
-              onClick={closeMenu}
-              className={`transition-all duration-300 font-light text-xs md:text-sm uppercase tracking-[1px] block py-2 md:py-0 relative ${
-                isActive('/booking') 
-                  ? 'text-[#001f3f] font-medium border-b-2 border-[#001f3f] pb-1' 
-                  : 'text-[#001f3f]/80'
-              }`}
-            >
-              Book Session
-            </Link>
-          </li>
-          <li>
-            <Link 
-              to="/about" 
-              onClick={closeMenu}
-              className={`transition-all duration-300 font-light text-xs md:text-sm uppercase tracking-[1px] block py-2 md:py-0 relative ${
-                isActive('/about') 
-                  ? 'text-[#001f3f] font-medium border-b-2 border-[#001f3f] pb-1' 
-                  : 'text-[#001f3f]/80'
-              }`}
-            >
-              About
-            </Link>
-          </li>
-          <li>
-            <Link 
-              to="/contact" 
-              onClick={closeMenu}
-              className={`transition-all duration-300 font-light text-xs md:text-sm uppercase tracking-[1px] block py-2 md:py-0 relative ${
-                isActive('/contact') 
-                  ? 'text-[#001f3f] font-medium border-b-2 border-[#001f3f] pb-1' 
-                  : 'text-[#001f3f]/80'
-              }`}
-            >
-              Contact
-            </Link>
-          </li>
-          <li>
-            <Link 
-              to="/admin" 
-              onClick={closeMenu}
-              className={`transition-all duration-300 font-light text-xs md:text-sm uppercase tracking-[1px] block py-2 md:py-0 relative ${
-                isActive('/admin') 
-                  ? 'text-[#001f3f] font-medium border-b-2 border-[#001f3f] pb-1' 
-                  : 'text-[#001f3f]/80'
-              }`}
-            >
-              Admin
-            </Link>
-          </li>
-          </ul>
+            {/* Menu items - Right - Pill Design */}
+            <ul className="flex flex-row list-none gap-1.5 lg:gap-2 items-center bg-[#001f3f]/5 rounded-full px-2 py-2.5">
+              <li>
+                <Link 
+                  to="/home" 
+                  onClick={closeMenu}
+                  className={`transition-all duration-300 text-xs lg:text-sm uppercase tracking-wider px-3 lg:px-4 py-2 rounded-full font-medium whitespace-nowrap ${
+                    isActive('/home') 
+                      ? 'bg-[#001f3f] text-white shadow-lg transform scale-105' 
+                      : 'text-[#001f3f]/80 hover:text-[#001f3f] hover:bg-[#001f3f]/10 hover:scale-105'
+                  }`}
+                >
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/gallery" 
+                  onClick={closeMenu}
+                  className={`transition-all duration-300 text-xs lg:text-sm uppercase tracking-wider px-3 lg:px-4 py-2 rounded-full font-medium whitespace-nowrap ${
+                    isActive('/gallery') 
+                      ? 'bg-[#001f3f] text-white shadow-lg transform scale-105' 
+                      : 'text-[#001f3f]/80 hover:text-[#001f3f] hover:bg-[#001f3f]/10 hover:scale-105'
+                  }`}
+                >
+                  Projects
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/images" 
+                  onClick={closeMenu}
+                  className={`transition-all duration-300 text-xs lg:text-sm uppercase tracking-wider px-3 lg:px-4 py-2 rounded-full font-medium whitespace-nowrap ${
+                    isActive('/images') 
+                      ? 'bg-[#001f3f] text-white shadow-lg transform scale-105' 
+                      : 'text-[#001f3f]/80 hover:text-[#001f3f] hover:bg-[#001f3f]/10 hover:scale-105'
+                  }`}
+                >
+                  Images
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/videos" 
+                  onClick={closeMenu}
+                  className={`transition-all duration-300 text-xs lg:text-sm uppercase tracking-wider px-3 lg:px-4 py-2 rounded-full font-medium whitespace-nowrap ${
+                    isActive('/videos') 
+                      ? 'bg-[#001f3f] text-white shadow-lg transform scale-105' 
+                      : 'text-[#001f3f]/80 hover:text-[#001f3f] hover:bg-[#001f3f]/10 hover:scale-105'
+                  }`}
+                >
+                  Videos
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/booking" 
+                  onClick={closeMenu}
+                  className={`transition-all duration-300 text-xs lg:text-sm uppercase tracking-wider px-3 lg:px-4 py-2 rounded-full font-medium whitespace-nowrap ${
+                    isActive('/booking') 
+                      ? 'bg-[#001f3f] text-white shadow-lg transform scale-105' 
+                      : 'text-[#001f3f]/80 hover:text-[#001f3f] hover:bg-[#001f3f]/10 hover:scale-105'
+                  }`}
+                >
+                  Book
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/about" 
+                  onClick={closeMenu}
+                  className={`transition-all duration-300 text-xs lg:text-sm uppercase tracking-wider px-3 lg:px-4 py-2 rounded-full font-medium whitespace-nowrap ${
+                    isActive('/about') 
+                      ? 'bg-[#001f3f] text-white shadow-lg transform scale-105' 
+                      : 'text-[#001f3f]/80 hover:text-[#001f3f] hover:bg-[#001f3f]/10 hover:scale-105'
+                  }`}
+                >
+                  About
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/contact" 
+                  onClick={closeMenu}
+                  className={`transition-all duration-300 text-xs lg:text-sm uppercase tracking-wider px-3 lg:px-4 py-2 rounded-full font-medium whitespace-nowrap ${
+                    isActive('/contact') 
+                      ? 'bg-[#001f3f] text-white shadow-lg transform scale-105' 
+                      : 'text-[#001f3f]/80 hover:text-[#001f3f] hover:bg-[#001f3f]/10 hover:scale-105'
+                  }`}
+                >
+                  Contact
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/admin" 
+                  onClick={closeMenu}
+                  className={`transition-all duration-300 text-xs lg:text-sm uppercase tracking-wider px-3 lg:px-4 py-2 rounded-full font-medium whitespace-nowrap ${
+                    isActive('/admin') 
+                      ? 'bg-[#001f3f] text-white shadow-lg transform scale-105' 
+                      : 'text-[#001f3f]/80 hover:text-[#001f3f] hover:bg-[#001f3f]/10 hover:scale-105'
+                  }`}
+                >
+                  Admin
+                </Link>
+              </li>
+            </ul>
+          </div>
         </div>
       </nav>
     </>

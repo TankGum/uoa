@@ -12,79 +12,62 @@
  * @returns {string} - Optimized streaming URL
  */
 export function getStreamingVideoUrl(url, publicId, options = {}) {
-  if (!url || !publicId) return url
+  if (!url) return url
   
   // If URL doesn't contain Cloudinary domain, return as is
   if (!url.includes('res.cloudinary.com')) {
     return url
   }
   
-  // Extract cloud name and path from URL
-  const urlMatch = url.match(/https?:\/\/([^\/]+)\/([^\/]+)\/(video|image)\/upload\/(.*)/)
-  if (!urlMatch) {
-    // Try to extract public_id from URL
-    const publicIdMatch = url.match(/\/upload\/(.*)$/)
-    if (publicIdMatch) {
-      const path = publicIdMatch[1]
-      const cloudName = url.match(/res\.cloudinary\.com\/([^\/]+)/)?.[1]
-      if (cloudName) {
-        return buildStreamingUrl(cloudName, path, options)
-      }
+  // Extract cloud name from URL
+  const cloudNameMatch = url.match(/res\.cloudinary\.com\/([^\/]+)/)
+  if (!cloudNameMatch) {
+    return url
+  }
+  const cloudName = cloudNameMatch[1]
+  
+  // Use publicId if provided (more reliable), otherwise extract from URL
+  let videoPublicId = publicId
+  if (!videoPublicId) {
+    // Extract public_id from URL
+    const pathMatch = url.match(/\/upload\/(.*)$/)
+    if (pathMatch) {
+      videoPublicId = pathMatch[1]
+      // Remove file extension if present
+      videoPublicId = videoPublicId.replace(/\.(mp4|mov|avi|webm|mkv|flv|wmv)$/i, '')
     }
+  }
+  
+  if (!videoPublicId) {
+    // Fallback to original URL if we can't extract public_id
     return url
   }
   
-  const [, domain, cloudName, resourceType, path] = urlMatch
-  
   // Build optimized streaming URL with transformations
-  return buildStreamingUrl(cloudName, path, {
+  return buildStreamingUrl(cloudName, videoPublicId, {
     ...options,
-    resourceType: resourceType || 'video'
+    resourceType: 'video'
   })
 }
 
 /**
  * Build Cloudinary streaming URL with transformations
  */
-function buildStreamingUrl(cloudName, path, options = {}) {
-  const {
-    resourceType = 'video',
-    quality = 'auto',
-    format = 'auto',
-    streamingProfile = 'auto',
-    width,
-    height,
-    crop,
-    flags = ['streaming_attachment']
-  } = options
-  
-  // Build transformation string
-  const transformations = []
-  
-  // Quality and format
-  if (quality) transformations.push(`q_${quality}`)
-  if (format) transformations.push(`f_${format}`)
-  
-  // Streaming profile for adaptive bitrate
-  if (streamingProfile && resourceType === 'video') {
-    transformations.push(`sp_${streamingProfile}`)
+function buildStreamingUrl(cloudName, publicId, options = {}) {
+  const { format = 'mp4' } = options
+
+  // Cloudinary automatically enables progressive streaming for videos
+  // Keep original format if supported, otherwise convert to MP4
+  let cleanPublicId = publicId
+  if (cleanPublicId && cleanPublicId.includes('.')) {
+    cleanPublicId = cleanPublicId.replace(/\.(mp4|mov|avi|webm|mkv|flv|wmv)$/i, '')
   }
-  
-  // Dimensions (optional, for responsive)
-  if (width) transformations.push(`w_${width}`)
-  if (height) transformations.push(`h_${height}`)
-  if (crop) transformations.push(`c_${crop}`)
-  
-  // Flags for streaming
-  if (flags && flags.length > 0) {
-    transformations.push(`fl_${flags.join('.')}`)
-  }
-  
-  const transformationString = transformations.length > 0 
-    ? transformations.join(',') + '/'
-    : ''
-  
-  return `https://res.cloudinary.com/${cloudName}/${resourceType}/upload/${transformationString}${path}`
+
+  // Use original format if it's MP4, otherwise convert to MP4
+  const targetFormat = format === 'mp4' ? 'mp4' : 'mp4' // Always MP4 for browser compatibility
+
+  // Basic streaming URL - Cloudinary handles streaming automatically
+  return `https://res.cloudinary.com/${cloudName}/video/upload/${cleanPublicId}.${targetFormat}`
 }
 
 /**

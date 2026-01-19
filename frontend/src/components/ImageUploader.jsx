@@ -1,5 +1,5 @@
 import { useState, useRef, useImperativeHandle, forwardRef } from 'react'
-import { authService } from '../services/auth'
+import { uploadToCloudinary } from '../utils/cloudinaryUpload'
 
 const ImageUploader = forwardRef(function ImageUploader({ onFileSelect, onProgress, multiple = false }, ref) {
   const [selectedFiles, setSelectedFiles] = useState([])
@@ -38,52 +38,22 @@ const ImageUploader = forwardRef(function ImageUploader({ onFileSelect, onProgre
       setError(null)
       setUploadProgress(0)
 
+      // Upload all files directly to Cloudinary in parallel (get metadata)
       const uploadPromises = files.map(async (file, index) => {
-        const formData = new FormData()
-        formData.append('file', file)
-
-        return new Promise((resolve, reject) => {
-          const xhr = new XMLHttpRequest()
-
-          // Track upload progress
-          xhr.upload.addEventListener('progress', (e) => {
-            if (e.lengthComputable) {
-              const percentComplete = (e.loaded / e.total) * 100
-              const totalProgress = ((index + e.loaded / e.total) / files.length) * 100
-              setUploadProgress(Math.round(totalProgress))
-              if (onProgress) {
-                onProgress(Math.round(totalProgress))
-              }
+        return uploadToCloudinary(
+          file,
+          'image',
+          (progress) => {
+            // Calculate total progress across all files
+            const fileProgress = progress / files.length
+            const completedFilesProgress = (index / files.length) * 100
+            const totalProgress = completedFilesProgress + fileProgress
+            setUploadProgress(Math.round(totalProgress))
+            if (onProgress) {
+              onProgress(Math.round(totalProgress))
             }
-          })
-
-          // Handle completion
-          xhr.addEventListener('load', () => {
-            if (xhr.status === 200) {
-              const response = JSON.parse(xhr.responseText)
-              resolve(response.data)
-            } else {
-              reject(new Error(`Upload failed with status ${xhr.status}`))
-            }
-          })
-
-          // Handle errors
-          xhr.addEventListener('error', () => {
-            reject(new Error('Network error during upload'))
-          })
-
-          xhr.addEventListener('abort', () => {
-            reject(new Error('Upload was aborted'))
-          })
-
-          xhr.open('POST', '/api/upload/image')
-          // Add authorization header
-          const token = authService.getToken()
-          if (token) {
-            xhr.setRequestHeader('Authorization', `Bearer ${token}`)
           }
-          xhr.send(formData)
-        })
+        )
       })
 
       const results = await Promise.all(uploadPromises)

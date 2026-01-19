@@ -112,9 +112,26 @@ function PostDetail() {
                         poster={thumbnailUrl || undefined}
                         className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                         playsInline
+                        crossOrigin="anonymous"
+                        onError={(e) => {
+                          console.error('Video load error:', {
+                            error: e,
+                            streamingUrl,
+                            originalUrl: media.url,
+                            publicId: media.public_id,
+                            format: media.format,
+                            videoElement: e.target
+                          })
+                          // Try to load original URL if streaming URL fails
+                          const videoEl = e.target
+                          if (videoEl.src !== media.url) {
+                            videoEl.src = media.url
+                            videoEl.load()
+                          }
+                        }}
                       >
-                        <source src={streamingUrl} type={`video/${media.format || 'mp4'}`} />
                         <source src={media.url} type={`video/${media.format || 'mp4'}`} />
+                        <source src={streamingUrl} type={`video/${media.format || 'mp4'}`} />
                         Your browser does not support the video tag.
                       </video>
                     </div>

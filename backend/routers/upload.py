@@ -1,113 +1,87 @@
-from fastapi import APIRouter, UploadFile, File, HTTPException, status, Depends
+from fastapi import APIRouter, HTTPException, status, Depends, Query
 from fastapi.responses import JSONResponse
 from typing import Optional
-import tempfile
 import os
+import time
 
-from services.cloudinary_service import upload_video
 from routers.auth import get_current_user_dependency
+
+# Try to use cloudinary.utils for signature generation
+try:
+    from cloudinary.utils import api_sign_request
+    USE_CLOUDINARY_UTILS = True
+except ImportError:
+    USE_CLOUDINARY_UTILS = False
+    import hashlib
+    import hmac
+    import base64
 
 router = APIRouter(prefix="/api/upload", tags=["upload"])
 
 
-@router.post("/video")
-async def upload_video_endpoint(
-    file: UploadFile = File(...),
-    folder: Optional[str] = None,
+def generate_cloudinary_signature(params: dict, api_secret: str) -> str:
+    """
+    Generate Cloudinary signature for signed uploads
+    Uses cloudinary.utils.api_sign_request if available, otherwise manual implementation
+    """
+    if USE_CLOUDINARY_UTILS:
+        return api_sign_request(params, api_secret)
+    else:
+        # Manual implementation
+        # Sort parameters alphabetically
+        sorted_params = sorted(params.items())
+        # Create string to sign - only include non-empty values
+        string_to_sign = "&".join([f"{k}={v}" for k, v in sorted_params if v is not None and v != ""])
+        # Generate signature using HMAC-SHA1
+        signature = base64.b64encode(
+            hmac.new(
+                api_secret.encode('utf-8'),
+                string_to_sign.encode('utf-8'),
+                hashlib.sha1
+            ).digest()
+        ).decode('utf-8')
+        return signature
+
+
+@router.post("/sign")
+def get_upload_signature(
+    resource_type: str = Query("video", description="Resource type: 'image' or 'video'"),
+    folder: Optional[str] = Query(None, description="Optional folder in Cloudinary"),
     current_user: str = Depends(get_current_user_dependency)
 ):
     """
-    Upload video file to Cloudinary
-    Returns Cloudinary metadata for frontend to use when creating post
+    Generate Cloudinary signature for signed uploads
+    Frontend should call this before uploading to get signature
     """
-    # Validate file type
-    if not file.content_type or not file.content_type.startswith("video/"):
+    
+    upload_preset = os.getenv("CLOUDINARY_UPLOAD_PRESET", "")
+    api_key = os.getenv("CLOUDINARY_API_KEY", "")
+    api_secret = os.getenv("CLOUDINARY_API_SECRET", "")
+    
+    if not upload_preset or not api_key or not api_secret:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="File must be a video"
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Cloudinary configuration not found"
         )
     
-    # Save uploaded file temporarily
-    with tempfile.NamedTemporaryFile(delete=False, suffix=os.path.splitext(file.filename)[1]) as tmp_file:
-        try:
-            # Write file content
-            content = await file.read()
-            tmp_file.write(content)
-            tmp_file.flush()
-            
-            # Upload to Cloudinary
-            result = upload_video(tmp_file.name, folder=folder)
-            
-            return JSONResponse(content={
-                "success": True,
-                "data": {
-                    "public_id": result["public_id"],
-                    "secure_url": result["secure_url"],
-                    "duration": result["duration"],
-                    "width": result["width"],
-                    "height": result["height"],
-                    "format": result["format"],
-                    "size": result["bytes"]
-                }
-            })
-        except Exception as e:
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Upload failed: {str(e)}"
-            )
-        finally:
-            # Clean up temp file
-            if os.path.exists(tmp_file.name):
-                os.unlink(tmp_file.name)
-
-
-@router.post("/image")
-async def upload_image_endpoint(
-    file: UploadFile = File(...),
-    folder: Optional[str] = None,
-    current_user: str = Depends(get_current_user_dependency)
-):
-    """
-    Upload image file to Cloudinary
-    Returns Cloudinary metadata for frontend to use when creating post
-    """
-    # Validate file type
-    if not file.content_type or not file.content_type.startswith("image/"):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="File must be an image"
-        )
+    # Generate timestamp
+    timestamp = int(time.time())
     
-    # Save uploaded file temporarily
-    with tempfile.NamedTemporaryFile(delete=False, suffix=os.path.splitext(file.filename)[1]) as tmp_file:
-        try:
-            # Write file content
-            content = await file.read()
-            tmp_file.write(content)
-            tmp_file.flush()
-            
-            # Upload to Cloudinary
-            result = upload_video(tmp_file.name, folder=folder, resource_type="image")
-            
-            return JSONResponse(content={
-                "success": True,
-                "data": {
-                    "public_id": result["public_id"],
-                    "secure_url": result["secure_url"],
-                    "duration": result.get("duration"),  # None for images
-                    "width": result["width"],
-                    "height": result["height"],
-                    "format": result["format"],
-                    "size": result["bytes"]
-                }
-            })
-        except Exception as e:
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Upload failed: {str(e)}"
-            )
-        finally:
-            # Clean up temp file
-            if os.path.exists(tmp_file.name):
-                os.unlink(tmp_file.name)
-
+    # Build parameters to sign (must match exactly what will be sent to Cloudinary)
+    # Only include parameters that will be sent in the upload request
+    params_to_sign = {
+        "timestamp": timestamp,
+        "upload_preset": upload_preset
+    }
+    
+    # Add optional parameters if provided (must match exactly what FE will send)
+    if folder:
+        params_to_sign["folder"] = folder
+    
+    # Generate signature using cloudinary.utils if available (more reliable)
+    signature = generate_cloudinary_signature(params_to_sign, api_secret)
+    
+    return JSONResponse(content={
+        "timestamp": timestamp,
+        "signature": signature
+    })

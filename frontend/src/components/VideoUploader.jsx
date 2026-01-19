@@ -1,5 +1,5 @@
 import { useState, useRef, useImperativeHandle, forwardRef } from 'react'
-import { authService } from '../services/auth'
+import { uploadToCloudinary } from '../utils/cloudinaryUpload'
 
 const VideoUploader = forwardRef(function VideoUploader({ onFileSelect, onProgress }, ref) {
   const [selectedFile, setSelectedFile] = useState(null)
@@ -38,54 +38,22 @@ const VideoUploader = forwardRef(function VideoUploader({ onFileSelect, onProgre
       setError(null)
       setUploadProgress(0)
 
-      const formData = new FormData()
-      formData.append('file', file)
-
-      return new Promise((resolve, reject) => {
-        const xhr = new XMLHttpRequest()
-
-        // Track upload progress
-        xhr.upload.addEventListener('progress', (e) => {
-          if (e.lengthComputable) {
-            const percentComplete = (e.loaded / e.total) * 100
-            const progress = Math.round(percentComplete)
-            setUploadProgress(progress)
-            if (onProgress) {
-              onProgress(progress)
-            }
+      // Upload directly to Cloudinary (get metadata)
+      const result = await uploadToCloudinary(
+        file,
+        'video',
+        (progress) => {
+          setUploadProgress(progress)
+          if (onProgress) {
+            onProgress(progress)
           }
-        })
-
-        // Handle completion
-        xhr.addEventListener('load', () => {
-          if (xhr.status === 200) {
-            const response = JSON.parse(xhr.responseText)
-            setUploadProgress(100)
-            setUploading(false)
-            retryCountRef.current = 0
-            resolve(response.data)
-          } else {
-            handleUploadError(new Error(`Upload failed with status ${xhr.status}`), reject)
-          }
-        })
-
-        // Handle errors
-        xhr.addEventListener('error', () => {
-          handleUploadError(new Error('Network error during upload'), reject)
-        })
-
-        xhr.addEventListener('abort', () => {
-          handleUploadError(new Error('Upload was aborted'), reject)
-        })
-
-        xhr.open('POST', '/api/upload/video')
-        // Add authorization header
-        const token = authService.getToken()
-        if (token) {
-          xhr.setRequestHeader('Authorization', `Bearer ${token}`)
         }
-        xhr.send(formData)
-      })
+      )
+
+      setUploadProgress(100)
+      setUploading(false)
+      retryCountRef.current = 0
+      return result
 
     } catch (err) {
       handleUploadError(err, () => {})
@@ -123,10 +91,11 @@ const VideoUploader = forwardRef(function VideoUploader({ onFileSelect, onProgre
       return
     }
     
-    // Validate file size (e.g., max 500MB)
+    // Validate file size (max 500MB)
     const maxSize = 500 * 1024 * 1024 // 500MB
     if (file.size > maxSize) {
-      setError('File size must be less than 500MB')
+      const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2)
+      setError(`File size (${fileSizeMB} MB) exceeds maximum limit of 500MB. Please compress your video or use a smaller file.`)
       return
     }
 

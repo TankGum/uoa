@@ -137,9 +137,22 @@ function Home() {
                                 poster={thumbnailUrl || undefined}
                                 className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                                 playsInline
+                                crossOrigin="anonymous"
+                                onError={(e) => {
+                                  console.error('Video load error:', {
+                                    streamingUrl,
+                                    originalUrl: project.firstMedia.url,
+                                    publicId: project.firstMedia.public_id
+                                  })
+                                  const videoEl = e.target
+                                  if (videoEl.src !== project.firstMedia.url) {
+                                    videoEl.src = project.firstMedia.url
+                                    videoEl.load()
+                                  }
+                                }}
                               >
-                                <source src={streamingUrl} type={`video/${project.firstMedia.format || 'mp4'}`} />
                                 <source src={project.firstMedia.url} type={`video/${project.firstMedia.format || 'mp4'}`} />
+                                <source src={streamingUrl} type={`video/${project.firstMedia.format || 'mp4'}`} />
                                 Your browser does not support the video tag.
                               </video>
                               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>

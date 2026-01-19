@@ -180,9 +180,17 @@ function Projects() {
                                       poster={thumbnailUrl || undefined}
                                       className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                                       playsInline
+                                      crossOrigin="anonymous"
+                                      onError={(e) => {
+                                        const videoEl = e.target
+                                        if (videoEl.src !== post.firstMedia.url) {
+                                          videoEl.src = post.firstMedia.url
+                                          videoEl.load()
+                                        }
+                                      }}
                                     >
-                                      <source src={streamingUrl} type={`video/${post.firstMedia.format || 'mp4'}`} />
                                       <source src={post.firstMedia.url} type={`video/${post.firstMedia.format || 'mp4'}`} />
+                                      <source src={streamingUrl} type={`video/${post.firstMedia.format || 'mp4'}`} />
                                       Your browser does not support the video tag.
                                     </video>
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>

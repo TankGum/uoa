@@ -96,6 +96,7 @@ function AllVideos() {
                     streamingProfile: 'auto',
                     flags: ['streaming_attachment']
                   })
+                  console.log(streamingUrl)
                   const thumbnailUrl = getVideoThumbnail(video.url, video.public_id, 1)
                   
                   return (
@@ -109,9 +110,17 @@ function AllVideos() {
                           poster={thumbnailUrl || undefined}
                           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                           playsInline
+                          crossOrigin="anonymous"
+                          onError={(e) => {
+                            const videoEl = e.target
+                            if (videoEl.src !== video.url) {
+                              videoEl.src = video.url
+                              videoEl.load()
+                            }
+                          }}
                         >
-                          <source src={streamingUrl} type={`video/${video.format || 'mp4'}`} />
                           <source src={video.url} type={`video/${video.format || 'mp4'}`} />
+                          <source src={streamingUrl} type={`video/${video.format || 'mp4'}`} />
                           Your browser does not support the video tag.
                         </video>
                         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
