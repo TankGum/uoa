@@ -189,14 +189,14 @@ function Admin() {
   }
 
   const handleDeleteBooking = async (id) => {
-    const confirmed = await showConfirm('Are you sure you want to delete this booking?', 'Delete Booking')
+    const confirmed = await showConfirm('Are you sure you want to delete this contact?', 'Delete Contact')
     if (!confirmed) return
     try {
       await client.delete(`/bookings/${id}`)
       fetchData()
     } catch (error) {
-      console.error('Error deleting booking:', error)
-      await showAlert('Failed to delete booking', 'Error')
+      console.error('Error deleting contact:', error)
+      await showAlert('Failed to delete contact', 'Error')
     }
   }
 
@@ -246,25 +246,23 @@ function Admin() {
   }
 
   return (
-    <div>
+    <div className="min-h-screen bg-zinc-950 pt-20">
+      <section className="relative py-6 px-6 bg-gradient-to-br from-orange-600 to-orange-500 overflow-hidden">
+        
+        <div className="relative max-w-7xl mx-auto text-center">
+          <h1 className="text-2xl md:text-8xl font-black text-zinc-950 uppercase tracking-tight">
+            Admin Dashboard
+          </h1>
+        </div>
+      </section>
+
       <div className="max-w-7xl mx-auto p-8">
-        <div className="flex justify-between items-center mb-8 flex-col md:flex-row md:items-center gap-4">
-          <h1 className="text-3xl font-light" style={{ color: '#001f3f' }}>Admin Panel</h1>
+        <div className="flex justify-end items-center mb-8 flex-col md:flex-row md:items-center gap-4">
           <button
             onClick={handleLogout}
-            className="px-4 py-2 text-sm rounded border-2 transition-all duration-300"
+            className="px-4 py-2 text-sm rounded border-2 transition-all duration-300 bg-orange-500 text-zinc-950"
             style={{ 
-              backgroundColor: 'transparent',
-              color: '#001f3f',
-              borderColor: '#001f3f'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#cfb970'
-              e.currentTarget.style.color = '#001f3f'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = 'transparent'
-              e.currentTarget.style.color = '#001f3f'
+              borderColor: '#f97316'
             }}
           >
             Logout
@@ -276,83 +274,32 @@ function Admin() {
             <button
               className={`px-4 md:px-8 py-2 md:py-3 bg-transparent border-none text-sm md:text-base cursor-pointer border-b-2 -mb-[2px] transition-all duration-300 font-medium whitespace-nowrap ${
                 activeTab === 'posts' 
-                  ? 'font-semibold' 
-                  : ''
+                  ? 'font-semibold text-black bg-orange-500'
+                  : 'text-black bg-transparent'
               }`}
-              style={{
-                color: activeTab === 'posts' ? '#001f3f' : '#001f3f',
-                borderBottomColor: activeTab === 'posts' ? '#cfb970' : 'transparent',
-                backgroundColor: activeTab === 'posts' ? 'rgba(207, 185, 112, 0.1)' : 'transparent'
-              }}
-              onMouseEnter={(e) => {
-                if (activeTab !== 'posts') {
-                  e.currentTarget.style.color = '#001f3f'
-                  e.currentTarget.style.backgroundColor = 'rgba(207, 185, 112, 0.05)'
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (activeTab !== 'posts') {
-                  e.currentTarget.style.color = '#001f3f'
-                  e.currentTarget.style.backgroundColor = 'transparent'
-                }
-              }}
               onClick={() => setActiveTab('posts')}
             >
-              Posts
+              <span className={activeTab === 'posts' ? 'text-black' : 'text-orange-500'}>Posts</span>
             </button>
             <button
               className={`px-4 md:px-8 py-2 md:py-3 bg-transparent border-none text-sm md:text-base cursor-pointer border-b-2 -mb-[2px] transition-all duration-300 font-medium whitespace-nowrap ${
                 activeTab === 'bookings' 
-                  ? 'font-semibold' 
-                  : ''
+                  ? 'font-semibold text-black bg-orange-500'
+                  : 'text-orange-500 bg-transparent'
               }`}
-              style={{
-                color: activeTab === 'bookings' ? '#001f3f' : '#001f3f',
-                borderBottomColor: activeTab === 'bookings' ? '#cfb970' : 'transparent',
-                backgroundColor: activeTab === 'bookings' ? 'rgba(207, 185, 112, 0.1)' : 'transparent'
-              }}
-              onMouseEnter={(e) => {
-                if (activeTab !== 'bookings') {
-                  e.currentTarget.style.color = '#001f3f'
-                  e.currentTarget.style.backgroundColor = 'rgba(207, 185, 112, 0.05)'
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (activeTab !== 'bookings') {
-                  e.currentTarget.style.color = '#001f3f'
-                  e.currentTarget.style.backgroundColor = 'transparent'
-                }
-              }}
               onClick={() => setActiveTab('bookings')}
             >
-              Bookings
+              <span className={activeTab === 'bookings' ? 'text-black' : 'text-orange-500'}>Contacts</span>
             </button>
             <button
               className={`px-4 md:px-8 py-2 md:py-3 bg-transparent border-none text-sm md:text-base cursor-pointer border-b-2 -mb-[2px] transition-all duration-300 font-medium whitespace-nowrap ${
                 activeTab === 'categories' 
-                  ? 'font-semibold' 
-                  : ''
+                  ? 'font-semibold text-black bg-orange-500' 
+                  : 'text-orange-500 bg-transparent'
               }`}
-              style={{
-                color: activeTab === 'categories' ? '#001f3f' : '#001f3f',
-                borderBottomColor: activeTab === 'categories' ? '#cfb970' : 'transparent',
-                backgroundColor: activeTab === 'categories' ? 'rgba(207, 185, 112, 0.1)' : 'transparent'
-              }}
-              onMouseEnter={(e) => {
-                if (activeTab !== 'categories') {
-                  e.currentTarget.style.color = '#001f3f'
-                  e.currentTarget.style.backgroundColor = 'rgba(207, 185, 112, 0.05)'
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (activeTab !== 'categories') {
-                  e.currentTarget.style.color = '#001f3f'
-                  e.currentTarget.style.backgroundColor = 'transparent'
-                }
-              }}
               onClick={() => setActiveTab('categories')}
             >
-              Categories
+              <span className={activeTab === 'categories' ? 'text-black' : 'text-orange-500'}>Categories</span>
             </button>
           </div>
         </div>
@@ -366,17 +313,15 @@ function Admin() {
                 <div className="mb-4 flex gap-4 items-center flex-wrap">
                   <button 
                     className="px-6 py-3 rounded text-base font-medium cursor-pointer transition-all duration-300"
-                    style={{ backgroundColor: '#cfb970', color: '#001f3f' }}
-                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#b8a55f'}
-                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#cfb970'}
+                    style={{ backgroundColor: '#f97316', color: '#001f3f', borderColor: '#f97316' }}
                     onClick={() => setShowPostForm(true)}
                   >
-                    Create New Post
+                    + Thêm
                   </button>
                   <div className="flex-1 max-w-md flex gap-2">
                     <input
                       type="text"
-                      placeholder="Search posts by title or description..."
+                      placeholder="Tìm kiếm..."
                       value={postsSearchInput}
                       onChange={(e) => setPostsSearchInput(e.target.value)}
                       onKeyPress={(e) => e.key === 'Enter' && handlePostsSearch()}
@@ -385,53 +330,31 @@ function Admin() {
                         borderColor: '#e0e0e0',
                         color: '#001f3f'
                       }}
-                      onFocus={(e) => e.currentTarget.style.borderColor = '#cfb970'}
+                      onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
                       onBlur={(e) => e.currentTarget.style.borderColor = '#e0e0e0'}
                     />
                     <button
                       onClick={handlePostsSearch}
                       className="px-4 py-2 rounded border-2 transition-all duration-300"
                       style={{ 
-                        backgroundColor: 'transparent',
+                        backgroundColor: '#f97316',
                         color: '#001f3f',
-                        borderColor: '#001f3f'
+                        borderColor: '#f97316'
                       }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = '#cfb970'
-                        e.currentTarget.style.color = '#001f3f'
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = 'transparent'
-                        e.currentTarget.style.color = '#001f3f'
-                      }}
-                      title="Search"
                     >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                      </svg>
+                      Tìm
                     </button>
                     {postsSearch && (
                       <button
-                        onClick={handleClearPostsSearch}
-                        className="px-4 py-2 rounded border-2 transition-all duration-300"
-                        style={{ 
-                          backgroundColor: 'transparent',
-                          color: '#001f3f',
-                          borderColor: '#001f3f'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.backgroundColor = '#cfb970'
-                          e.currentTarget.style.color = '#001f3f'
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.backgroundColor = 'transparent'
-                          e.currentTarget.style.color = '#001f3f'
-                        }}
-                        title="Clear"
+                      onClick={handleClearPostsSearch}
+                      className="px-4 py-2 rounded border-2 transition-all duration-300"
+                      style={{ 
+                        backgroundColor: 'transparent',
+                        color: '#f97316',
+                        borderColor: '#f97316'
+                      }}
                       >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                        </svg>
+                        Xóa
                       </button>
                     )}
                   </div>
@@ -610,17 +533,17 @@ function Admin() {
                 <div className="mb-4 flex gap-4 items-center flex-wrap">
                   <button 
                     className="px-6 py-3 rounded text-base font-medium cursor-pointer transition-all duration-300"
-                    style={{ backgroundColor: '#cfb970', color: '#001f3f' }}
+                    style={{ backgroundColor: '#f97316', color: '#001f3f' }}
                     onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#b8a55f'}
-                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#cfb970'}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#f97316'}
                     onClick={() => setShowBookingForm(true)}
                   >
-                    Create New Booking
+                    + Thêm
                   </button>
                   <div className="flex-1 max-w-md flex gap-2">
                     <input
                       type="text"
-                      placeholder="Search bookings by client name or email..."
+                      placeholder="Tìm kiếm..."
                       value={bookingsSearchInput}
                       onChange={(e) => setBookingsSearchInput(e.target.value)}
                       onKeyPress={(e) => e.key === 'Enter' && handleBookingsSearch()}
@@ -629,30 +552,20 @@ function Admin() {
                         borderColor: '#e0e0e0',
                         color: '#001f3f'
                       }}
-                      onFocus={(e) => e.currentTarget.style.borderColor = '#cfb970'}
+                      onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
                       onBlur={(e) => e.currentTarget.style.borderColor = '#e0e0e0'}
                     />
                     <button
                       onClick={handleBookingsSearch}
                       className="px-4 py-2 rounded border-2 transition-all duration-300"
                       style={{ 
-                        backgroundColor: 'transparent',
+                        backgroundColor: '#f97316',
                         color: '#001f3f',
-                        borderColor: '#001f3f'
+                        borderColor: '#f97316'
                       }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = '#cfb970'
-                        e.currentTarget.style.color = '#001f3f'
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = 'transparent'
-                        e.currentTarget.style.color = '#001f3f'
-                      }}
-                      title="Search"
+                      title="Tìm"
                     >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                      </svg>
+                      Tìm
                     </button>
                     {bookingsSearch && (
                       <button
@@ -660,22 +573,12 @@ function Admin() {
                         className="px-4 py-2 rounded border-2 transition-all duration-300"
                         style={{ 
                           backgroundColor: 'transparent',
-                          color: '#001f3f',
-                          borderColor: '#001f3f'
+                          color: '#f97316',
+                          borderColor: '#f97316'
                         }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.backgroundColor = '#cfb970'
-                          e.currentTarget.style.color = '#001f3f'
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.backgroundColor = 'transparent'
-                          e.currentTarget.style.color = '#001f3f'
-                        }}
-                        title="Clear"
+                        title="Xóa"
                       >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                        </svg>
+                        Xóa
                       </button>
                     )}
                   </div>
@@ -707,40 +610,13 @@ function Admin() {
                           <SortIcon column="client_name" sortColumn={bookingsSortColumn} sortDirection={bookingsSortDirection} />
                         </th>
                         <th 
-                          className="p-2 md:p-4 text-left border-b border-border bg-secondary font-semibold cursor-pointer hover:bg-gray-200 transition-colors text-xs md:text-sm hidden md:table-cell"
+                          className="p-2 md:p-4 text-left border-b border-border bg-secondary font-semibold cursor-pointer hover:bg-gray-200 transition-colors text-xs md:text-sm"
                           onClick={() => handleSort('email', 'bookings', setBookingsSortColumn, setBookingsSortDirection, bookingsSortColumn, bookingsSortDirection)}
                         >
                           Email
                           <SortIcon column="email" sortColumn={bookingsSortColumn} sortDirection={bookingsSortDirection} />
                         </th>
-                        <th 
-                          className="p-2 md:p-4 text-left border-b border-border bg-secondary font-semibold cursor-pointer hover:bg-gray-200 transition-colors text-xs md:text-sm"
-                          onClick={() => handleSort('start_time', 'bookings', setBookingsSortColumn, setBookingsSortDirection, bookingsSortColumn, bookingsSortDirection)}
-                        >
-                          Start Time
-                          <SortIcon column="start_time" sortColumn={bookingsSortColumn} sortDirection={bookingsSortDirection} />
-                        </th>
-                        <th 
-                          className="p-2 md:p-4 text-left border-b border-border bg-secondary font-semibold cursor-pointer hover:bg-gray-200 transition-colors text-xs md:text-sm hidden lg:table-cell"
-                          onClick={() => handleSort('end_time', 'bookings', setBookingsSortColumn, setBookingsSortDirection, bookingsSortColumn, bookingsSortDirection)}
-                        >
-                          End Time
-                          <SortIcon column="end_time" sortColumn={bookingsSortColumn} sortDirection={bookingsSortDirection} />
-                        </th>
-                        <th 
-                          className="p-2 md:p-4 text-left border-b border-border bg-secondary font-semibold cursor-pointer hover:bg-gray-200 transition-colors text-xs md:text-sm"
-                          onClick={() => handleSort('status', 'bookings', setBookingsSortColumn, setBookingsSortDirection, bookingsSortColumn, bookingsSortDirection)}
-                        >
-                          Status
-                          <SortIcon column="status" sortColumn={bookingsSortColumn} sortDirection={bookingsSortDirection} />
-                        </th>
-                        <th 
-                          className="p-2 md:p-4 text-left border-b border-border bg-secondary font-semibold cursor-pointer hover:bg-gray-200 transition-colors text-xs md:text-sm hidden md:table-cell"
-                          onClick={() => handleSort('created', 'bookings', setBookingsSortColumn, setBookingsSortDirection, bookingsSortColumn, bookingsSortDirection)}
-                        >
-                          Created
-                          <SortIcon column="created" sortColumn={bookingsSortColumn} sortDirection={bookingsSortDirection} />
-                        </th>
+                        <th className="p-2 md:p-4 text-left border-b border-border bg-secondary font-semibold text-xs md:text-sm">Message</th>
                         <th className="p-2 md:p-4 text-left border-b border-border bg-secondary font-semibold text-xs md:text-sm">Actions</th>
                       </tr>
                     </thead>
@@ -751,23 +627,16 @@ function Admin() {
                         <tr key={booking.id} className="hover:bg-secondary">
                           <td className="p-2 md:p-4 text-left border-b border-border text-xs md:text-sm text-gray-600">{stt}</td>
                           <td className="p-2 md:p-4 text-left border-b border-border text-xs md:text-sm">{booking.client_name}</td>
-                          <td className="p-2 md:p-4 text-left border-b border-border text-xs md:text-sm hidden md:table-cell">{booking.client_email}</td>
-                          <td className="p-2 md:p-4 text-left border-b border-border text-xs md:text-sm whitespace-nowrap">{formatDate(booking.start_time)}</td>
-                          <td className="p-2 md:p-4 text-left border-b border-border text-xs md:text-sm whitespace-nowrap hidden lg:table-cell">{formatDate(booking.end_time)}</td>
-                          <td className="p-2 md:p-4 text-left border-b border-border">
-                            <span className={`status-badge ${
-                              booking.status === 'confirmed' 
-                                ? 'bg-emerald-200 text-emerald-900 border border-emerald-400' 
-                                : booking.status === 'pending'
-                                ? 'bg-amber-200 text-amber-900 border border-amber-400'
-                                : booking.status === 'canceled'
-                                ? 'bg-red-200 text-red-900 border border-red-400'
-                                : ''
-                            }`}>
-                              {booking.status}
-                            </span>
+                          <td className="p-2 md:p-4 text-left border-b border-border text-xs md:text-sm">{booking.client_email}</td>
+                          <td className="p-2 md:p-4 text-left border-b border-border text-xs md:text-sm">
+                            {booking.message ? (
+                              <span className="block max-w-md line-clamp-2" title={booking.message}>
+                                {booking.message}
+                              </span>
+                            ) : (
+                              <span className="text-gray-400">-</span>
+                            )}
                           </td>
-                          <td className="p-2 md:p-4 text-left border-b border-border text-xs md:text-sm whitespace-nowrap hidden md:table-cell">{formatDate(booking.created_at)}</td>
                           <td className="p-2 md:p-4 text-left border-b border-border">
                             <div className="flex gap-1 md:gap-2">
                               <button
@@ -819,17 +688,17 @@ function Admin() {
                 <div className="mb-4 flex gap-4 items-center flex-wrap">
                   <button 
                     className="px-6 py-3 rounded text-base font-medium cursor-pointer transition-all duration-300"
-                    style={{ backgroundColor: '#cfb970', color: '#001f3f' }}
+                    style={{ backgroundColor: '#f97316', color: '#001f3f' }}
                     onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#b8a55f'}
-                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#cfb970'}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#f97316'}
                     onClick={() => setShowCategoryForm(true)}
                   >
-                    Create New Category
+                    + Thêm
                   </button>
                   <div className="flex-1 max-w-md flex gap-2">
                     <input
                       type="text"
-                      placeholder="Search categories by name..."
+                      placeholder="Tìm kiếm..."
                       value={categoriesSearchInput}
                       onChange={(e) => setCategoriesSearchInput(e.target.value)}
                       onKeyPress={(e) => e.key === 'Enter' && handleCategoriesSearch()}
@@ -838,30 +707,20 @@ function Admin() {
                         borderColor: '#e0e0e0',
                         color: '#001f3f'
                       }}
-                      onFocus={(e) => e.currentTarget.style.borderColor = '#cfb970'}
+                      onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
                       onBlur={(e) => e.currentTarget.style.borderColor = '#e0e0e0'}
                     />
                     <button
                       onClick={handleCategoriesSearch}
                       className="px-4 py-2 rounded border-2 transition-all duration-300"
                       style={{ 
-                        backgroundColor: 'transparent',
+                        backgroundColor: '#f97316',
                         color: '#001f3f',
-                        borderColor: '#001f3f'
+                        borderColor: '#f97316'
                       }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = '#cfb970'
-                        e.currentTarget.style.color = '#001f3f'
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = 'transparent'
-                        e.currentTarget.style.color = '#001f3f'
-                      }}
-                      title="Search"
+                      title="Tìm"
                     >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                      </svg>
+                      Tìm
                     </button>
                     {categoriesSearch && (
                       <button
@@ -869,22 +728,12 @@ function Admin() {
                         className="px-4 py-2 rounded border-2 transition-all duration-300"
                         style={{ 
                           backgroundColor: 'transparent',
-                          color: '#001f3f',
-                          borderColor: '#001f3f'
+                          color: '#f97316',
+                          borderColor: '#f97316'
                         }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.backgroundColor = '#cfb970'
-                          e.currentTarget.style.color = '#001f3f'
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.backgroundColor = 'transparent'
-                          e.currentTarget.style.color = '#001f3f'
-                        }}
-                        title="Clear"
+                        title="Xóa"
                       >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                        </svg>
+                        Xóa
                       </button>
                     )}
                   </div>
@@ -1200,7 +1049,7 @@ function PostForm({ onClose, onSuccess, post }) {
                 borderColor: '#e0e0e0',
                 color: '#001f3f'
               }}
-              onFocus={(e) => e.currentTarget.style.borderColor = '#cfb970'}
+              onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
               onBlur={(e) => e.currentTarget.style.borderColor = '#e0e0e0'}
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
@@ -1223,7 +1072,7 @@ function PostForm({ onClose, onSuccess, post }) {
                 borderColor: '#e0e0e0',
                 color: '#001f3f'
               }}
-              onFocus={(e) => e.currentTarget.style.borderColor = '#cfb970'}
+              onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
               onBlur={(e) => e.currentTarget.style.borderColor = '#e0e0e0'}
               value={formData.status}
               onChange={(e) => setFormData({ ...formData, status: e.target.value })}
@@ -1240,7 +1089,7 @@ function PostForm({ onClose, onSuccess, post }) {
                 onClick={() => setCategoryDropdownOpen(!categoryDropdownOpen)}
                 className="w-full p-3 border rounded transition-colors duration-300 text-base focus:outline-none text-left flex items-center justify-between"
                 style={{ 
-                  borderColor: categoryDropdownOpen ? '#cfb970' : '#e0e0e0',
+                  borderColor: categoryDropdownOpen ? '#f97316' : '#e0e0e0',
                   color: '#001f3f'
                 }}
               >
@@ -1273,7 +1122,7 @@ function PostForm({ onClose, onSuccess, post }) {
                         borderColor: '#e0e0e0',
                         color: '#001f3f'
                       }}
-                      onFocus={(e) => e.currentTarget.style.borderColor = '#cfb970'}
+                      onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
                       onBlur={(e) => e.currentTarget.style.borderColor = '#e0e0e0'}
                     />
                   </div>
@@ -1291,7 +1140,7 @@ function PostForm({ onClose, onSuccess, post }) {
                             checked={formData.category_ids.includes(cat.id)}
                             onChange={() => handleCategoryToggle(cat.id)}
                             className="w-4 h-4"
-                            style={{ accentColor: '#cfb970' }}
+                            style={{ accentColor: '#f97316' }}
                           />
                           <span style={{ color: '#001f3f' }}>{cat.name}</span>
                         </label>
@@ -1313,7 +1162,7 @@ function PostForm({ onClose, onSuccess, post }) {
                     <span
                       key={catId}
                       className="px-2 py-1 text-xs rounded"
-                      style={{ backgroundColor: '#cfb970', color: '#001f3f' }}
+                      style={{ backgroundColor: '#f97316', color: '#001f3f' }}
                     >
                       {cat.name}
                     </span>
@@ -1353,11 +1202,11 @@ function PostForm({ onClose, onSuccess, post }) {
                             onClick={() => handleSetFeatured(media.id)}
                             className="px-4 py-2 rounded text-sm font-medium transition-all duration-300"
                             style={{
-                              backgroundColor: media.is_featured ? '#cfb970' : '#cfb970',
+                              backgroundColor: media.is_featured ? '#f97316' : '#f97316',
                               color: '#001f3f'
                             }}
                             onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#b8a55f'}
-                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#cfb970'}
+                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#f97316'}
                           >
                             {media.is_featured ? 'Featured' : 'Set Featured'}
                           </button>
@@ -1399,11 +1248,11 @@ function PostForm({ onClose, onSuccess, post }) {
                             onClick={() => handleSetFeatured(media.id)}
                             className="px-4 py-2 rounded text-sm font-medium transition-all duration-300"
                             style={{
-                              backgroundColor: media.is_featured ? '#cfb970' : '#cfb970',
+                              backgroundColor: media.is_featured ? '#f97316' : '#f97316',
                               color: '#001f3f'
                             }}
                             onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#b8a55f'}
-                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#cfb970'}
+                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#f97316'}
                           >
                             {media.is_featured ? 'Featured' : 'Set Featured'}
                           </button>
@@ -1462,9 +1311,9 @@ function PostForm({ onClose, onSuccess, post }) {
             <button 
               type="submit" 
               className="px-6 py-3 rounded text-base font-medium cursor-pointer transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{ backgroundColor: '#cfb970', color: '#001f3f' }}
+              style={{ backgroundColor: '#f97316', color: '#001f3f' }}
               onMouseEnter={(e) => !e.currentTarget.disabled && (e.currentTarget.style.backgroundColor = '#b8a55f')}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#cfb970'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#f97316'}
               disabled={loading}
             >
               {loading ? 'Saving...' : 'Save'}
@@ -1478,7 +1327,7 @@ function PostForm({ onClose, onSuccess, post }) {
                 borderColor: '#001f3f'
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#cfb970'
+                e.currentTarget.style.backgroundColor = '#f97316'
                 e.currentTarget.style.color = '#001f3f'
               }}
               onMouseLeave={(e) => {
@@ -1500,9 +1349,7 @@ function BookingForm({ onClose, onSuccess, booking }) {
   const [formData, setFormData] = useState({
     client_name: booking?.client_name || '',
     client_email: booking?.client_email || '',
-    start_time: booking ? new Date(booking.start_time).toISOString().slice(0, 16) : '',
-    end_time: booking ? new Date(booking.end_time).toISOString().slice(0, 16) : '',
-    status: booking?.status || 'pending',
+    message: booking?.message || '',
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -1515,8 +1362,6 @@ function BookingForm({ onClose, onSuccess, booking }) {
     try {
       const payload = {
         ...formData,
-        start_time: new Date(formData.start_time).toISOString(),
-        end_time: new Date(formData.end_time).toISOString(),
       }
       if (booking) {
         await client.put(`/bookings/${booking.id}`, payload)
@@ -1525,7 +1370,7 @@ function BookingForm({ onClose, onSuccess, booking }) {
       }
       onSuccess()
     } catch (err) {
-      setError(err.response?.data?.detail || 'Failed to save booking')
+      setError(err.response?.data?.detail || 'Failed to save contact')
     } finally {
       setLoading(false)
     }
@@ -1534,7 +1379,7 @@ function BookingForm({ onClose, onSuccess, booking }) {
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000]" onClick={onClose}>
       <div className="bg-white p-8 rounded-lg max-w-2xl w-[90%] max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-        <h2 className="text-3xl font-light mb-6">{booking ? 'Edit Booking' : 'Create Booking'}</h2>
+        <h2 className="text-3xl font-light mb-6">{booking ? 'Edit Contact' : 'Create Contact'}</h2>
         {error && <div className="p-4 rounded mb-6 bg-[#f8d7da] text-[#721c24] border border-[#f5c6cb]">{error}</div>}
         <form onSubmit={handleSubmit}>
           <div className="mb-6">
@@ -1546,7 +1391,7 @@ function BookingForm({ onClose, onSuccess, booking }) {
                 borderColor: '#e0e0e0',
                 color: '#001f3f'
               }}
-              onFocus={(e) => e.currentTarget.style.borderColor = '#cfb970'}
+              onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
               onBlur={(e) => e.currentTarget.style.borderColor = '#e0e0e0'}
               value={formData.client_name}
               onChange={(e) => setFormData({ ...formData, client_name: e.target.value })}
@@ -1562,7 +1407,7 @@ function BookingForm({ onClose, onSuccess, booking }) {
                 borderColor: '#e0e0e0',
                 color: '#001f3f'
               }}
-              onFocus={(e) => e.currentTarget.style.borderColor = '#cfb970'}
+              onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
               onBlur={(e) => e.currentTarget.style.borderColor = '#e0e0e0'}
               value={formData.client_email}
               onChange={(e) => setFormData({ ...formData, client_email: e.target.value })}
@@ -1570,62 +1415,28 @@ function BookingForm({ onClose, onSuccess, booking }) {
             />
           </div>
           <div className="mb-6">
-            <label className="block mb-2 font-medium" style={{ color: '#001f3f' }}>Start Time *</label>
-            <input
-              type="datetime-local"
-              className="w-full p-3 border rounded transition-colors duration-300 text-base focus:outline-none"
+            <label className="block mb-2 font-medium" style={{ color: '#001f3f' }}>Message</label>
+            <textarea
+              className="w-full p-3 border rounded transition-colors duration-300 text-base focus:outline-none resize-none"
               style={{ 
                 borderColor: '#e0e0e0',
-                color: '#001f3f'
+                color: '#001f3f',
+                minHeight: '100px'
               }}
-              onFocus={(e) => e.currentTarget.style.borderColor = '#cfb970'}
+              onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
               onBlur={(e) => e.currentTarget.style.borderColor = '#e0e0e0'}
-              value={formData.start_time}
-              onChange={(e) => setFormData({ ...formData, start_time: e.target.value })}
-              required
+              value={formData.message}
+              onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+              placeholder="Optional message from client..."
             />
-          </div>
-          <div className="mb-6">
-            <label className="block mb-2 font-medium" style={{ color: '#001f3f' }}>End Time *</label>
-            <input
-              type="datetime-local"
-              className="w-full p-3 border rounded transition-colors duration-300 text-base focus:outline-none"
-              style={{ 
-                borderColor: '#e0e0e0',
-                color: '#001f3f'
-              }}
-              onFocus={(e) => e.currentTarget.style.borderColor = '#cfb970'}
-              onBlur={(e) => e.currentTarget.style.borderColor = '#e0e0e0'}
-              value={formData.end_time}
-              onChange={(e) => setFormData({ ...formData, end_time: e.target.value })}
-              required
-            />
-          </div>
-          <div className="mb-6">
-            <label className="block mb-2 font-medium" style={{ color: '#001f3f' }}>Status</label>
-            <select
-              className="w-full p-3 border rounded transition-colors duration-300 text-base focus:outline-none"
-              style={{ 
-                borderColor: '#e0e0e0',
-                color: '#001f3f'
-              }}
-              onFocus={(e) => e.currentTarget.style.borderColor = '#cfb970'}
-              onBlur={(e) => e.currentTarget.style.borderColor = '#e0e0e0'}
-              value={formData.status}
-              onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-            >
-              <option value="pending">Pending</option>
-              <option value="confirmed">Confirmed</option>
-              <option value="canceled">Canceled</option>
-            </select>
           </div>
           <div className="flex gap-4 mt-6">
             <button 
               type="submit" 
               className="px-6 py-3 rounded text-base font-medium cursor-pointer transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{ backgroundColor: '#cfb970', color: '#001f3f' }}
+              style={{ backgroundColor: '#f97316', color: '#001f3f' }}
               onMouseEnter={(e) => !e.currentTarget.disabled && (e.currentTarget.style.backgroundColor = '#b8a55f')}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#cfb970'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#f97316'}
               disabled={loading}
             >
               {loading ? 'Saving...' : 'Save'}
@@ -1639,7 +1450,7 @@ function BookingForm({ onClose, onSuccess, booking }) {
                 borderColor: '#001f3f'
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#cfb970'
+                e.currentTarget.style.backgroundColor = '#f97316'
                 e.currentTarget.style.color = '#001f3f'
               }}
               onMouseLeave={(e) => {
@@ -1692,7 +1503,7 @@ function CategoryForm({ onClose, onSuccess }) {
                 borderColor: '#e0e0e0',
                 color: '#001f3f'
               }}
-              onFocus={(e) => e.currentTarget.style.borderColor = '#cfb970'}
+              onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
               onBlur={(e) => e.currentTarget.style.borderColor = '#e0e0e0'}
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -1703,9 +1514,9 @@ function CategoryForm({ onClose, onSuccess }) {
             <button 
               type="submit" 
               className="px-6 py-3 rounded text-base font-medium cursor-pointer transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{ backgroundColor: '#cfb970', color: '#001f3f' }}
+              style={{ backgroundColor: '#f97316', color: '#001f3f' }}
               onMouseEnter={(e) => !e.currentTarget.disabled && (e.currentTarget.style.backgroundColor = '#b8a55f')}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#cfb970'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#f97316'}
               disabled={loading}
             >
               {loading ? 'Creating...' : 'Create'}
@@ -1719,7 +1530,7 @@ function CategoryForm({ onClose, onSuccess }) {
                 borderColor: '#001f3f'
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#cfb970'
+                e.currentTarget.style.backgroundColor = '#f97316'
                 e.currentTarget.style.color = '#001f3f'
               }}
               onMouseLeave={(e) => {

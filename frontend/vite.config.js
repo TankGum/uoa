@@ -6,6 +6,10 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 5174,
+    watch: {
+      usePolling: true, // Enable polling for file changes in Docker
+      interval: 1000, // Poll every 1 second
+    },
     proxy: {
       '/api': {
         // When running in Docker, proxy to backend container

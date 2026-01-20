@@ -19,6 +19,7 @@
 
   body {
     @apply antialiased text-text bg-white leading-relaxed;
+    font-family: "Afacad", sans-serif;
     /* Hide scrollbar but keep functionality */
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none; /* IE and Edge */

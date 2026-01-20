@@ -1,13 +1,13 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
+import ScrollToTop from './components/ScrollToTop'
 import Landing from './pages/Landing'
 import Home from './pages/Home'
 import Gallery from './pages/Gallery'
 import AllImages from './pages/AllImages'
 import AllVideos from './pages/AllVideos'
 import PostDetail from './pages/PostDetail'
-import Booking from './pages/Booking'
 import About from './pages/About'
 import Contact from './pages/Contact'
 import Admin from './pages/Admin'
@@ -16,6 +16,7 @@ import AdminLogin from './pages/AdminLogin'
 function App() {
   return (
     <Router>
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/home" element={
@@ -59,15 +60,6 @@ function App() {
             <Navbar />
             <main className="flex-grow">
               <PostDetail />
-            </main>
-            <Footer />
-          </div>
-        } />
-        <Route path="/booking" element={
-          <div className="min-h-screen flex flex-col">
-            <Navbar />
-            <main className="flex-grow">
-              <Booking />
             </main>
             <Footer />
           </div>

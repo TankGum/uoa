@@ -17,7 +17,6 @@ function Projects() {
 
   useEffect(() => {
     fetchCategories()
-    // Check if category is in URL params
     const categoryParam = searchParams.get('category')
     if (categoryParam) {
       setSelectedCategory(categoryParam)
@@ -31,7 +30,6 @@ function Projects() {
   }, [selectedCategory, categories, currentPage])
 
   useEffect(() => {
-    // Reset to page 1 when category changes
     setCurrentPage(1)
   }, [selectedCategory])
 
@@ -57,12 +55,11 @@ function Projects() {
         params.category_id = selectedCategory
       }
       const response = await client.get('/posts', { params })
-      setPosts(response.data.items || response.data) // Support both old and new format
+      setPosts(response.data.items || response.data)
       if (response.data.total !== undefined) {
         setTotal(response.data.total)
         setTotalPages(response.data.total_pages)
       } else {
-        // Fallback for old format
         setTotal(response.data.length)
         setTotalPages(Math.ceil(response.data.length / itemsPerPage))
       }
@@ -78,135 +75,177 @@ function Projects() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  // Show posts with their featured media or first media
-  // Each post represents a collection of media within a category/project
   const postsWithFirstMedia = posts
     .filter(post => post.media && post.media.length > 0)
     .map(post => ({
       ...post,
-      // Get featured media if exists, otherwise first media
       firstMedia: post.media.find(m => m.is_featured) || post.media[0]
     }))
 
+  const selectedCategoryName = selectedCategory 
+    ? categories.find(cat => cat.id === selectedCategory || cat.id.toString() === selectedCategory)?.name 
+    : 'All Projects'
+
   return (
-    <div>
-      <section className="py-20">
-        <div className="container">
-          <h2 className="text-4xl md:text-3xl font-light text-center mb-12 uppercase tracking-[2px] text-[#001f3f]">Projects</h2>
-          
-          {categories.length > 0 && (
-            <div className="flex gap-4 justify-center flex-wrap mb-12">
-              <button
-                className={`px-5 py-2 rounded-full border-2 transition-all duration-300 text-sm ${
-                  selectedCategory === null 
-                    ? 'bg-[#cfb970] text-[#001f3f] border-[#001f3f]' 
-                    : 'bg-white text-[#001f3f] border-[#001f3f] hover:border-[#cfb970] hover:text-[#cfb970]'
-                }`}
-                onClick={() => {
-                  setSelectedCategory(null)
-                  window.history.pushState({}, '', '/gallery')
-                }}
-              >
-                All
-              </button>
-              {categories.map((category) => {
-                const isSelected = selectedCategory === category.id || selectedCategory === category.id.toString()
-                return (
-                  <button
-                    key={category.id}
-                    className={`px-5 py-2 rounded-full border-2 transition-all duration-300 text-sm ${
-                      isSelected
-                        ? 'bg-[#cfb970] text-[#001f3f] border-[#001f3f]' 
-                        : 'bg-white text-[#001f3f] border-[#001f3f] hover:border-[#cfb970] hover:text-[#cfb970]'
-                    }`}
-                    onClick={() => {
-                      setSelectedCategory(category.id)
-                      window.history.pushState({}, '', `/gallery?category=${category.id}`)
-                    }}
-                  >
-                    {category.name}
-                  </button>
-                )
-              })}
-            </div>
-          )}
+    <div className="min-h-screen bg-zinc-950 pt-20">
+      {/* Hero Section */}
+      <section className="relative py-20 px-6 bg-gradient-to-br from-orange-600 to-orange-500 overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0" style={{
+            backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(0,0,0,.1) 35px, rgba(0,0,0,.1) 70px)'
+          }}></div>
+        </div>
+        
+        <div className="relative max-w-7xl mx-auto text-center">
+          <h1 className="text-6xl md:text-8xl font-black text-zinc-950 uppercase tracking-tight mb-4">
+            Dự án
+          </h1>
+          <div className="h-1 w-32 bg-zinc-950 mx-auto mb-6"></div>
+          <p className="text-xl md:text-2xl text-zinc-900 font-medium max-w-2xl mx-auto">
+            Khám phá các dự án của chúng tôi trong các danh mục khác nhau
+          </p>
+        </div>
+      </section>
+
+      {/* Categories Filter */}
+      <section className="py-12 px-6 bg-zinc-900 border-b border-orange-500/20">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex gap-3 justify-center flex-wrap">
+            <button
+              className={`px-6 py-3 font-bold text-sm uppercase tracking-wider transition-all duration-300 ${
+                selectedCategory === null 
+                  ? 'bg-orange-500 text-zinc-950 shadow-lg' 
+                  : 'bg-zinc-800 text-white hover:bg-zinc-700 hover:text-orange-500'
+              }`}
+              onClick={() => {
+                setSelectedCategory(null)
+                window.history.pushState({}, '', '/gallery')
+              }}
+            >
+              Tất cả
+            </button>
+            {categories.map((category) => {
+              const isSelected = selectedCategory === category.id || selectedCategory === category.id.toString()
+              return (
+                <button
+                  key={category.id}
+                  className={`px-6 py-3 font-bold text-sm uppercase tracking-wider transition-all duration-300 ${
+                    isSelected
+                      ? 'bg-orange-500 text-zinc-950 shadow-lg' 
+                      : 'bg-zinc-800 text-white hover:bg-zinc-700 hover:text-orange-500'
+                  }`}
+                  onClick={() => {
+                    setSelectedCategory(category.id)
+                    window.history.pushState({}, '', `/gallery?category=${category.id}`)
+                  }}
+                >
+                  {category.name}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Projects Grid */}
+      <section className="py-16 px-6">
+        <div className="max-w-7xl mx-auto">
+          {/* Current Category Display */}
+          <div className="mb-12">
+            <h2 className="text-3xl md:text-5xl font-black text-white uppercase tracking-tight mb-2">
+              {selectedCategoryName}
+            </h2>
+            <div className="h-1 w-24 bg-orange-500"></div>
+            {total > 0 && (
+              <p className="text-zinc-400 mt-4 text-sm uppercase tracking-wider">
+                {total} {total === 1 ? 'Dự án' : 'Dự án'} tìm thấy
+              </p>
+            )}
+          </div>
 
           {loading ? (
-            <div className="spinner"></div>
+            <div className="flex justify-center items-center py-20">
+              <div className="w-16 h-16 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+            </div>
           ) : (
             <>
-              {/* Posts Grid - Mixed Images and Videos */}
               {postsWithFirstMedia.length > 0 ? (
                 <>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
                     {postsWithFirstMedia.map((post) => (
-                      <Link key={post.id} to={`/post/${post.id}`} className="block group">
-                        <div className="relative aspect-square overflow-hidden rounded-lg cursor-pointer bg-secondary shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+                      <Link 
+                        key={post.id} 
+                        to={`/post/${post.id}`} 
+                        className="group relative aspect-square overflow-hidden bg-zinc-900"
+                      >
+                        {/* Media */}
+                        <div className="absolute inset-0">
                           {post.firstMedia.type === 'image' ? (
-                            <>
-                              <img 
-                                src={post.firstMedia.url} 
-                                alt={post.title}
-                                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                              />
-                              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                              <div className="absolute bottom-0 left-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                <h3 className="text-white font-medium text-sm mb-1">{post.title}</h3>
-                                {post.categories && post.categories.length > 0 && (
-                                  <p className="text-white/80 text-xs">
-                                    {post.categories.map(cat => cat.name).join(', ')}
-                                  </p>
-                                )}
-                              </div>
-                            </>
+                            <img 
+                              src={post.firstMedia.url} 
+                              alt={post.title}
+                              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                            />
                           ) : (
-                            <>
-                              {(() => {
-                                const streamingUrl = getStreamingVideoUrl(post.firstMedia.url, post.firstMedia.public_id, {
-                                  quality: 'auto',
-                                  format: 'auto',
-                                  streamingProfile: 'auto',
-                                  flags: ['streaming_attachment']
-                                })
-                                const thumbnailUrl = getVideoThumbnail(post.firstMedia.url, post.firstMedia.public_id, 1)
-                                
-                                return (
-                                  <>
-                                    <video
-                                      muted
-                                      loop
-                                      autoPlay
-                                      preload="metadata"
-                                      poster={thumbnailUrl || undefined}
-                                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                                      playsInline
-                                      crossOrigin="anonymous"
-                                      onError={(e) => {
-                                        const videoEl = e.target
-                                        if (videoEl.src !== post.firstMedia.url) {
-                                          videoEl.src = post.firstMedia.url
-                                          videoEl.load()
-                                        }
-                                      }}
-                                    >
-                                      <source src={post.firstMedia.url} type={`video/${post.firstMedia.format || 'mp4'}`} />
-                                      <source src={streamingUrl} type={`video/${post.firstMedia.format || 'mp4'}`} />
-                                      Your browser does not support the video tag.
-                                    </video>
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                                    <div className="absolute bottom-0 left-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                      <h3 className="text-white font-medium text-sm mb-1">{post.title}</h3>
-                                      {post.categories && post.categories.length > 0 && (
-                                        <p className="text-white/80 text-xs">
-                                          {post.categories.map(cat => cat.name).join(', ')}
-                                        </p>
-                                      )}
-                                    </div>
-                                  </>
-                                )
-                              })()}
-                            </>
+                            (() => {
+                              const streamingUrl = getStreamingVideoUrl(post.firstMedia.url, post.firstMedia.public_id, {
+                                quality: 'auto',
+                                format: 'auto',
+                                streamingProfile: 'auto',
+                                flags: ['streaming_attachment']
+                              })
+                              const thumbnailUrl = getVideoThumbnail(post.firstMedia.url, post.firstMedia.public_id, 1)
+                              
+                              return (
+                                <video
+                                  muted
+                                  loop
+                                  autoPlay
+                                  preload="metadata"
+                                  poster={thumbnailUrl || undefined}
+                                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                  playsInline
+                                  crossOrigin="anonymous"
+                                  onError={(e) => {
+                                    const videoEl = e.target
+                                    if (videoEl.src !== post.firstMedia.url) {
+                                      videoEl.src = post.firstMedia.url
+                                      videoEl.load()
+                                    }
+                                  }}
+                                >
+                                  <source src={post.firstMedia.url} type={`video/${post.firstMedia.format || 'mp4'}`} />
+                                  <source src={streamingUrl} type={`video/${post.firstMedia.format || 'mp4'}`} />
+                                  Your browser does not support the video tag.
+                                </video>
+                              )
+                            })()
                           )}
+                        </div>
+
+                        {/* Gradient Overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/50 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-300"></div>
+
+                        {/* Content */}
+                        <div className="absolute inset-0 p-6 flex flex-col justify-end">
+                          <h3 className="text-xl font-black text-white uppercase tracking-tight mb-2 transform transition-transform duration-300 group-hover:translate-y-0 translate-y-2">
+                            {post.title}
+                          </h3>
+                          {post.categories && post.categories.length > 0 && (
+                            <p className="text-orange-500 font-bold uppercase text-xs tracking-wider">
+                              {post.categories.map(cat => cat.name).join(' • ')}
+                            </p>
+                          )}
+                        </div>
+
+                        {/* Hover Border */}
+                        <div className="absolute inset-0 border-4 border-orange-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+                        {/* Media Type Badge */}
+                        <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          <div className="px-3 py-1 bg-orange-500 text-zinc-950 text-xs font-bold uppercase tracking-wider">
+                            {post.firstMedia.type}
+                          </div>
                         </div>
                       </Link>
                     ))}
@@ -222,9 +261,28 @@ function Projects() {
                   )}
                 </>
               ) : (
-                <p className="text-center text-text-light mt-8">
-                  No posts found in this category.
-                </p>
+                <div className="text-center py-20">
+                  <div className="text-6xl mb-6">📁</div>
+                  <h3 className="text-2xl font-bold text-white mb-2 uppercase tracking-tight">
+                    Không tìm thấy dự án
+                  </h3>
+                  <p className="text-zinc-400 mb-8">
+                    {selectedCategory 
+                      ? 'Hãy chọn một danh mục khác hoặc xem tất cả dự án.' 
+                      : 'Không có dự án nào khả dụng tại thời điểm hiện tại.'}
+                  </p>
+                  {selectedCategory && (
+                    <button
+                      onClick={() => {
+                        setSelectedCategory(null)
+                        window.history.pushState({}, '', '/gallery')
+                      }}
+                      className="px-8 py-4 bg-orange-500 text-zinc-950 font-bold text-sm uppercase tracking-wide hover:bg-orange-400 transition-colors"
+                    >
+                      Xem tất cả dự án
+                    </button>
+                  )}
+                </div>
               )}
             </>
           )}
@@ -235,4 +293,3 @@ function Projects() {
 }
 
 export default Projects
-

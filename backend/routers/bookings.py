@@ -104,39 +104,14 @@ def get_booking(booking_id: uuid.UUID, db: Session = Depends(get_db)):
 
 @router.post("", response_model=BookingSchema, status_code=status.HTTP_201_CREATED)
 def create_booking(booking: BookingCreate, db: Session = Depends(get_db)):
-    # Check for overlapping bookings
-    overlapping = db.query(Booking).filter(
-        and_(
-            Booking.status.in_(['pending', 'confirmed']),
-            or_(
-                and_(
-                    Booking.start_time <= booking.start_time,
-                    Booking.end_time > booking.start_time
-                ),
-                and_(
-                    Booking.start_time < booking.end_time,
-                    Booking.end_time >= booking.end_time
-                ),
-                and_(
-                    Booking.start_time >= booking.start_time,
-                    Booking.end_time <= booking.end_time
-                )
-            )
-        )
-    ).first()
-    
-    if overlapping:
-        raise HTTPException(
-            status_code=400,
-            detail="Time slot is already booked"
-        )
-    
+    # Basic validation
     if booking.start_time >= booking.end_time:
         raise HTTPException(
             status_code=400,
             detail="End time must be after start time"
         )
     
+    # Create booking (no overlap check for contact form submissions)
     db_booking = Booking(**booking.dict())
     db.add(db_booking)
     db.commit()

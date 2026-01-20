@@ -64,9 +64,14 @@ CREATE TABLE IF NOT EXISTS bookings (
     start_time TIMESTAMP NOT NULL,
     end_time TIMESTAMP NOT NULL,
     status VARCHAR DEFAULT 'pending' CHECK (status IN ('pending', 'confirmed', 'canceled')),
+    message TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Add message column if it doesn't exist (for existing databases)
+ALTER TABLE bookings 
+ADD COLUMN IF NOT EXISTS message TEXT;
 
 -- Create unique index to prevent overlapping bookings
 CREATE UNIQUE INDEX IF NOT EXISTS uniq_booking_time 

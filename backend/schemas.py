@@ -153,6 +153,7 @@ class BookingBase(BaseModel):
     client_email: EmailStr
     start_time: datetime
     end_time: datetime
+    message: Optional[str] = None
 
 class BookingCreate(BookingBase):
     pass
@@ -163,6 +164,7 @@ class BookingUpdate(BaseModel):
     start_time: Optional[datetime] = None
     end_time: Optional[datetime] = None
     status: Optional[str] = None
+    message: Optional[str] = None
 
 class Booking(BookingBase):
     id: UUID

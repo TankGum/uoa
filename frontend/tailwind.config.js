@@ -16,6 +16,7 @@ export default {
       },
       fontFamily: {
         sans: [
+          '"Afacad"',
           '-apple-system',
           'BlinkMacSystemFont',
           'Segoe UI',
