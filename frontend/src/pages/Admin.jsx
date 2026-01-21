@@ -251,12 +251,12 @@ function Admin() {
         
         <div className="relative max-w-7xl mx-auto text-center">
           <h1 className="text-2xl md:text-8xl font-black text-zinc-950 uppercase tracking-tight">
-            Admin Dashboard
+            Admin
           </h1>
         </div>
       </section>
 
-      <div className="max-w-7xl mx-auto p-8">
+      <div className="max-w-7xl mx-auto p-2">
         <div className="flex justify-end items-center mb-8 flex-col md:flex-row md:items-center gap-4">
           <button
             onClick={handleLogout}
@@ -269,37 +269,37 @@ function Admin() {
           </button>
         </div>
 
-        <div className="border-b-2 border-border mb-6 md:mb-8 overflow-x-auto overflow-y-hidden -mx-4 md:mx-0 scrollbar-hide">
+        <div className="border-b-2 border-zinc-700 mb-4 overflow-x-auto overflow-y-hidden scrollbar-hide">
           <div className="flex gap-2 md:gap-4 min-w-max px-4 md:px-0 pb-0">
             <button
-              className={`px-4 md:px-8 py-2 md:py-3 bg-transparent border-none text-sm md:text-base cursor-pointer border-b-2 -mb-[2px] transition-all duration-300 font-medium whitespace-nowrap ${
+              className={`px-4 md:px-8 py-2 md:py-3 border-none text-sm md:text-base cursor-pointer border-b-2 -mb-[2px] transition-all duration-300 font-medium whitespace-nowrap ${
                 activeTab === 'posts' 
-                  ? 'font-semibold text-black bg-orange-500'
-                  : 'text-black bg-transparent'
+                  ? 'font-semibold bg-orange-500 text-zinc-950 border-b-orange-500'
+                  : 'bg-transparent text-orange-500 border-b-transparent hover:text-orange-400'
               }`}
               onClick={() => setActiveTab('posts')}
             >
-              <span className={activeTab === 'posts' ? 'text-black' : 'text-orange-500'}>Posts</span>
+              Posts
             </button>
             <button
-              className={`px-4 md:px-8 py-2 md:py-3 bg-transparent border-none text-sm md:text-base cursor-pointer border-b-2 -mb-[2px] transition-all duration-300 font-medium whitespace-nowrap ${
+              className={`px-4 md:px-8 py-2 md:py-3 border-none text-sm md:text-base cursor-pointer border-b-2 -mb-[2px] transition-all duration-300 font-medium whitespace-nowrap ${
                 activeTab === 'bookings' 
-                  ? 'font-semibold text-black bg-orange-500'
-                  : 'text-orange-500 bg-transparent'
+                  ? 'font-semibold bg-orange-500 text-zinc-950 border-b-orange-500'
+                  : 'bg-transparent text-orange-500 border-b-transparent hover:text-orange-400'
               }`}
               onClick={() => setActiveTab('bookings')}
             >
-              <span className={activeTab === 'bookings' ? 'text-black' : 'text-orange-500'}>Contacts</span>
+              Contacts
             </button>
             <button
-              className={`px-4 md:px-8 py-2 md:py-3 bg-transparent border-none text-sm md:text-base cursor-pointer border-b-2 -mb-[2px] transition-all duration-300 font-medium whitespace-nowrap ${
+              className={`px-4 md:px-8 py-2 md:py-3 border-none text-sm md:text-base cursor-pointer border-b-2 -mb-[2px] transition-all duration-300 font-medium whitespace-nowrap ${
                 activeTab === 'categories' 
-                  ? 'font-semibold text-black bg-orange-500' 
-                  : 'text-orange-500 bg-transparent'
+                  ? 'font-semibold bg-orange-500 text-zinc-950 border-b-orange-500'
+                  : 'bg-transparent text-orange-500 border-b-transparent hover:text-orange-400'
               }`}
               onClick={() => setActiveTab('categories')}
             >
-              <span className={activeTab === 'categories' ? 'text-black' : 'text-orange-500'}>Categories</span>
+              Categories
             </button>
           </div>
         </div>
@@ -310,54 +310,44 @@ function Admin() {
           <>
             {activeTab === 'posts' && (
               <div>
-                <div className="mb-4 flex gap-4 items-center flex-wrap">
-                  <button 
-                    className="px-6 py-3 rounded text-base font-medium cursor-pointer transition-all duration-300"
-                    style={{ backgroundColor: '#f97316', color: '#001f3f', borderColor: '#f97316' }}
-                    onClick={() => setShowPostForm(true)}
+                <div className="mb-4 flex gap-2 items-center">
+                  <input
+                    type="text"
+                    placeholder="Tìm kiếm..."
+                    value={postsSearchInput}
+                    onChange={(e) => setPostsSearchInput(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && handlePostsSearch()}
+                    className="flex-1 max-w-md p-2 border rounded focus:outline-none"
+                    style={{ 
+                      borderColor: '#e0e0e0',
+                      color: '#001f3f'
+                    }}
+                    onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
+                    onBlur={(e) => e.currentTarget.style.borderColor = '#e0e0e0'}
+                  />
+                  <button
+                    onClick={handlePostsSearch}
+                    className="px-4 py-2 rounded border-2 transition-all duration-300"
+                    style={{ 
+                      backgroundColor: '#f97316',
+                      color: '#001f3f',
+                      borderColor: '#f97316'
+                    }}
                   >
-                    + Thêm
+                    Tìm
                   </button>
-                  <div className="flex-1 max-w-md flex gap-2">
-                    <input
-                      type="text"
-                      placeholder="Tìm kiếm..."
-                      value={postsSearchInput}
-                      onChange={(e) => setPostsSearchInput(e.target.value)}
-                      onKeyPress={(e) => e.key === 'Enter' && handlePostsSearch()}
-                      className="flex-1 p-2 border rounded focus:outline-none"
-                      style={{ 
-                        borderColor: '#e0e0e0',
-                        color: '#001f3f'
-                      }}
-                      onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
-                      onBlur={(e) => e.currentTarget.style.borderColor = '#e0e0e0'}
-                    />
-                    <button
-                      onClick={handlePostsSearch}
-                      className="px-4 py-2 rounded border-2 transition-all duration-300"
-                      style={{ 
-                        backgroundColor: '#f97316',
-                        color: '#001f3f',
-                        borderColor: '#f97316'
-                      }}
-                    >
-                      Tìm
-                    </button>
-                    {postsSearch && (
-                      <button
-                      onClick={handleClearPostsSearch}
-                      className="px-4 py-2 rounded border-2 transition-all duration-300"
-                      style={{ 
-                        backgroundColor: 'transparent',
-                        color: '#f97316',
-                        borderColor: '#f97316'
-                      }}
-                      >
-                        Xóa
-                      </button>
-                    )}
-                  </div>
+                  <button
+                    onClick={handleClearPostsSearch}
+                    className="px-4 py-2 rounded border-2 transition-all duration-300"
+                    style={{ 
+                      backgroundColor: 'transparent',
+                      color: '#f97316',
+                      borderColor: '#f97316'
+                    }}
+                    title="Xóa"
+                  >
+                    Xóa
+                  </button>
                 </div>
                 {showPostForm && (
                   <PostForm
@@ -373,11 +363,11 @@ function Admin() {
                     post={editingPost}
                   />
                 )}
-                <div className="overflow-x-auto -mx-4 md:mx-0">
+                <div className="overflow-x-auto">
                   <table className="w-full border-collapse bg-white rounded-lg overflow-hidden shadow-md min-w-[800px]">
                     <thead>
                       <tr>
-                        <th className="p-2 md:p-4 text-left border-b border-border bg-secondary font-semibold text-xs md:text-sm w-12">#</th>
+                        <th className="p-2 md:p-4 text-left border-b border-border bg-secondary font-semibold text-xs md:text-sm w-12">STT</th>
                         <th 
                           className="p-2 md:p-4 text-left border-b border-border bg-secondary font-semibold cursor-pointer hover:bg-gray-200 transition-colors text-xs md:text-sm"
                           onClick={() => handleSort('title', 'posts', setPostsSortColumn, setPostsSortDirection, postsSortColumn, postsSortDirection)}
@@ -530,58 +520,45 @@ function Admin() {
 
             {activeTab === 'bookings' && (
               <div>
-                <div className="mb-4 flex gap-4 items-center flex-wrap">
-                  <button 
-                    className="px-6 py-3 rounded text-base font-medium cursor-pointer transition-all duration-300"
-                    style={{ backgroundColor: '#f97316', color: '#001f3f' }}
-                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#b8a55f'}
-                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#f97316'}
-                    onClick={() => setShowBookingForm(true)}
+                <div className="mb-4 flex gap-2 items-center">
+                  <input
+                    type="text"
+                    placeholder="Tìm kiếm..."
+                    value={bookingsSearchInput}
+                    onChange={(e) => setBookingsSearchInput(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && handleBookingsSearch()}
+                    className="flex-1 max-w-md p-2 border rounded focus:outline-none"
+                    style={{ 
+                      borderColor: '#e0e0e0',
+                      color: '#001f3f'
+                    }}
+                    onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
+                    onBlur={(e) => e.currentTarget.style.borderColor = '#e0e0e0'}
+                  />
+                  <button
+                    onClick={handleBookingsSearch}
+                    className="px-4 py-2 rounded border-2 transition-all duration-300"
+                    style={{ 
+                      backgroundColor: '#f97316',
+                      color: '#001f3f',
+                      borderColor: '#f97316'
+                    }}
+                    title="Tìm"
                   >
-                    + Thêm
+                    Tìm
                   </button>
-                  <div className="flex-1 max-w-md flex gap-2">
-                    <input
-                      type="text"
-                      placeholder="Tìm kiếm..."
-                      value={bookingsSearchInput}
-                      onChange={(e) => setBookingsSearchInput(e.target.value)}
-                      onKeyPress={(e) => e.key === 'Enter' && handleBookingsSearch()}
-                      className="flex-1 p-2 border rounded focus:outline-none"
-                      style={{ 
-                        borderColor: '#e0e0e0',
-                        color: '#001f3f'
-                      }}
-                      onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
-                      onBlur={(e) => e.currentTarget.style.borderColor = '#e0e0e0'}
-                    />
-                    <button
-                      onClick={handleBookingsSearch}
-                      className="px-4 py-2 rounded border-2 transition-all duration-300"
-                      style={{ 
-                        backgroundColor: '#f97316',
-                        color: '#001f3f',
-                        borderColor: '#f97316'
-                      }}
-                      title="Tìm"
-                    >
-                      Tìm
-                    </button>
-                    {bookingsSearch && (
-                      <button
-                        onClick={handleClearBookingsSearch}
-                        className="px-4 py-2 rounded border-2 transition-all duration-300"
-                        style={{ 
-                          backgroundColor: 'transparent',
-                          color: '#f97316',
-                          borderColor: '#f97316'
-                        }}
-                        title="Xóa"
-                      >
-                        Xóa
-                      </button>
-                    )}
-                  </div>
+                  <button
+                    onClick={handleClearBookingsSearch}
+                    className="px-4 py-2 rounded border-2 transition-all duration-300"
+                    style={{ 
+                      backgroundColor: 'transparent',
+                      color: '#f97316',
+                      borderColor: '#f97316'
+                    }}
+                    title="Xóa"
+                  >
+                    Xóa
+                  </button>
                 </div>
                 {showBookingForm && (
                   <BookingForm
@@ -597,11 +574,11 @@ function Admin() {
                     booking={editingBooking}
                   />
                 )}
-                <div className="overflow-x-auto -mx-4 md:mx-0">
+                <div className="overflow-x-auto">
                   <table className="w-full border-collapse bg-white rounded-lg overflow-hidden shadow-md min-w-[900px]">
                     <thead>
                       <tr>
-                        <th className="p-2 md:p-4 text-left border-b border-border bg-secondary font-semibold text-xs md:text-sm w-12">#</th>
+                        <th className="p-2 md:p-4 text-left border-b border-border bg-secondary font-semibold text-xs md:text-sm w-12">STT</th>
                         <th 
                           className="p-2 md:p-4 text-left border-b border-border bg-secondary font-semibold cursor-pointer hover:bg-gray-200 transition-colors text-xs md:text-sm"
                           onClick={() => handleSort('client_name', 'bookings', setBookingsSortColumn, setBookingsSortDirection, bookingsSortColumn, bookingsSortDirection)}
@@ -685,58 +662,45 @@ function Admin() {
 
             {activeTab === 'categories' && (
               <div>
-                <div className="mb-4 flex gap-4 items-center flex-wrap">
-                  <button 
-                    className="px-6 py-3 rounded text-base font-medium cursor-pointer transition-all duration-300"
-                    style={{ backgroundColor: '#f97316', color: '#001f3f' }}
-                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#b8a55f'}
-                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#f97316'}
-                    onClick={() => setShowCategoryForm(true)}
+                <div className="mb-4 flex gap-2 items-center">
+                  <input
+                    type="text"
+                    placeholder="Tìm kiếm..."
+                    value={categoriesSearchInput}
+                    onChange={(e) => setCategoriesSearchInput(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && handleCategoriesSearch()}
+                    className="flex-1 max-w-md p-2 border rounded focus:outline-none"
+                    style={{ 
+                      borderColor: '#e0e0e0',
+                      color: '#001f3f'
+                    }}
+                    onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
+                    onBlur={(e) => e.currentTarget.style.borderColor = '#e0e0e0'}
+                  />
+                  <button
+                    onClick={handleCategoriesSearch}
+                    className="px-4 py-2 rounded border-2 transition-all duration-300"
+                    style={{ 
+                      backgroundColor: '#f97316',
+                      color: '#001f3f',
+                      borderColor: '#f97316'
+                    }}
+                    title="Tìm"
                   >
-                    + Thêm
+                    Tìm
                   </button>
-                  <div className="flex-1 max-w-md flex gap-2">
-                    <input
-                      type="text"
-                      placeholder="Tìm kiếm..."
-                      value={categoriesSearchInput}
-                      onChange={(e) => setCategoriesSearchInput(e.target.value)}
-                      onKeyPress={(e) => e.key === 'Enter' && handleCategoriesSearch()}
-                      className="flex-1 p-2 border rounded focus:outline-none"
-                      style={{ 
-                        borderColor: '#e0e0e0',
-                        color: '#001f3f'
-                      }}
-                      onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
-                      onBlur={(e) => e.currentTarget.style.borderColor = '#e0e0e0'}
-                    />
-                    <button
-                      onClick={handleCategoriesSearch}
-                      className="px-4 py-2 rounded border-2 transition-all duration-300"
-                      style={{ 
-                        backgroundColor: '#f97316',
-                        color: '#001f3f',
-                        borderColor: '#f97316'
-                      }}
-                      title="Tìm"
-                    >
-                      Tìm
-                    </button>
-                    {categoriesSearch && (
-                      <button
-                        onClick={handleClearCategoriesSearch}
-                        className="px-4 py-2 rounded border-2 transition-all duration-300"
-                        style={{ 
-                          backgroundColor: 'transparent',
-                          color: '#f97316',
-                          borderColor: '#f97316'
-                        }}
-                        title="Xóa"
-                      >
-                        Xóa
-                      </button>
-                    )}
-                  </div>
+                  <button
+                    onClick={handleClearCategoriesSearch}
+                    className="px-4 py-2 rounded border-2 transition-all duration-300"
+                    style={{ 
+                      backgroundColor: 'transparent',
+                      color: '#f97316',
+                      borderColor: '#f97316'
+                    }}
+                    title="Xóa"
+                  >
+                    Xóa
+                  </button>
                 </div>
                 {showCategoryForm && (
                   <CategoryForm
@@ -747,11 +711,11 @@ function Admin() {
                     }}
                   />
                 )}
-                <div className="overflow-x-auto -mx-4 md:mx-0">
+                <div className="overflow-x-auto">
                   <table className="w-full border-collapse bg-white rounded-lg overflow-hidden shadow-md min-w-[600px]">
                     <thead>
                       <tr>
-                        <th className="p-2 md:p-4 text-left border-b border-border bg-secondary font-semibold text-xs md:text-sm w-12">#</th>
+                        <th className="p-2 md:p-4 text-left border-b border-border bg-secondary font-semibold text-xs md:text-sm w-12">STT</th>
                         <th 
                           className="p-2 md:p-4 text-left border-b border-border bg-secondary font-semibold cursor-pointer hover:bg-gray-200 transition-colors text-xs md:text-sm"
                           onClick={() => handleSort('name', 'categories', setCategoriesSortColumn, setCategoriesSortDirection, categoriesSortColumn, categoriesSortDirection)}
@@ -810,6 +774,29 @@ function Admin() {
         onConfirm={modalState.onConfirm}
         onCancel={modalState.onCancel}
       />
+
+      {/* Fixed Add Button */}
+      <button
+        onClick={() => {
+          if (activeTab === 'posts') {
+            setShowPostForm(true)
+          } else if (activeTab === 'bookings') {
+            setShowBookingForm(true)
+          } else if (activeTab === 'categories') {
+            setShowCategoryForm(true)
+          }
+        }}
+        className="fixed bottom-6 right-6 w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-2xl font-bold transition-all duration-300 hover:scale-110 z-50"
+        style={{ 
+          backgroundColor: '#f97316',
+          color: '#001f3f'
+        }}
+        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#ea580c'}
+        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#f97316'}
+        aria-label="Add new item"
+      >
+        +
+      </button>
     </div>
   )
 }
