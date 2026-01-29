@@ -25,10 +25,11 @@ function Navbar() {
       {/* Mobile Hamburger Button */}
       <button
         onClick={toggleMenu}
-        className={`fixed top-6 z-[10003] md:hidden p-3 bg-orange-500 text-zinc-950 transition-all duration-300 rounded-full hover:bg-orange-400 ${
+        className={`fixed top-6 z-[10003] md:hidden p-3 bg-orange-500 text-zinc-950 transition-all duration-300 rounded-full hover:bg-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-zinc-950 cursor-pointer ${
           isMenuOpen ? 'left-[280px]' : 'left-6'
         }`}
         aria-label="Toggle menu"
+        aria-expanded={isMenuOpen}
       >
         <svg
           className={`w-6 h-6 transition-transform duration-300 ${
@@ -73,7 +74,12 @@ function Navbar() {
         <div className="flex flex-col h-full">
           {/* Brand */}
           <div className="p-8 border-b border-orange-500/20">
-            <Link to="/home" className="block" onClick={closeMenu}>
+            <Link 
+              to="/home" 
+              className="block focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-inset rounded cursor-pointer" 
+              onClick={closeMenu}
+              aria-label="Go to homepage"
+            >
               <div className="text-3xl font-black uppercase tracking-tight text-white mb-1">
                 ÚÒa
               </div>
@@ -87,17 +93,17 @@ function Navbar() {
           <ul className="flex flex-col list-none flex-1 overflow-y-auto py-6">
             {NAV_LINKS.map(({ label, path }) => (
               <li key={path}>
-                <Link
-                  to={path}
-                  onClick={closeMenu}
-                  className={`transition-all duration-300 font-bold text-base uppercase tracking-wider block py-4 px-8 ${
-                    isActive(path)
-                      ? 'text-zinc-950 bg-orange-500 border-l-4 border-orange-400'
-                      : 'text-white hover:text-orange-500 hover:bg-zinc-900 border-l-4 border-transparent'
-                  }`}
-                >
-                  {label}
-                </Link>
+            <Link
+              to={path}
+              onClick={closeMenu}
+              className={`transition-all duration-300 font-bold text-base uppercase tracking-wider block py-4 px-8 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-inset cursor-pointer ${
+                isActive(path)
+                  ? 'text-zinc-950 bg-orange-500 border-l-4 border-orange-400'
+                  : 'text-white hover:text-orange-500 hover:bg-zinc-900 border-l-4 border-transparent'
+              }`}
+            >
+              {label}
+            </Link>
               </li>
             ))}
           </ul>
@@ -116,7 +122,12 @@ function Navbar() {
         <div className="container mx-auto px-6 max-w-7xl">
           <div className="flex items-center justify-between">
             {/* Brand */}
-            <Link to="/home" className="group" onClick={closeMenu}>
+            <Link 
+              to="/home" 
+              className="group focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-zinc-950 rounded cursor-pointer" 
+              onClick={closeMenu}
+              aria-label="Go to homepage"
+            >
               <div className="flex items-center gap-3">
                 <div className="text-3xl font-black uppercase tracking-tight text-white group-hover:text-orange-500 transition-colors">
                   ÚÒa
@@ -135,7 +146,7 @@ function Navbar() {
                   <Link
                     to={path}
                     onClick={closeMenu}
-                    className={`transition-all duration-300 text-sm uppercase tracking-wider px-5 py-2.5 font-bold whitespace-nowrap ${
+                    className={`transition-all duration-300 text-sm uppercase tracking-wider px-5 py-2.5 font-bold whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-zinc-950 cursor-pointer ${
                       isActive(path)
                         ? 'bg-orange-500 text-zinc-950'
                         : 'text-white hover:text-orange-500'

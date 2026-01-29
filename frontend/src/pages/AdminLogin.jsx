@@ -49,10 +49,11 @@ function AdminLogin() {
 
         <form onSubmit={handleSubmit}>
           <div className="mb-6">
-            <label className="block mb-2 font-medium text-text">Username</label>
+            <label htmlFor="username" className="block mb-2 font-medium text-text">Username</label>
             <input
               type="text"
-              className="w-full p-3 border border-border rounded transition-colors duration-300 text-base focus:outline-none focus:border-primary"
+              id="username"
+              className="w-full p-3 border border-border rounded transition-colors duration-300 text-base focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary focus:ring-offset-2"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
@@ -61,10 +62,11 @@ function AdminLogin() {
           </div>
 
           <div className="mb-6">
-            <label className="block mb-2 font-medium text-text">Password</label>
+            <label htmlFor="password" className="block mb-2 font-medium text-text">Password</label>
             <input
               type="password"
-              className="w-full p-3 border border-border rounded transition-colors duration-300 text-base focus:outline-none focus:border-primary"
+              id="password"
+              className="w-full p-3 border border-border rounded transition-colors duration-300 text-base focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary focus:ring-offset-2"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -73,7 +75,7 @@ function AdminLogin() {
 
           <button
             type="submit"
-            className="w-full btn btn-primary"
+            className="w-full btn btn-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 cursor-pointer"
             disabled={loading}
           >
             {loading ? 'Logging in...' : 'Login'}

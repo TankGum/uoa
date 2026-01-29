@@ -112,7 +112,7 @@ function Projects() {
         <div className="max-w-7xl mx-auto">
           <div className="flex gap-3 justify-center flex-wrap">
             <button
-              className={`px-6 py-3 font-bold text-sm uppercase tracking-wider transition-all duration-300 ${
+              className={`px-6 py-3 font-bold text-sm uppercase tracking-wider transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-zinc-900 cursor-pointer ${
                 selectedCategory === null 
                   ? 'bg-orange-500 text-zinc-950 shadow-lg' 
                   : 'bg-zinc-800 text-white hover:bg-zinc-700 hover:text-orange-500'
@@ -129,7 +129,7 @@ function Projects() {
               return (
                 <button
                   key={category.id}
-                  className={`px-6 py-3 font-bold text-sm uppercase tracking-wider transition-all duration-300 ${
+                  className={`px-6 py-3 font-bold text-sm uppercase tracking-wider transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-zinc-900 cursor-pointer ${
                     isSelected
                       ? 'bg-orange-500 text-zinc-950 shadow-lg' 
                       : 'bg-zinc-800 text-white hover:bg-zinc-700 hover:text-orange-500'
@@ -176,15 +176,17 @@ function Projects() {
                       <Link 
                         key={post.id} 
                         to={`/post/${post.id}`} 
-                        className="group relative aspect-square overflow-hidden bg-zinc-900"
+                        className="group relative aspect-square overflow-hidden bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-zinc-950 cursor-pointer"
+                        aria-label={`View project: ${post.title}`}
                       >
                         {/* Media */}
                         <div className="absolute inset-0">
                           {post.firstMedia.type === 'image' ? (
                             <img 
                               src={post.firstMedia.url} 
-                              alt={post.title}
+                              alt={`${post.title} project preview`}
                               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                              loading="lazy"
                             />
                           ) : (
                             (() => {
@@ -239,7 +241,7 @@ function Projects() {
                         </div>
 
                         {/* Hover Border */}
-                        <div className="absolute inset-0 border-4 border-orange-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <div className="absolute inset-0 border-4 border-orange-500 opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity duration-300"></div>
 
                         {/* Media Type Badge */}
                         <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -262,7 +264,11 @@ function Projects() {
                 </>
               ) : (
                 <div className="text-center py-20">
-                  <div className="text-6xl mb-6">📁</div>
+                  <div className="mb-6 flex justify-center">
+                    <svg className="w-16 h-16 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+                    </svg>
+                  </div>
                   <h3 className="text-2xl font-bold text-white mb-2 uppercase tracking-tight">
                     Không tìm thấy dự án
                   </h3>
@@ -277,7 +283,7 @@ function Projects() {
                         setSelectedCategory(null)
                         window.history.pushState({}, '', '/gallery')
                       }}
-                      className="px-8 py-4 bg-orange-500 text-zinc-950 font-bold text-sm uppercase tracking-wide hover:bg-orange-400 transition-colors"
+                      className="px-8 py-4 bg-orange-500 text-zinc-950 font-bold text-sm uppercase tracking-wide hover:bg-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-zinc-950 transition-colors cursor-pointer"
                     >
                       Xem tất cả dự án
                     </button>

@@ -114,7 +114,11 @@ function AllVideos() {
             </div>
           ) : videos.length === 0 ? (
             <div className="text-center py-20">
-              <div className="text-6xl mb-6">🎬</div>
+              <div className="mb-6 flex justify-center">
+                    <svg className="w-16 h-16 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                  </div>
               <h3 className="text-2xl font-bold text-white mb-2 uppercase tracking-tight">
                 Không tìm thấy video
               </h3>
@@ -123,7 +127,7 @@ function AllVideos() {
               </p>
               <Link
                 to="/gallery"
-                className="inline-block px-8 py-4 bg-orange-500 text-zinc-950 font-bold text-sm uppercase tracking-wide hover:bg-orange-400 transition-colors"
+                className="inline-block px-8 py-4 bg-orange-500 text-zinc-950 font-bold text-sm uppercase tracking-wide hover:bg-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-zinc-950 transition-colors cursor-pointer"
               >
                 Xem tất cả dự án
               </Link>
@@ -144,7 +148,8 @@ function AllVideos() {
                     <Link 
                       key={video.id} 
                       to={`/post/${video.postId}`}
-                      className="group relative aspect-square overflow-hidden bg-zinc-900"
+                      className="group relative aspect-square overflow-hidden bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-zinc-950 cursor-pointer"
+                      aria-label={`View project: ${video.postTitle}`}
                     >
                       {/* Video */}
                       <video
@@ -156,6 +161,7 @@ function AllVideos() {
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                         playsInline
                         crossOrigin="anonymous"
+                        aria-label={`Video preview for ${video.postTitle}`}
                         onError={(e) => {
                           const videoEl = e.target
                           if (videoEl.src !== video.url) {
@@ -183,7 +189,7 @@ function AllVideos() {
                       </div>
 
                       {/* Hover Border */}
-                      <div className="absolute inset-0 border-4 border-orange-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                      <div className="absolute inset-0 border-4 border-orange-500 opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity duration-300"></div>
 
                       {/* Play Icon Badge */}
                       <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
