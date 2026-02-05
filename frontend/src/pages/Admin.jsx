@@ -27,7 +27,7 @@ function Admin() {
   const [showPostForm, setShowPostForm] = useState(false)
   const [showBookingForm, setShowBookingForm] = useState(false)
   const [showCategoryForm, setShowCategoryForm] = useState(false)
-  
+
   // Sort states
   const [postsSortColumn, setPostsSortColumn] = useState(null)
   const [postsSortDirection, setPostsSortDirection] = useState('desc')
@@ -35,7 +35,7 @@ function Admin() {
   const [bookingsSortDirection, setBookingsSortDirection] = useState('asc')
   const [categoriesSortColumn, setCategoriesSortColumn] = useState(null)
   const [categoriesSortDirection, setCategoriesSortDirection] = useState('asc')
-  
+
   // Search states
   const [postsSearchInput, setPostsSearchInput] = useState('')
   const [postsSearch, setPostsSearch] = useState('')
@@ -134,43 +134,43 @@ function Admin() {
   useEffect(() => {
     fetchData()
   }, [activeTab, postsPage, bookingsPage, postsSortColumn, postsSortDirection, bookingsSortColumn, bookingsSortDirection, categoriesSortColumn, categoriesSortDirection, postsSearch, bookingsSearch, categoriesSearch])
-  
+
   // Reset page when search changes
   useEffect(() => {
     setPostsPage(1)
   }, [postsSearch])
-  
+
   useEffect(() => {
     setBookingsPage(1)
   }, [bookingsSearch])
-  
+
   // Search handlers
   const handlePostsSearch = () => {
     setPostsSearch(postsSearchInput.trim())
     setPostsPage(1)
   }
-  
+
   const handleBookingsSearch = () => {
     setBookingsSearch(bookingsSearchInput.trim())
     setBookingsPage(1)
   }
-  
+
   const handleCategoriesSearch = () => {
     setCategoriesSearch(categoriesSearchInput.trim())
   }
-  
+
   const handleClearPostsSearch = () => {
     setPostsSearchInput('')
     setPostsSearch('')
     setPostsPage(1)
   }
-  
+
   const handleClearBookingsSearch = () => {
     setBookingsSearchInput('')
     setBookingsSearch('')
     setBookingsPage(1)
   }
-  
+
   const handleClearCategoriesSearch = () => {
     setCategoriesSearchInput('')
     setCategoriesSearch('')
@@ -247,8 +247,8 @@ function Admin() {
 
   return (
     <div className="min-h-screen bg-zinc-950 pt-20">
-      <section className="relative py-6 px-6 bg-gradient-to-br from-orange-600 to-orange-500 overflow-hidden">
-        
+      <section className="relative py-6 px-6 bg-gradient-to-br from-[#e8bb69] to-[#e8bb69] overflow-hidden">
+
         <div className="relative max-w-7xl mx-auto text-center">
           <h1 className="text-2xl md:text-8xl font-black text-zinc-950 uppercase tracking-tight">
             Admin
@@ -260,10 +260,7 @@ function Admin() {
         <div className="flex justify-end items-center mb-8 flex-col md:flex-row md:items-center gap-4">
           <button
             onClick={handleLogout}
-            className="px-4 py-2 text-sm rounded border-2 transition-all duration-300 bg-orange-500 text-zinc-950"
-            style={{ 
-              borderColor: '#f97316'
-            }}
+            className="px-4 py-2 text-sm rounded transition-all duration-300 bg-[#e8bb69] text-zinc-950"
           >
             Logout
           </button>
@@ -272,31 +269,28 @@ function Admin() {
         <div className="border-b-2 border-zinc-700 mb-4 overflow-x-auto overflow-y-hidden scrollbar-hide">
           <div className="flex gap-2 md:gap-4 min-w-max px-4 md:px-0 pb-0">
             <button
-              className={`px-4 md:px-8 py-2 md:py-3 border-none text-sm md:text-base cursor-pointer border-b-2 -mb-[2px] transition-all duration-300 font-medium whitespace-nowrap ${
-                activeTab === 'posts' 
-                  ? 'font-semibold bg-orange-500 text-zinc-950 border-b-orange-500'
-                  : 'bg-transparent text-orange-500 border-b-transparent hover:text-orange-400'
-              }`}
+              className={`px-4 md:px-8 py-2 md:py-3 border-none text-sm md:text-base cursor-pointer border-b-2 -mb-[2px] transition-all duration-300 font-medium whitespace-nowrap ${activeTab === 'posts'
+                ? 'font-semibold bg-[#e8bb69] text-zinc-950 border-b-[#e8bb69]'
+                : 'bg-transparent text-[#e8bb69] border-b-transparent hover:text-[#e8bb69]'
+                }`}
               onClick={() => setActiveTab('posts')}
             >
               Posts
             </button>
             <button
-              className={`px-4 md:px-8 py-2 md:py-3 border-none text-sm md:text-base cursor-pointer border-b-2 -mb-[2px] transition-all duration-300 font-medium whitespace-nowrap ${
-                activeTab === 'bookings' 
-                  ? 'font-semibold bg-orange-500 text-zinc-950 border-b-orange-500'
-                  : 'bg-transparent text-orange-500 border-b-transparent hover:text-orange-400'
-              }`}
+              className={`px-4 md:px-8 py-2 md:py-3 border-none text-sm md:text-base cursor-pointer border-b-2 -mb-[2px] transition-all duration-300 font-medium whitespace-nowrap ${activeTab === 'bookings'
+                ? 'font-semibold bg-[#e8bb69] text-zinc-950 border-b-[#e8bb69]'
+                : 'bg-transparent text-[#e8bb69] border-b-transparent hover:text-[#e8bb69]'
+                }`}
               onClick={() => setActiveTab('bookings')}
             >
               Contacts
             </button>
             <button
-              className={`px-4 md:px-8 py-2 md:py-3 border-none text-sm md:text-base cursor-pointer border-b-2 -mb-[2px] transition-all duration-300 font-medium whitespace-nowrap ${
-                activeTab === 'categories' 
-                  ? 'font-semibold bg-orange-500 text-zinc-950 border-b-orange-500'
-                  : 'bg-transparent text-orange-500 border-b-transparent hover:text-orange-400'
-              }`}
+              className={`px-4 md:px-8 py-2 md:py-3 border-none text-sm md:text-base cursor-pointer border-b-2 -mb-[2px] transition-all duration-300 font-medium whitespace-nowrap ${activeTab === 'categories'
+                ? 'font-semibold bg-[#e8bb69] text-zinc-950 border-b-[#e8bb69]'
+                : 'bg-transparent text-[#e8bb69] border-b-transparent hover:text-[#e8bb69]'
+                }`}
               onClick={() => setActiveTab('categories')}
             >
               Categories
@@ -318,20 +312,20 @@ function Admin() {
                     onChange={(e) => setPostsSearchInput(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && handlePostsSearch()}
                     className="flex-1 max-w-md p-2 border rounded focus:outline-none"
-                    style={{ 
+                    style={{
                       borderColor: '#e0e0e0',
                       color: '#001f3f'
                     }}
-                    onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
+                    onFocus={(e) => e.currentTarget.style.borderColor = '#e8bb69'}
                     onBlur={(e) => e.currentTarget.style.borderColor = '#e0e0e0'}
                   />
                   <button
                     onClick={handlePostsSearch}
                     className="px-4 py-2 rounded border-2 transition-all duration-300"
-                    style={{ 
-                      backgroundColor: '#f97316',
+                    style={{
+                      backgroundColor: '#e8bb69',
                       color: '#001f3f',
-                      borderColor: '#f97316'
+                      borderColor: '#e8bb69'
                     }}
                   >
                     Tìm
@@ -339,10 +333,10 @@ function Admin() {
                   <button
                     onClick={handleClearPostsSearch}
                     className="px-4 py-2 rounded border-2 transition-all duration-300"
-                    style={{ 
+                    style={{
                       backgroundColor: 'transparent',
-                      color: '#f97316',
-                      borderColor: '#f97316'
+                      color: '#e8bb69',
+                      borderColor: '#e8bb69'
                     }}
                     title="Xóa"
                   >
@@ -368,14 +362,14 @@ function Admin() {
                     <thead>
                       <tr>
                         <th className="p-2 md:p-4 text-left border-b border-border bg-secondary font-semibold text-xs md:text-sm w-12">STT</th>
-                        <th 
+                        <th
                           className="p-2 md:p-4 text-left border-b border-border bg-secondary font-semibold cursor-pointer hover:bg-gray-200 transition-colors text-xs md:text-sm"
                           onClick={() => handleSort('title', 'posts', setPostsSortColumn, setPostsSortDirection, postsSortColumn, postsSortDirection)}
                         >
                           Title
                           <SortIcon column="title" sortColumn={postsSortColumn} sortDirection={postsSortDirection} />
                         </th>
-                        <th 
+                        <th
                           className="p-2 md:p-4 text-left border-b border-border bg-secondary font-semibold cursor-pointer hover:bg-gray-200 transition-colors text-xs md:text-sm"
                           onClick={() => handleSort('status', 'posts', setPostsSortColumn, setPostsSortDirection, postsSortColumn, postsSortDirection)}
                         >
@@ -384,7 +378,7 @@ function Admin() {
                         </th>
                         <th className="p-2 md:p-4 text-left border-b border-border bg-secondary font-semibold text-xs md:text-sm hidden md:table-cell">Categories</th>
                         <th className="p-2 md:p-4 text-left border-b border-border bg-secondary font-semibold text-xs md:text-sm hidden lg:table-cell">Media</th>
-                        <th 
+                        <th
                           className="p-2 md:p-4 text-left border-b border-border bg-secondary font-semibold cursor-pointer hover:bg-gray-200 transition-colors text-xs md:text-sm"
                           onClick={() => handleSort('created', 'posts', setPostsSortColumn, setPostsSortDirection, postsSortColumn, postsSortDirection)}
                         >
@@ -400,19 +394,18 @@ function Admin() {
                         const representativeMedia = post.media?.find(m => m.is_featured) || post.media?.[0]
                         const mediaCount = post.media?.length || 0
                         const stt = (postsPage - 1) * itemsPerPage + index + 1
-                        
+
                         return (
                           <tr key={post.id} className="hover:bg-secondary">
                             <td className="p-2 md:p-4 text-left border-b border-border text-xs md:text-sm text-gray-600">{stt}</td>
                             <td className="p-2 md:p-4 text-left border-b border-border text-xs md:text-sm">{post.title}</td>
                             <td className="p-2 md:p-4 text-left border-b border-border">
-                              <span className={`status-badge ${
-                                post.status === 'published' 
-                                  ? 'bg-green-200 text-green-900 border border-green-400' 
-                                  : post.status === 'draft'
+                              <span className={`status-badge ${post.status === 'published'
+                                ? 'bg-green-200 text-green-900 border border-green-400'
+                                : post.status === 'draft'
                                   ? 'bg-yellow-200 text-yellow-900 border border-yellow-400'
                                   : ''
-                              }`}>
+                                }`}>
                                 {post.status}
                               </span>
                             </td>
@@ -528,20 +521,20 @@ function Admin() {
                     onChange={(e) => setBookingsSearchInput(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && handleBookingsSearch()}
                     className="flex-1 max-w-md p-2 border rounded focus:outline-none"
-                    style={{ 
+                    style={{
                       borderColor: '#e0e0e0',
                       color: '#001f3f'
                     }}
-                    onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
+                    onFocus={(e) => e.currentTarget.style.borderColor = '#e8bb69'}
                     onBlur={(e) => e.currentTarget.style.borderColor = '#e0e0e0'}
                   />
                   <button
                     onClick={handleBookingsSearch}
                     className="px-4 py-2 rounded border-2 transition-all duration-300"
-                    style={{ 
-                      backgroundColor: '#f97316',
+                    style={{
+                      backgroundColor: '#e8bb69',
                       color: '#001f3f',
-                      borderColor: '#f97316'
+                      borderColor: '#e8bb69'
                     }}
                     title="Tìm"
                   >
@@ -550,10 +543,10 @@ function Admin() {
                   <button
                     onClick={handleClearBookingsSearch}
                     className="px-4 py-2 rounded border-2 transition-all duration-300"
-                    style={{ 
+                    style={{
                       backgroundColor: 'transparent',
-                      color: '#f97316',
-                      borderColor: '#f97316'
+                      color: '#e8bb69',
+                      borderColor: '#e8bb69'
                     }}
                     title="Xóa"
                   >
@@ -579,14 +572,14 @@ function Admin() {
                     <thead>
                       <tr>
                         <th className="p-2 md:p-4 text-left border-b border-border bg-secondary font-semibold text-xs md:text-sm w-12">STT</th>
-                        <th 
+                        <th
                           className="p-2 md:p-4 text-left border-b border-border bg-secondary font-semibold cursor-pointer hover:bg-gray-200 transition-colors text-xs md:text-sm"
                           onClick={() => handleSort('client_name', 'bookings', setBookingsSortColumn, setBookingsSortDirection, bookingsSortColumn, bookingsSortDirection)}
                         >
                           Client Name
                           <SortIcon column="client_name" sortColumn={bookingsSortColumn} sortDirection={bookingsSortDirection} />
                         </th>
-                        <th 
+                        <th
                           className="p-2 md:p-4 text-left border-b border-border bg-secondary font-semibold cursor-pointer hover:bg-gray-200 transition-colors text-xs md:text-sm"
                           onClick={() => handleSort('email', 'bookings', setBookingsSortColumn, setBookingsSortDirection, bookingsSortColumn, bookingsSortDirection)}
                         >
@@ -601,52 +594,53 @@ function Admin() {
                       {bookings.map((booking, index) => {
                         const stt = (bookingsPage - 1) * itemsPerPage + index + 1
                         return (
-                        <tr key={booking.id} className="hover:bg-secondary">
-                          <td className="p-2 md:p-4 text-left border-b border-border text-xs md:text-sm text-gray-600">{stt}</td>
-                          <td className="p-2 md:p-4 text-left border-b border-border text-xs md:text-sm">{booking.client_name}</td>
-                          <td className="p-2 md:p-4 text-left border-b border-border text-xs md:text-sm">{booking.client_email}</td>
-                          <td className="p-2 md:p-4 text-left border-b border-border text-xs md:text-sm">
-                            {booking.message ? (
-                              <span className="block max-w-md line-clamp-2" title={booking.message}>
-                                {booking.message}
-                              </span>
-                            ) : (
-                              <span className="text-gray-400">-</span>
-                            )}
-                          </td>
-                          <td className="p-2 md:p-4 text-left border-b border-border">
-                            <div className="flex gap-1 md:gap-2">
-                              <button
-                                className="p-1 md:p-2 rounded transition-colors duration-200"
-                                style={{ color: '#001f3f' }}
-                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(207, 185, 112, 0.1)'}
-                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-                                onClick={() => {
-                                  setEditingBooking(booking)
-                                  setShowBookingForm(true)
-                                }}
-                                title="Edit"
-                              >
-                                <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                </svg>
-                              </button>
-                              <button
-                                className="p-1 md:p-2 rounded transition-colors duration-200"
-                                style={{ color: '#001f3f' }}
-                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(207, 185, 112, 0.1)'}
-                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-                                onClick={() => handleDeleteBooking(booking.id)}
-                                title="Delete"
-                              >
-                                <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                </svg>
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      )})}
+                          <tr key={booking.id} className="hover:bg-secondary">
+                            <td className="p-2 md:p-4 text-left border-b border-border text-xs md:text-sm text-gray-600">{stt}</td>
+                            <td className="p-2 md:p-4 text-left border-b border-border text-xs md:text-sm">{booking.client_name}</td>
+                            <td className="p-2 md:p-4 text-left border-b border-border text-xs md:text-sm">{booking.client_email}</td>
+                            <td className="p-2 md:p-4 text-left border-b border-border text-xs md:text-sm">
+                              {booking.message ? (
+                                <span className="block max-w-md line-clamp-2" title={booking.message}>
+                                  {booking.message}
+                                </span>
+                              ) : (
+                                <span className="text-gray-400">-</span>
+                              )}
+                            </td>
+                            <td className="p-2 md:p-4 text-left border-b border-border">
+                              <div className="flex gap-1 md:gap-2">
+                                <button
+                                  className="p-1 md:p-2 rounded transition-colors duration-200"
+                                  style={{ color: '#001f3f' }}
+                                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(207, 185, 112, 0.1)'}
+                                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                                  onClick={() => {
+                                    setEditingBooking(booking)
+                                    setShowBookingForm(true)
+                                  }}
+                                  title="Edit"
+                                >
+                                  <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                  </svg>
+                                </button>
+                                <button
+                                  className="p-1 md:p-2 rounded transition-colors duration-200"
+                                  style={{ color: '#001f3f' }}
+                                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(207, 185, 112, 0.1)'}
+                                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                                  onClick={() => handleDeleteBooking(booking.id)}
+                                  title="Delete"
+                                >
+                                  <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                  </svg>
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        )
+                      })}
                     </tbody>
                   </table>
                 </div>
@@ -670,20 +664,20 @@ function Admin() {
                     onChange={(e) => setCategoriesSearchInput(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && handleCategoriesSearch()}
                     className="flex-1 max-w-md p-2 border rounded focus:outline-none"
-                    style={{ 
+                    style={{
                       borderColor: '#e0e0e0',
                       color: '#001f3f'
                     }}
-                    onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
+                    onFocus={(e) => e.currentTarget.style.borderColor = '#e8bb69'}
                     onBlur={(e) => e.currentTarget.style.borderColor = '#e0e0e0'}
                   />
                   <button
                     onClick={handleCategoriesSearch}
                     className="px-4 py-2 rounded border-2 transition-all duration-300"
-                    style={{ 
-                      backgroundColor: '#f97316',
+                    style={{
+                      backgroundColor: '#e8bb69',
                       color: '#001f3f',
-                      borderColor: '#f97316'
+                      borderColor: '#e8bb69'
                     }}
                     title="Tìm"
                   >
@@ -692,10 +686,10 @@ function Admin() {
                   <button
                     onClick={handleClearCategoriesSearch}
                     className="px-4 py-2 rounded border-2 transition-all duration-300"
-                    style={{ 
+                    style={{
                       backgroundColor: 'transparent',
-                      color: '#f97316',
-                      borderColor: '#f97316'
+                      color: '#e8bb69',
+                      borderColor: '#e8bb69'
                     }}
                     title="Xóa"
                   >
@@ -716,14 +710,14 @@ function Admin() {
                     <thead>
                       <tr>
                         <th className="p-2 md:p-4 text-left border-b border-border bg-secondary font-semibold text-xs md:text-sm w-12">STT</th>
-                        <th 
+                        <th
                           className="p-2 md:p-4 text-left border-b border-border bg-secondary font-semibold cursor-pointer hover:bg-gray-200 transition-colors text-xs md:text-sm"
                           onClick={() => handleSort('name', 'categories', setCategoriesSortColumn, setCategoriesSortDirection, categoriesSortColumn, categoriesSortDirection)}
                         >
                           Name
                           <SortIcon column="name" sortColumn={categoriesSortColumn} sortDirection={categoriesSortDirection} />
                         </th>
-                        <th 
+                        <th
                           className="p-2 md:p-4 text-left border-b border-border bg-secondary font-semibold cursor-pointer hover:bg-gray-200 transition-colors text-xs md:text-sm hidden md:table-cell"
                           onClick={() => handleSort('created', 'categories', setCategoriesSortColumn, setCategoriesSortDirection, categoriesSortColumn, categoriesSortDirection)}
                         >
@@ -737,26 +731,27 @@ function Admin() {
                       {categories.map((category, index) => {
                         const stt = index + 1
                         return (
-                        <tr key={category.id} className="hover:bg-secondary">
-                          <td className="p-2 md:p-4 text-left border-b border-border text-xs md:text-sm text-gray-600">{stt}</td>
-                          <td className="p-2 md:p-4 text-left border-b border-border text-xs md:text-sm">{category.name}</td>
-                          <td className="p-2 md:p-4 text-left border-b border-border text-xs md:text-sm whitespace-nowrap hidden md:table-cell">{formatDate(category.created_at)}</td>
-                          <td className="p-2 md:p-4 text-left border-b border-border">
-                            <button
-                              className="p-1 md:p-2 rounded transition-colors duration-200"
-                              style={{ color: '#001f3f' }}
-                              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(207, 185, 112, 0.1)'}
-                              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-                              onClick={() => handleDeleteCategory(category.id)}
-                              title="Delete"
-                            >
-                              <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                              </svg>
-                            </button>
-                          </td>
-                        </tr>
-                      )})}
+                          <tr key={category.id} className="hover:bg-secondary">
+                            <td className="p-2 md:p-4 text-left border-b border-border text-xs md:text-sm text-gray-600">{stt}</td>
+                            <td className="p-2 md:p-4 text-left border-b border-border text-xs md:text-sm">{category.name}</td>
+                            <td className="p-2 md:p-4 text-left border-b border-border text-xs md:text-sm whitespace-nowrap hidden md:table-cell">{formatDate(category.created_at)}</td>
+                            <td className="p-2 md:p-4 text-left border-b border-border">
+                              <button
+                                className="p-1 md:p-2 rounded transition-colors duration-200"
+                                style={{ color: '#001f3f' }}
+                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(207, 185, 112, 0.1)'}
+                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                                onClick={() => handleDeleteCategory(category.id)}
+                                title="Delete"
+                              >
+                                <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                              </button>
+                            </td>
+                          </tr>
+                        )
+                      })}
                     </tbody>
                   </table>
                 </div>
@@ -786,13 +781,13 @@ function Admin() {
             setShowCategoryForm(true)
           }
         }}
-        className="fixed bottom-6 right-6 w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-2xl font-bold transition-all duration-300 hover:scale-110 z-50"
-        style={{ 
-          backgroundColor: '#f97316',
+        className="fixed bottom-6 right-6 w-12 h-12 rounded-full shadow-lg flex items-center justify-center text-2xl font-bold transition-all duration-300 hover:scale-110 z-50"
+        style={{
+          backgroundColor: '#e8bb69',
           color: '#001f3f'
         }}
         onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#ea580c'}
-        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#f97316'}
+        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e8bb69'}
         aria-label="Add new item"
       >
         +
@@ -894,7 +889,7 @@ function PostForm({ onClose, onSuccess, post }) {
 
     try {
       let mediaData = []
-      
+
       // Upload video to Cloudinary if file is selected (for both new and edit)
       if (videoUploaderRef.current) {
         const file = videoUploaderRef.current.getFile()
@@ -929,7 +924,7 @@ function PostForm({ onClose, onSuccess, post }) {
 
       // Create/update post with media data
       let finalMediaData = []
-      
+
       if (post) {
         // Editing: convert existing media to MediaCreateInput format + add new media
         console.log('existingMedia before mapping:', existingMedia.map(m => ({ id: m.id, is_featured: m.is_featured })))
@@ -961,21 +956,21 @@ function PostForm({ onClose, onSuccess, post }) {
           display_order: idx
         }))
       }
-      
+
       const payload = {
         ...formData,
         // Always include media array when editing (even if empty, to allow deletion)
         // For new posts, only include if there's media
         ...(post ? { media: finalMediaData } : (mediaData.length > 0 ? { media: mediaData } : {}))
       }
-      
+
       // Debug: log payload to check is_featured
-      console.log('Payload media:', finalMediaData.map(m => ({ 
-        public_id: m.public_id?.substring(0, 20), 
+      console.log('Payload media:', finalMediaData.map(m => ({
+        public_id: m.public_id?.substring(0, 20),
         is_featured: m.is_featured,
-        display_order: m.display_order 
+        display_order: m.display_order
       })))
-      
+
       if (post) {
         await client.put(`/posts/${post.id}`, payload)
       } else {
@@ -1032,11 +1027,11 @@ function PostForm({ onClose, onSuccess, post }) {
             <input
               type="text"
               className="w-full p-3 border rounded transition-colors duration-300 text-base focus:outline-none"
-              style={{ 
+              style={{
                 borderColor: '#e0e0e0',
                 color: '#001f3f'
               }}
-              onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
+              onFocus={(e) => e.currentTarget.style.borderColor = '#e8bb69'}
               onBlur={(e) => e.currentTarget.style.borderColor = '#e0e0e0'}
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
@@ -1055,11 +1050,11 @@ function PostForm({ onClose, onSuccess, post }) {
             <label className="block mb-2 font-medium" style={{ color: '#001f3f' }}>Status</label>
             <select
               className="w-full p-3 border rounded transition-colors duration-300 text-base focus:outline-none"
-              style={{ 
+              style={{
                 borderColor: '#e0e0e0',
                 color: '#001f3f'
               }}
-              onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
+              onFocus={(e) => e.currentTarget.style.borderColor = '#e8bb69'}
               onBlur={(e) => e.currentTarget.style.borderColor = '#e0e0e0'}
               value={formData.status}
               onChange={(e) => setFormData({ ...formData, status: e.target.value })}
@@ -1075,8 +1070,8 @@ function PostForm({ onClose, onSuccess, post }) {
                 type="button"
                 onClick={() => setCategoryDropdownOpen(!categoryDropdownOpen)}
                 className="w-full p-3 border rounded transition-colors duration-300 text-base focus:outline-none text-left flex items-center justify-between"
-                style={{ 
-                  borderColor: categoryDropdownOpen ? '#f97316' : '#e0e0e0',
+                style={{
+                  borderColor: categoryDropdownOpen ? '#e8bb69' : '#e0e0e0',
                   color: '#001f3f'
                 }}
               >
@@ -1085,10 +1080,10 @@ function PostForm({ onClose, onSuccess, post }) {
                     ? `${formData.category_ids.length} categor${formData.category_ids.length === 1 ? 'y' : 'ies'} selected`
                     : 'Select categories...'}
                 </span>
-                <svg 
+                <svg
                   className={`w-5 h-5 transition-transform duration-200 ${categoryDropdownOpen ? 'rotate-180' : ''}`}
-                  fill="none" 
-                  stroke="currentColor" 
+                  fill="none"
+                  stroke="currentColor"
                   viewBox="0 0 24 24"
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -1105,11 +1100,11 @@ function PostForm({ onClose, onSuccess, post }) {
                       onChange={(e) => setCategorySearch(e.target.value)}
                       onClick={(e) => e.stopPropagation()}
                       className="w-full p-2 border rounded text-sm focus:outline-none"
-                      style={{ 
+                      style={{
                         borderColor: '#e0e0e0',
                         color: '#001f3f'
                       }}
-                      onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
+                      onFocus={(e) => e.currentTarget.style.borderColor = '#e8bb69'}
                       onBlur={(e) => e.currentTarget.style.borderColor = '#e0e0e0'}
                     />
                   </div>
@@ -1127,7 +1122,7 @@ function PostForm({ onClose, onSuccess, post }) {
                             checked={formData.category_ids.includes(cat.id)}
                             onChange={() => handleCategoryToggle(cat.id)}
                             className="w-4 h-4"
-                            style={{ accentColor: '#f97316' }}
+                            style={{ accentColor: '#e8bb69' }}
                           />
                           <span style={{ color: '#001f3f' }}>{cat.name}</span>
                         </label>
@@ -1149,7 +1144,7 @@ function PostForm({ onClose, onSuccess, post }) {
                     <span
                       key={catId}
                       className="px-2 py-1 text-xs rounded"
-                      style={{ backgroundColor: '#f97316', color: '#001f3f' }}
+                      style={{ backgroundColor: '#e8bb69', color: '#001f3f' }}
                     >
                       {cat.name}
                     </span>
@@ -1189,11 +1184,11 @@ function PostForm({ onClose, onSuccess, post }) {
                             onClick={() => handleSetFeatured(media.id)}
                             className="px-4 py-2 rounded text-sm font-medium transition-all duration-300"
                             style={{
-                              backgroundColor: media.is_featured ? '#f97316' : '#f97316',
+                              backgroundColor: media.is_featured ? '#e8bb69' : '#e8bb69',
                               color: '#001f3f'
                             }}
                             onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#b8a55f'}
-                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#f97316'}
+                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e8bb69'}
                           >
                             {media.is_featured ? 'Featured' : 'Set Featured'}
                           </button>
@@ -1235,11 +1230,11 @@ function PostForm({ onClose, onSuccess, post }) {
                             onClick={() => handleSetFeatured(media.id)}
                             className="px-4 py-2 rounded text-sm font-medium transition-all duration-300"
                             style={{
-                              backgroundColor: media.is_featured ? '#f97316' : '#f97316',
+                              backgroundColor: media.is_featured ? '#e8bb69' : '#e8bb69',
                               color: '#001f3f'
                             }}
                             onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#b8a55f'}
-                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#f97316'}
+                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e8bb69'}
                           >
                             {media.is_featured ? 'Featured' : 'Set Featured'}
                           </button>
@@ -1295,26 +1290,26 @@ function PostForm({ onClose, onSuccess, post }) {
             )}
           </div>
           <div className="flex gap-4 mt-6">
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               className="px-6 py-3 rounded text-base font-medium cursor-pointer transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{ backgroundColor: '#f97316', color: '#001f3f' }}
+              style={{ backgroundColor: '#e8bb69', color: '#001f3f' }}
               onMouseEnter={(e) => !e.currentTarget.disabled && (e.currentTarget.style.backgroundColor = '#b8a55f')}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#f97316'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e8bb69'}
               disabled={loading}
             >
               {loading ? 'Saving...' : 'Save'}
             </button>
-            <button 
-              type="button" 
+            <button
+              type="button"
               className="px-6 py-3 rounded border-2 text-base font-medium cursor-pointer transition-all duration-300"
-              style={{ 
+              style={{
                 backgroundColor: 'transparent',
                 color: '#001f3f',
                 borderColor: '#001f3f'
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#f97316'
+                e.currentTarget.style.backgroundColor = '#e8bb69'
                 e.currentTarget.style.color = '#001f3f'
               }}
               onMouseLeave={(e) => {
@@ -1374,11 +1369,11 @@ function BookingForm({ onClose, onSuccess, booking }) {
             <input
               type="text"
               className="w-full p-3 border rounded transition-colors duration-300 text-base focus:outline-none"
-              style={{ 
+              style={{
                 borderColor: '#e0e0e0',
                 color: '#001f3f'
               }}
-              onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
+              onFocus={(e) => e.currentTarget.style.borderColor = '#e8bb69'}
               onBlur={(e) => e.currentTarget.style.borderColor = '#e0e0e0'}
               value={formData.client_name}
               onChange={(e) => setFormData({ ...formData, client_name: e.target.value })}
@@ -1390,11 +1385,11 @@ function BookingForm({ onClose, onSuccess, booking }) {
             <input
               type="email"
               className="w-full p-3 border rounded transition-colors duration-300 text-base focus:outline-none"
-              style={{ 
+              style={{
                 borderColor: '#e0e0e0',
                 color: '#001f3f'
               }}
-              onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
+              onFocus={(e) => e.currentTarget.style.borderColor = '#e8bb69'}
               onBlur={(e) => e.currentTarget.style.borderColor = '#e0e0e0'}
               value={formData.client_email}
               onChange={(e) => setFormData({ ...formData, client_email: e.target.value })}
@@ -1405,12 +1400,12 @@ function BookingForm({ onClose, onSuccess, booking }) {
             <label className="block mb-2 font-medium" style={{ color: '#001f3f' }}>Message</label>
             <textarea
               className="w-full p-3 border rounded transition-colors duration-300 text-base focus:outline-none resize-none"
-              style={{ 
+              style={{
                 borderColor: '#e0e0e0',
                 color: '#001f3f',
                 minHeight: '100px'
               }}
-              onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
+              onFocus={(e) => e.currentTarget.style.borderColor = '#e8bb69'}
               onBlur={(e) => e.currentTarget.style.borderColor = '#e0e0e0'}
               value={formData.message}
               onChange={(e) => setFormData({ ...formData, message: e.target.value })}
@@ -1418,26 +1413,26 @@ function BookingForm({ onClose, onSuccess, booking }) {
             />
           </div>
           <div className="flex gap-4 mt-6">
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               className="px-6 py-3 rounded text-base font-medium cursor-pointer transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{ backgroundColor: '#f97316', color: '#001f3f' }}
+              style={{ backgroundColor: '#e8bb69', color: '#001f3f' }}
               onMouseEnter={(e) => !e.currentTarget.disabled && (e.currentTarget.style.backgroundColor = '#b8a55f')}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#f97316'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e8bb69'}
               disabled={loading}
             >
               {loading ? 'Saving...' : 'Save'}
             </button>
-            <button 
-              type="button" 
+            <button
+              type="button"
               className="px-6 py-3 rounded border-2 text-base font-medium cursor-pointer transition-all duration-300"
-              style={{ 
+              style={{
                 backgroundColor: 'transparent',
                 color: '#001f3f',
                 borderColor: '#001f3f'
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#f97316'
+                e.currentTarget.style.backgroundColor = '#e8bb69'
                 e.currentTarget.style.color = '#001f3f'
               }}
               onMouseLeave={(e) => {
@@ -1486,11 +1481,11 @@ function CategoryForm({ onClose, onSuccess }) {
             <input
               type="text"
               className="w-full p-3 border rounded transition-colors duration-300 text-base focus:outline-none"
-              style={{ 
+              style={{
                 borderColor: '#e0e0e0',
                 color: '#001f3f'
               }}
-              onFocus={(e) => e.currentTarget.style.borderColor = '#f97316'}
+              onFocus={(e) => e.currentTarget.style.borderColor = '#e8bb69'}
               onBlur={(e) => e.currentTarget.style.borderColor = '#e0e0e0'}
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -1498,26 +1493,26 @@ function CategoryForm({ onClose, onSuccess }) {
             />
           </div>
           <div className="flex gap-4 mt-6">
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               className="px-6 py-3 rounded text-base font-medium cursor-pointer transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{ backgroundColor: '#f97316', color: '#001f3f' }}
+              style={{ backgroundColor: '#e8bb69', color: '#001f3f' }}
               onMouseEnter={(e) => !e.currentTarget.disabled && (e.currentTarget.style.backgroundColor = '#b8a55f')}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#f97316'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e8bb69'}
               disabled={loading}
             >
               {loading ? 'Creating...' : 'Create'}
             </button>
-            <button 
-              type="button" 
+            <button
+              type="button"
               className="px-6 py-3 rounded border-2 text-base font-medium cursor-pointer transition-all duration-300"
-              style={{ 
+              style={{
                 backgroundColor: 'transparent',
                 color: '#001f3f',
                 borderColor: '#001f3f'
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#f97316'
+                e.currentTarget.style.backgroundColor = '#e8bb69'
                 e.currentTarget.style.color = '#001f3f'
               }}
               onMouseLeave={(e) => {

@@ -24,10 +24,8 @@ function Projects() {
   }, [searchParams])
 
   useEffect(() => {
-    if (categories.length > 0) {
-      fetchPosts()
-    }
-  }, [selectedCategory, categories, currentPage])
+    fetchPosts()
+  }, [selectedCategory, currentPage])
 
   useEffect(() => {
     setCurrentPage(1)
@@ -46,7 +44,7 @@ function Projects() {
     try {
       setLoading(true)
       const skip = (currentPage - 1) * itemsPerPage
-      const params = { 
+      const params = {
         status: 'published',
         skip,
         limit: itemsPerPage
@@ -82,20 +80,15 @@ function Projects() {
       firstMedia: post.media.find(m => m.is_featured) || post.media[0]
     }))
 
-  const selectedCategoryName = selectedCategory 
-    ? categories.find(cat => cat.id === selectedCategory || cat.id.toString() === selectedCategory)?.name 
-    : 'All Projects'
+  const selectedCategoryName = selectedCategory
+    ? categories.find(cat => cat.id === selectedCategory || cat.id.toString() === selectedCategory)?.name || 'Dự án'
+    : 'Tất cả dự án'
 
   return (
     <div className="min-h-screen bg-zinc-950 pt-20">
       {/* Hero Section */}
-      <section className="relative py-20 px-6 bg-gradient-to-br from-orange-600 to-orange-500 overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0" style={{
-            backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(0,0,0,.1) 35px, rgba(0,0,0,.1) 70px)'
-          }}></div>
-        </div>
-        
+      <section className="relative py-20 px-6 bg-gradient-to-br from-[#e8bb69] to-[#e8bb69] overflow-hidden">
+
         <div className="relative max-w-7xl mx-auto text-center">
           <h1 className="text-6xl md:text-8xl font-black text-zinc-950 uppercase tracking-tight mb-4">
             Dự án
@@ -108,15 +101,14 @@ function Projects() {
       </section>
 
       {/* Categories Filter */}
-      <section className="py-12 px-6 bg-zinc-900 border-b border-orange-500/20">
+      <section className="py-12 px-6 bg-zinc-900 border-b border-[#e8bb69]/20">
         <div className="max-w-7xl mx-auto">
           <div className="flex gap-3 justify-center flex-wrap">
             <button
-              className={`px-6 py-3 font-bold text-sm uppercase tracking-wider transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-zinc-900 cursor-pointer ${
-                selectedCategory === null 
-                  ? 'bg-orange-500 text-zinc-950 shadow-lg' 
-                  : 'bg-zinc-800 text-white hover:bg-zinc-700 hover:text-orange-500'
-              }`}
+              className={`px-6 py-3 font-bold text-sm uppercase tracking-wider transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#e8bb69] focus:ring-offset-2 focus:ring-offset-zinc-900 cursor-pointer ${selectedCategory === null
+                ? 'bg-[#e8bb69] text-zinc-950 shadow-lg'
+                : 'bg-zinc-800 text-white hover:bg-zinc-700 hover:text-[#e8bb69]'
+                }`}
               onClick={() => {
                 setSelectedCategory(null)
                 window.history.pushState({}, '', '/gallery')
@@ -129,11 +121,10 @@ function Projects() {
               return (
                 <button
                   key={category.id}
-                  className={`px-6 py-3 font-bold text-sm uppercase tracking-wider transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-zinc-900 cursor-pointer ${
-                    isSelected
-                      ? 'bg-orange-500 text-zinc-950 shadow-lg' 
-                      : 'bg-zinc-800 text-white hover:bg-zinc-700 hover:text-orange-500'
-                  }`}
+                  className={`px-6 py-3 font-bold text-sm uppercase tracking-wider transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#e8bb69] focus:ring-offset-2 focus:ring-offset-zinc-900 cursor-pointer ${isSelected
+                    ? 'bg-[#e8bb69] text-zinc-950 shadow-lg'
+                    : 'bg-zinc-800 text-white hover:bg-zinc-700 hover:text-[#e8bb69]'
+                    }`}
                   onClick={() => {
                     setSelectedCategory(category.id)
                     window.history.pushState({}, '', `/gallery?category=${category.id}`)
@@ -155,7 +146,7 @@ function Projects() {
             <h2 className="text-3xl md:text-5xl font-black text-white uppercase tracking-tight mb-2">
               {selectedCategoryName}
             </h2>
-            <div className="h-1 w-24 bg-orange-500"></div>
+            <div className="h-1 w-24 bg-[#e8bb69]"></div>
             {total > 0 && (
               <p className="text-zinc-400 mt-4 text-sm uppercase tracking-wider">
                 {total} {total === 1 ? 'Dự án' : 'Dự án'} tìm thấy
@@ -165,7 +156,7 @@ function Projects() {
 
           {loading ? (
             <div className="flex justify-center items-center py-20">
-              <div className="w-16 h-16 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-16 h-16 border-4 border-[#e8bb69] border-t-transparent rounded-full animate-spin"></div>
             </div>
           ) : (
             <>
@@ -173,17 +164,17 @@ function Projects() {
                 <>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
                     {postsWithFirstMedia.map((post) => (
-                      <Link 
-                        key={post.id} 
-                        to={`/post/${post.id}`} 
-                        className="group relative aspect-square overflow-hidden bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-zinc-950 cursor-pointer"
+                      <Link
+                        key={post.id}
+                        to={`/post/${post.id}`}
+                        className="group relative aspect-square overflow-hidden bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-[#e8bb69] focus:ring-offset-2 focus:ring-offset-zinc-950 cursor-pointer"
                         aria-label={`View project: ${post.title}`}
                       >
                         {/* Media */}
                         <div className="absolute inset-0">
                           {post.firstMedia.type === 'image' ? (
-                            <img 
-                              src={post.firstMedia.url} 
+                            <img
+                              src={post.firstMedia.url}
                               alt={`${post.title} project preview`}
                               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                               loading="lazy"
@@ -197,7 +188,7 @@ function Projects() {
                                 flags: ['streaming_attachment']
                               })
                               const thumbnailUrl = getVideoThumbnail(post.firstMedia.url, post.firstMedia.public_id, 1)
-                              
+
                               return (
                                 <video
                                   muted
@@ -234,18 +225,18 @@ function Projects() {
                             {post.title}
                           </h3>
                           {post.categories && post.categories.length > 0 && (
-                            <p className="text-orange-500 font-bold uppercase text-xs tracking-wider">
+                            <p className="text-[#e8bb69] font-bold uppercase text-xs tracking-wider">
                               {post.categories.map(cat => cat.name).join(' • ')}
                             </p>
                           )}
                         </div>
 
                         {/* Hover Border */}
-                        <div className="absolute inset-0 border-4 border-orange-500 opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity duration-300"></div>
+                        <div className="absolute inset-0 border-4 border-[#e8bb69] opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity duration-300"></div>
 
                         {/* Media Type Badge */}
                         <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          <div className="px-3 py-1 bg-orange-500 text-zinc-950 text-xs font-bold uppercase tracking-wider">
+                          <div className="px-3 py-1 bg-[#e8bb69] text-zinc-950 text-xs font-bold uppercase tracking-wider">
                             {post.firstMedia.type}
                           </div>
                         </div>
@@ -265,7 +256,7 @@ function Projects() {
               ) : (
                 <div className="text-center py-20">
                   <div className="mb-6 flex justify-center">
-                    <svg className="w-16 h-16 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <svg className="w-16 h-16 text-[#e8bb69]" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
                     </svg>
                   </div>
@@ -273,8 +264,8 @@ function Projects() {
                     Không tìm thấy dự án
                   </h3>
                   <p className="text-zinc-400 mb-8">
-                    {selectedCategory 
-                      ? 'Hãy chọn một danh mục khác hoặc xem tất cả dự án.' 
+                    {selectedCategory
+                      ? 'Hãy chọn một danh mục khác hoặc xem tất cả dự án.'
                       : 'Không có dự án nào khả dụng tại thời điểm hiện tại.'}
                   </p>
                   {selectedCategory && (
@@ -283,7 +274,7 @@ function Projects() {
                         setSelectedCategory(null)
                         window.history.pushState({}, '', '/gallery')
                       }}
-                      className="px-8 py-4 bg-orange-500 text-zinc-950 font-bold text-sm uppercase tracking-wide hover:bg-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-zinc-950 transition-colors cursor-pointer"
+                      className="px-8 py-4 bg-[#e8bb69] text-zinc-950 font-bold text-sm uppercase tracking-wide hover:bg-orange-400 focus:outline-none focus:ring-2 focus:ring-[#e8bb69] focus:ring-offset-2 focus:ring-offset-zinc-950 transition-colors cursor-pointer"
                     >
                       Xem tất cả dự án
                     </button>
