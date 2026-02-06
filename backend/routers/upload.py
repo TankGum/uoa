@@ -16,6 +16,8 @@ except ImportError:
     import hmac
     import base64
 
+from services import mux_service
+
 router = APIRouter(prefix="/api/upload", tags=["upload"])
 
 
@@ -85,3 +87,20 @@ def get_upload_signature(
         "timestamp": timestamp,
         "signature": signature
     })
+
+
+@router.post("/mux-url")
+def get_mux_upload_url(
+    current_user: str = Depends(get_current_user_dependency)
+):
+    """
+    Generate Mux direct upload URL
+    """
+    try:
+        upload_data = mux_service.create_direct_upload()
+        return upload_data
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e)
+        )

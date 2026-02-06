@@ -8,7 +8,8 @@ from database import get_db
 from models import Post, Category, Media
 from models import post_categories  # Import Table separately
 from schemas import Post as PostSchema, PostCreate, PostUpdate, Media as MediaSchema, PaginatedResponse
-from services.cloudinary_service import delete_media
+from services.cloudinary_service import delete_media as delete_cloudinary_media
+from services import mux_service
 from routers.auth import get_current_user_dependency
 
 router = APIRouter(prefix="/api/posts", tags=["posts"])
@@ -16,16 +17,19 @@ router = APIRouter(prefix="/api/posts", tags=["posts"])
 
 def determine_media_type(media_data) -> str:
     """
-    Determine media type from Cloudinary metadata
-    Since files are already uploaded to Cloudinary, we can rely on the metadata
+    Determine media type from metadata
     """
+    # If type is explicitly provided in MediaCreateInput
+    if hasattr(media_data, 'type') and media_data.type:
+        return media_data.type
+
     # Check duration first (videos have duration, images don't)
-    if media_data.duration:
+    if hasattr(media_data, 'duration') and media_data.duration:
         return "video"
     
     # Check format as fallback
-    if media_data.format:
-        video_formats = ["mp4", "mov", "avi", "webm", "mkv", "flv", "wmv"]
+    if hasattr(media_data, 'format') and media_data.format:
+        video_formats = ["mp4", "mov", "avi", "webm", "mkv", "flv", "wmv", "m3u8"]
         if media_data.format.lower() in video_formats:
             return "video"
     
@@ -255,20 +259,40 @@ def create_post(post: PostCreate, db: Session = Depends(get_db), current_user: s
     db.add(db_post)
     db.flush()  # Flush to get post.id
     
-    # Add media from Cloudinary (metadata only - files already uploaded)
+    # Add media from Cloudinary or Mux (metadata only - files already uploaded)
     if post.media:
         for idx, media_data in enumerate(post.media):
+            provider = getattr(media_data, 'provider', "cloudinary")
+            public_id = media_data.public_id
+            url = media_data.secure_url
+            asset_id = getattr(media_data, 'asset_id', None)
+            metadata = getattr(media_data, 'metadata', {}) or {}
+
+            # Resolve Mux details if needed
+            if provider == "mux" and not asset_id:
+                try:
+                    upload_info = mux_service.get_upload_details(public_id)
+                    if upload_info.get("asset_id"):
+                        asset_id = upload_info["asset_id"]
+                        asset_details = mux_service.get_asset_details(asset_id)
+                        if asset_details.get("playback_id"):
+                            public_id = asset_details["playback_id"]
+                            url = mux_service.get_playback_url(public_id)
+                except Exception as e:
+                    print(f"Error resolving Mux asset: {e}")
+
             db_media = Media(
                 post_id=db_post.id,
                 type=determine_media_type(media_data),
-                provider="cloudinary",
-                public_id=media_data.public_id,
-                url=media_data.secure_url,
+                provider=provider,
+                public_id=public_id,
+                url=url,
                 duration=media_data.duration,
                 width=media_data.width,
                 height=media_data.height,
                 format=media_data.format,
                 size=media_data.size,
+                meta_data=metadata if not asset_id else {**metadata, "asset_id": asset_id},
                 is_featured=bool(getattr(media_data, 'is_featured', False)),
                 display_order=int(getattr(media_data, 'display_order', idx))
             )
@@ -313,36 +337,60 @@ def update_post(post_id: uuid.UUID, post_update: PostUpdate, db: Session = Depen
         # Get public_ids of new media
         new_public_ids = {m.public_id for m in post_update.media if m.public_id}
         
-        # Delete old media from Cloudinary that are not in new list
+        # Delete old media from providers that are not in new list
         for old_media_item in old_media:
-            if old_media_item.provider == "cloudinary" and old_media_item.public_id:
-                # Only delete if not in new media list
-                if old_media_item.public_id not in new_public_ids:
-                    try:
+            # Only delete if not in new media list
+            if old_media_item.public_id not in new_public_ids:
+                try:
+                    if old_media_item.provider == "cloudinary" and old_media_item.public_id:
                         resource_type = "video" if old_media_item.type == "video" else "image"
-                        delete_result = delete_media(old_media_item.public_id, resource_type=resource_type)
+                        delete_result = delete_cloudinary_media(old_media_item.public_id, resource_type=resource_type)
                         if not delete_result.get("success"):
-                            print(f"Warning: Failed to delete old media {old_media_item.public_id} from Cloudinary: {delete_result.get('error', delete_result.get('message'))}")
-                    except Exception as e:
-                        print(f"Warning: Error deleting old media {old_media_item.public_id} from Cloudinary: {str(e)}")
+                            print(f"Warning: Failed to delete old Cloudinary media {old_media_item.public_id}: {delete_result.get('error', delete_result.get('message'))}")
+                    elif old_media_item.provider == "mux":
+                        asset_id = old_media_item.meta_data.get("asset_id") if old_media_item.meta_data else None
+                        if asset_id:
+                            mux_service.delete_asset(asset_id)
+                except Exception as e:
+                    print(f"Warning: Error deleting old media {old_media_item.public_id}: {str(e)}")
         
         # Remove all old media from database
         for old_media_item in old_media:
             db.delete(old_media_item)
         
-        # Add new media (metadata only - files already uploaded to Cloudinary)
+        # Add new media (metadata only - files already uploaded)
         for idx, media_data in enumerate(post_update.media):
+            provider = getattr(media_data, 'provider', "cloudinary")
+            public_id = media_data.public_id
+            url = media_data.secure_url
+            asset_id = getattr(media_data, 'asset_id', None)
+            metadata = getattr(media_data, 'metadata', {}) or {}
+
+            # Resolve Mux details if needed
+            if provider == "mux" and not asset_id:
+                try:
+                    upload_info = mux_service.get_upload_details(public_id)
+                    if upload_info.get("asset_id"):
+                        asset_id = upload_info["asset_id"]
+                        asset_details = mux_service.get_asset_details(asset_id)
+                        if asset_details.get("playback_id"):
+                            public_id = asset_details["playback_id"]
+                            url = mux_service.get_playback_url(public_id)
+                except Exception as e:
+                    print(f"Error resolving Mux asset: {e}")
+
             db_media = Media(
                 post_id=db_post.id,
                 type=determine_media_type(media_data),
-                provider="cloudinary",
-                public_id=media_data.public_id,
-                url=media_data.secure_url,
+                provider=provider,
+                public_id=public_id,
+                url=url,
                 duration=media_data.duration,
                 width=media_data.width,
                 height=media_data.height,
                 format=media_data.format,
                 size=media_data.size,
+                meta_data=metadata if not asset_id else {**metadata, "asset_id": asset_id},
                 is_featured=bool(getattr(media_data, 'is_featured', False)),
                 display_order=int(getattr(media_data, 'display_order', idx))
             )
@@ -375,17 +423,19 @@ def delete_post(post_id: uuid.UUID, db: Session = Depends(get_db), current_user:
     if db_post.media:
         for media in db_post.media:
             # Only delete if provider is cloudinary and public_id exists
-            if media.provider == "cloudinary" and media.public_id:
-                try:
-                    # Determine resource type based on media type
+            # Delete based on provider
+            try:
+                if media.provider == "cloudinary" and media.public_id:
                     resource_type = "video" if media.type == "video" else "image"
-                    delete_result = delete_media(media.public_id, resource_type=resource_type)
+                    delete_result = delete_cloudinary_media(media.public_id, resource_type=resource_type)
                     if not delete_result.get("success"):
-                        # Log error but continue with deletion
                         print(f"Warning: Failed to delete media {media.public_id} from Cloudinary: {delete_result.get('error', delete_result.get('message'))}")
-                except Exception as e:
-                    # Log error but continue with deletion
-                    print(f"Warning: Error deleting media {media.public_id} from Cloudinary: {str(e)}")
+                elif media.provider == "mux":
+                    asset_id = media.meta_data.get("asset_id") if media.meta_data else None
+                    if asset_id:
+                        mux_service.delete_asset(asset_id)
+            except Exception as e:
+                print(f"Warning: Error deleting media {media.public_id}: {str(e)}")
     
     # Delete post (cascade will delete media records in DB)
     db.delete(db_post)

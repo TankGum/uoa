@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
+import { motion, AnimatePresence } from 'framer-motion'
 import client from '../api/client'
 import { getStreamingVideoUrl, getVideoThumbnail } from '../utils/cloudinary'
+import { getMuxPlaybackUrl, getMuxThumbnailUrl } from '../utils/mux'
 
 function PostDetail() {
   const { id } = useParams()
   const [post, setPost] = useState(null)
   const [loading, setLoading] = useState(true)
   const [lightboxOpen, setLightboxOpen] = useState(false)
-  const [lightboxMedia, setLightboxMedia] = useState(null)
   const [lightboxIndex, setLightboxIndex] = useState(0)
   const [allMedia, setAllMedia] = useState([])
 
@@ -24,6 +25,7 @@ function PostDetail() {
 
   const fetchPost = async () => {
     try {
+      setLoading(true)
       const response = await client.get(`/posts/${id}`)
       setPost(response.data)
     } catch (error) {
@@ -33,8 +35,7 @@ function PostDetail() {
     }
   }
 
-  const openLightbox = (media, index) => {
-    setLightboxMedia(media)
+  const openLightbox = (index) => {
     setLightboxIndex(index)
     setLightboxOpen(true)
     document.body.style.overflow = 'hidden'
@@ -42,56 +43,56 @@ function PostDetail() {
 
   const closeLightbox = () => {
     setLightboxOpen(false)
-    setLightboxMedia(null)
     document.body.style.overflow = 'unset'
   }
 
   const navigateLightbox = (direction) => {
-    const newIndex = direction === 'next' 
+    const newIndex = direction === 'next'
       ? (lightboxIndex + 1) % allMedia.length
       : (lightboxIndex - 1 + allMedia.length) % allMedia.length
-    
     setLightboxIndex(newIndex)
-    setLightboxMedia(allMedia[newIndex])
   }
 
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (!lightboxOpen) return
-      
       if (e.key === 'Escape') closeLightbox()
       if (e.key === 'ArrowRight') navigateLightbox('next')
       if (e.key === 'ArrowLeft') navigateLightbox('prev')
     }
-
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [lightboxOpen, lightboxIndex, allMedia])
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-zinc-950 pt-20 flex items-center justify-center">
-        <div className="w-16 h-16 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+      <div className="min-h-screen bg-zinc-950 pt-24 flex flex-col items-center justify-center">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+          className="w-12 h-12 border-2 border-[#e8bb69]/20 border-t-[#e8bb69] rounded-full mb-4"
+        />
+        <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#e8bb69]">Loading Story</span>
       </div>
     )
   }
 
   if (!post) {
     return (
-      <div className="min-h-screen bg-zinc-950 pt-20">
-        <div className="max-w-7xl mx-auto px-6 py-20 text-center">
-          <div className="text-6xl mb-6">😕</div>
-          <h2 className="text-4xl font-black text-white uppercase tracking-tight mb-4">
-            Bài viết không tìm thấy
+      <div className="min-h-screen bg-zinc-950 pt-32 px-6">
+        <div className="max-w-xl mx-auto text-center border border-white/5 p-12 backdrop-blur-sm">
+          <span className="text-[#e8bb69] font-mono text-xs mb-4 block">ERROR 404</span>
+          <h2 className="text-4xl font-black text-white uppercase tracking-tight mb-6 leading-none">
+            Story Not Found
           </h2>
-          <p className="text-zinc-400 mb-8">
-            Bài viết bạn đang tìm kiếm không tồn tại hoặc đã bị xóa.
+          <p className="text-zinc-500 mb-10 text-sm leading-relaxed">
+            The project you're looking for might have been moved or removed from our archives.
           </p>
-          <Link 
-            to="/gallery" 
-            className="inline-block px-8 py-4 bg-orange-500 text-zinc-950 font-bold text-sm uppercase tracking-wide hover:bg-orange-400 transition-colors"
+          <Link
+            to="/gallery"
+            className="inline-flex px-10 py-4 bg-[#e8bb69] text-zinc-950 font-black text-[10px] uppercase tracking-[0.3em] hover:bg-white transition-all duration-500"
           >
-            Quay lại dự án
+            Back to Archive
           </Link>
         </div>
       </div>
@@ -102,163 +103,170 @@ function PostDetail() {
   const videos = post.media?.filter(m => m.type === 'video') || []
 
   return (
-    <div className="min-h-screen bg-zinc-950 pt-20">
-      {/* Header */}
-      <div className="bg-zinc-900 border-b border-orange-500/20 py-8 px-6">
-        <div className="max-w-7xl mx-auto">
-          <Link 
-            to="/gallery" 
-            className="inline-flex items-center gap-2 text-orange-500 hover:text-orange-400 transition-colors font-bold uppercase text-sm tracking-wider mb-6"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-            Quay lại dự án
-          </Link>
-          
-          <h1 className="text-5xl md:text-7xl font-black text-white uppercase tracking-tight mb-6">
-            {post.title}
-          </h1>
-          <div className="h-1 w-32 bg-orange-500 mb-6"></div>
-          
-          {post.description && (
-            <p className="text-xl text-zinc-400 leading-relaxed max-w-3xl">
-              {post.description}
-            </p>
-          )}
-
-          {post.categories && post.categories.length > 0 && (
-            <div className="flex gap-3 flex-wrap mt-8">
-              {post.categories.map((cat) => (
-                <span 
-                  key={cat.id} 
-                  className="px-4 py-2 bg-zinc-800 text-orange-500 font-bold uppercase text-xs tracking-wider"
-                >
-                  {cat.name}
-                </span>
-              ))}
-            </div>
-          )}
+    <div className="min-h-screen bg-zinc-950">
+      {/* Editorial Header */}
+      <section className="relative pt-32 pb-20 px-6 border-b border-white/5">
+        <div className="absolute inset-0 opacity-5 pointer-events-none">
+          <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-[#e8bb69] blend-overlay" />
         </div>
-      </div>
 
-      {/* Content */}
-      <div className="max-w-7xl mx-auto px-6 py-16">
-        {/* Images Section */}
-        {images.length > 0 && (
-          <div className="mb-20">
-            <div className="mb-12">
-              <h2 className="text-4xl md:text-5xl font-black text-white uppercase tracking-tight mb-2">
-                Hình ảnh
-              </h2>
-              <div className="h-1 w-24 bg-orange-500"></div>
-              <p className="text-zinc-400 mt-4 text-sm uppercase tracking-wider">
-                {images.length} {images.length === 1 ? 'Image' : 'Images'}
-              </p>
-            </div>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {images.map((media, index) => {
-                const mediaIndex = allMedia.findIndex(m => m.id === media.id)
-                return (
-                  <div 
-                    key={media.id} 
-                    className="group relative aspect-square overflow-hidden bg-zinc-900 cursor-pointer"
-                    onClick={() => openLightbox(media, mediaIndex)}
+        <div className="max-w-7xl mx-auto relative z-10">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+          >
+            <Link
+              to="/gallery"
+              className="group inline-flex items-center gap-4 text-white/40 hover:text-[#e8bb69] transition-all duration-500 mb-12"
+            >
+              <div className="w-8 h-px bg-current group-hover:w-12 transition-all" />
+              <span className="font-bold uppercase text-[10px] tracking-[0.4em]">Back to Projects</span>
+            </Link>
+          </motion.div>
+
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-10">
+            <div className="max-w-4xl">
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+              >
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-2 h-2 rounded-full bg-[#e8bb69] animate-pulse" />
+                  <span className="text-[#e8bb69] text-[10px] font-black uppercase tracking-[0.4em]">Project Showcase</span>
+                </div>
+                <h1 className="text-6xl md:text-8xl lg:text-9xl font-black text-white uppercase tracking-tighter leading-[0.85] mb-8">
+                  {post.title}
+                </h1>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4 }}
+                className="flex gap-2 flex-wrap"
+              >
+                {post.categories?.map((cat) => (
+                  <span
+                    key={cat.id}
+                    className="px-4 py-1.5 border border-white/10 text-white/60 font-black uppercase text-[9px] tracking-[0.2em] hover:border-[#e8bb69] hover:text-[#e8bb69] transition-all duration-300"
                   >
-                    <img 
-                      src={media.url} 
-                      alt={post.title} 
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                    {cat.name}
+                  </span>
+                ))}
+              </motion.div>
+            </div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+              className="lg:max-w-xs"
+            >
+              <p className="text-zinc-500 text-sm leading-relaxed italic border-l border-[#e8bb69]/30 pl-6 py-2">
+                {post.description || "A cinematic journey captured through our lens, blending technical precision with artistic vision."}
+              </p>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Media Grid */}
+      <section className="max-w-7xl mx-auto px-6 py-24">
+        {/* Videos Section */}
+        {videos.length > 0 && (
+          <div className="mb-32">
+            <div className="flex items-baseline gap-6 mb-16">
+              <h2 className="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter leading-none">
+                Motion
+              </h2>
+              <div className="flex-1 h-px bg-white/10" />
+              <span className="text-[#e8bb69] font-mono text-xs">{String(videos.length).padStart(2, '0')} Film(s)</span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {videos.map((media, index) => {
+                const isMux = media.provider === 'mux'
+                const thumbnailUrl = isMux
+                  ? getMuxThumbnailUrl(media.public_id)
+                  : getVideoThumbnail(media.url, media.public_id, 1)
+                const mediaIndex = allMedia.findIndex(m => m.id === media.id)
+
+                return (
+                  <motion.div
+                    key={media.id}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.1 }}
+                    className="group relative aspect-video overflow-hidden bg-zinc-900 border border-white/5 cursor-pointer"
+                    onClick={() => openLightbox(mediaIndex)}
+                  >
+                    <div className="absolute inset-0 z-10 pointer-events-none border border-white/0 group-hover:border-[#e8bb69]/50 transition-all duration-500" />
+                    <img
+                      src={thumbnailUrl}
+                      alt={post.title}
+                      className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
                     />
-                    
-                    {/* Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/50 to-transparent opacity-0 group-hover:opacity-90 transition-opacity duration-300"></div>
-                    
-                    {/* Zoom Icon */}
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <div className="w-16 h-16 bg-orange-500 flex items-center justify-center">
-                        <svg className="w-8 h-8 text-zinc-950" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                    <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all duration-500" />
+
+                    {/* Play Icon */}
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-16 h-16 rounded-full border border-white/20 bg-white/5 backdrop-blur-md flex items-center justify-center group-hover:scale-110 group-hover:bg-[#e8bb69] group-hover:border-[#e8bb69] transition-all duration-500">
+                        <svg className="w-6 h-6 text-white group-hover:text-zinc-950 translate-x-0.5" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M8 5v14l11-7z" />
                         </svg>
                       </div>
                     </div>
 
-                    {/* Border Effect */}
-                    <div className="absolute inset-0 border-4 border-orange-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  </div>
+                    <div className="absolute bottom-6 left-6 z-20">
+                      <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white/50 block mb-1">Film Chapter</span>
+                      <span className="text-white text-lg font-black uppercase tracking-tighter">0{index + 1} // Cinematography</span>
+                    </div>
+                  </motion.div>
                 )
               })}
             </div>
           </div>
         )}
 
-        {/* Videos Section */}
-        {videos.length > 0 && (
-          <div>
-            <div className="mb-12">
-              <h2 className="text-4xl md:text-5xl font-black text-white uppercase tracking-tight mb-2">
-                Video
+        {/* Images Section */}
+        {images.length > 0 && (
+          <div className="mb-20">
+            <div className="flex items-baseline gap-6 mb-16">
+              <h2 className="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter leading-none">
+                Still Life
               </h2>
-              <div className="h-1 w-24 bg-orange-500"></div>
-              <p className="text-zinc-400 mt-4 text-sm uppercase tracking-wider">
-                {videos.length} {videos.length === 1 ? 'Video' : 'Videos'}
-              </p>
+              <div className="flex-1 h-px bg-white/10" />
+              <span className="text-[#e8bb69] font-mono text-xs">{String(images.length).padStart(2, '0')} Photo(s)</span>
             </div>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {videos.map((media, index) => {
-                const streamingUrl = getStreamingVideoUrl(media.url, media.public_id, {
-                  quality: 'auto',
-                  format: 'auto',
-                  streamingProfile: 'auto',
-                  flags: ['streaming_attachment']
-                })
-                const thumbnailUrl = getVideoThumbnail(media.url, media.public_id, 1)
-                const mediaIndex = allMedia.findIndex(m => m.id === media.id)
-                
-                return (
-                  <div 
-                    key={media.id} 
-                    className="group relative aspect-square overflow-hidden bg-zinc-900 cursor-pointer"
-                    onClick={() => openLightbox(media, mediaIndex)}
-                  >
-                    <video 
-                      muted
-                      loop
-                      autoPlay
-                      preload="metadata"
-                      poster={thumbnailUrl || undefined}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                      playsInline
-                      crossOrigin="anonymous"
-                      onError={(e) => {
-                        const videoEl = e.target
-                        if (videoEl.src !== media.url) {
-                          videoEl.src = media.url
-                          videoEl.load()
-                        }
-                      }}
-                    >
-                      <source src={media.url} type={`video/${media.format || 'mp4'}`} />
-                      <source src={streamingUrl} type={`video/${media.format || 'mp4'}`} />
-                    </video>
-                    
-                    {/* Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/50 to-transparent opacity-0 group-hover:opacity-90 transition-opacity duration-300"></div>
-                    
-                    {/* Play Icon */}
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <div className="w-16 h-16 bg-orange-500 flex items-center justify-center">
-                        <svg className="w-8 h-8 text-zinc-950" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M8 5v14l11-7z"/>
-                        </svg>
-                      </div>
-                    </div>
 
-                    {/* Border Effect */}
-                    <div className="absolute inset-0 border-4 border-orange-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {images.map((media, index) => {
+                const mediaIndex = allMedia.findIndex(m => m.id === media.id)
+                return (
+                  <motion.div
+                    key={media.id}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.05 }}
+                    className="group relative aspect-[3/4] overflow-hidden bg-zinc-900 border border-white/5 cursor-pointer"
+                    onClick={() => openLightbox(mediaIndex)}
+                  >
+                    <div className="absolute inset-0 z-10 pointer-events-none border border-white/0 group-hover:border-[#e8bb69]/50 transition-all duration-500" />
+                    <img
+                      src={media.url}
+                      alt={post.title}
+                      className="w-full h-full object-cover transition-transform duration-[1.5s] ease-out group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+
+                    <div className="absolute bottom-6 left-6 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 flex items-center gap-4">
+                      <div className="h-px w-8 bg-[#e8bb69]" />
+                      <span className="text-white font-black uppercase text-[10px] tracking-[0.3em]">View Frame</span>
+                    </div>
+                  </motion.div>
                 )
               })}
             </div>
@@ -267,106 +275,131 @@ function PostDetail() {
 
         {/* Empty State */}
         {images.length === 0 && videos.length === 0 && (
-          <div className="text-center py-20">
-            <div className="text-6xl mb-6">📁</div>
-            <h3 className="text-2xl font-bold text-white mb-2 uppercase tracking-tight">
-              Không có media khả dụng
-            </h3>
-            <p className="text-zinc-400">
-              Bài viết này không có hình ảnh hoặc video.
+          <div className="text-center py-40 border border-dashed border-white/10">
+            <span className="text-[#e8bb69] font-mono text-lg block mb-4">VOID</span>
+            <p className="text-zinc-500 uppercase tracking-[0.4em] text-[10px] font-black">
+              No media archived for this story
             </p>
           </div>
         )}
-      </div>
+      </section>
 
       {/* Lightbox */}
-      {lightboxOpen && lightboxMedia && (
-        <div 
-          className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center mt-[70px]"
-          onClick={closeLightbox}
-        >
-          {/* Close Button */}
-          <button
+      <AnimatePresence>
+        {lightboxOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-zinc-950 z-[10001] flex flex-col pt-[70px]"
             onClick={closeLightbox}
-            className="absolute top-6 right-6 z-10 w-12 h-12 text-white transition-colors flex items-center justify-center rounded-full"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
+            {/* Header / Controls */}
+            <div className="absolute top-0 left-0 right-0 h-[70px] flex items-center justify-between px-8 border-b border-white/5 bg-zinc-950/50 backdrop-blur-xl z-10">
+              <div className="flex items-center gap-6">
+                <span className="text-[#e8bb69] font-mono text-sm">
+                  {String(lightboxIndex + 1).padStart(2, '0')} / {String(allMedia.length).padStart(2, '0')}
+                </span>
+                <span className="text-white/20 h-4 w-px bg-current" />
+                <span className="text-white font-black uppercase text-[10px] tracking-[0.3em]">{post.title}</span>
+              </div>
 
-          {/* Navigation - Previous */}
-          {allMedia.length > 1 && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation()
-                navigateLightbox('prev')
-              }}
-              className="absolute left-6 z-10 w-12 h-12 text-white transition-colors flex items-center justify-center rounded-full bg-orange-500 hover:bg-orange-400 opacity-70"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
-          )}
-
-          {/* Navigation - Next */}
-          {allMedia.length > 1 && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation()
-                navigateLightbox('next')
-              }}
-              className="absolute right-6 z-10 w-12 h-12 text-white transition-colors flex items-center justify-center rounded-full bg-orange-500 hover:bg-orange-400 opacity-70"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-          )}
-
-          {/* Counter */}
-          {allMedia.length > 1 && (
-            <div className="absolute top-6 left-6 z-10 px-4 py-2 text-white font-bold text-sm rounded-full">
-              <span className="text-white">
-                {lightboxIndex + 1} / {allMedia.length}
-              </span>
-            </div>
-          )}
-
-          {/* Media Content */}
-          <div 
-            className="max-w-7xl max-h-[90vh] w-full h-full flex items-center justify-center p-12"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {lightboxMedia.type === 'image' ? (
-              <img 
-                src={lightboxMedia.url} 
-                alt={post.title}
-                className="max-w-full max-h-full object-contain"
-              />
-            ) : (
-              <video 
-                controls
-                autoPlay
-                className="max-w-full max-h-full"
-                playsInline
-                crossOrigin="anonymous"
+              <button
+                onClick={closeLightbox}
+                className="group flex items-center gap-4 text-white hover:text-[#e8bb69] transition-colors"
+                aria-label="Close Lightbox"
               >
-                <source src={lightboxMedia.url} type={`video/${lightboxMedia.format || 'mp4'}`} />
-                <source 
-                  src={getStreamingVideoUrl(lightboxMedia.url, lightboxMedia.public_id, {
-                    quality: 'auto',
-                    format: 'auto'
-                  })} 
-                  type={`video/${lightboxMedia.format || 'mp4'}`} 
-                />
-                Trình duyệt của bạn không hỗ trợ video.
-              </video>
-            )}
-          </div>
-        </div>
-      )}
+                <span className="font-bold uppercase text-[10px] tracking-[0.4em]">Close</span>
+                <div className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center group-hover:border-[#e8bb69]">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </div>
+              </button>
+            </div>
+
+            {/* Main Content Area */}
+            <div className="flex-1 relative flex items-center justify-center overflow-hidden">
+              {/* Previous Button */}
+              {allMedia.length > 1 && (
+                <button
+                  onClick={(e) => { e.stopPropagation(); navigateLightbox('prev'); }}
+                  className="absolute left-8 z-20 group hidden md:flex items-center gap-4 text-white hover:text-[#e8bb69] transition-all"
+                >
+                  <div className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center group-hover:border-[#e8bb69] backdrop-blur-sm">
+                    <svg className="w-5 h-5 -translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                    </svg>
+                  </div>
+                </button>
+              )}
+
+              {/* Next Button */}
+              {allMedia.length > 1 && (
+                <button
+                  onClick={(e) => { e.stopPropagation(); navigateLightbox('next'); }}
+                  className="absolute right-8 z-20 group hidden md:flex items-center gap-4 text-white hover:text-[#e8bb69] transition-all"
+                >
+                  <div className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center group-hover:border-[#e8bb69] backdrop-blur-sm">
+                    <svg className="w-5 h-5 translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                </button>
+              )}
+
+              {/* Media Container */}
+              <motion.div
+                key={lightboxIndex}
+                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 1.1, y: -20 }}
+                transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                className="w-full h-full max-w-7xl max-h-[85vh] p-4 md:p-12 flex items-center justify-center"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {allMedia[lightboxIndex].type === 'image' ? (
+                  <img
+                    src={allMedia[lightboxIndex].url}
+                    alt={post.title}
+                    className="max-w-full max-h-full object-contain shadow-2xl"
+                  />
+                ) : (
+                  <div className="relative w-full aspect-video max-h-full">
+                    <video
+                      controls
+                      autoPlay
+                      className="w-full h-full object-contain"
+                      playsInline
+                      crossOrigin="anonymous"
+                    >
+                      {allMedia[lightboxIndex].provider === 'mux' ? (
+                        <source src={getMuxPlaybackUrl(allMedia[lightboxIndex].public_id)} type="application/x-mpegURL" />
+                      ) : (
+                        <>
+                          <source src={allMedia[lightboxIndex].url} type={`video/${allMedia[lightboxIndex].format || 'mp4'}`} />
+                          <source
+                            src={getStreamingVideoUrl(allMedia[lightboxIndex].url, allMedia[lightboxIndex].public_id, {
+                              quality: 'auto',
+                              format: 'auto'
+                            })}
+                            type={`video/${allMedia[lightboxIndex].format || 'mp4'}`}
+                          />
+                        </>
+                      )}
+                    </video>
+                  </div>
+                )}
+              </motion.div>
+            </div>
+
+            {/* Scroll/Swipe Suggestion for Mobile */}
+            <div className="md:hidden flex justify-center py-6 text-white/30 text-[9px] font-black uppercase tracking-[0.3em]">
+              Swipe to navigate
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }

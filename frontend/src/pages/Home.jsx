@@ -1,7 +1,9 @@
 import { useEffect, useState, useRef } from 'react'
 import { Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import client from '../api/client'
 import { getStreamingVideoUrl, getVideoThumbnail } from '../utils/cloudinary'
+import { getMuxPlaybackUrl, getMuxThumbnailUrl } from '../utils/mux'
 import CountUp from '../components/CountUp'
 
 function Home() {
@@ -153,6 +155,13 @@ function Home() {
     { number: '3+', label: 'Năm làm nghề' },
     { number: '∞', label: 'Cảm hứng sáng tạo' }
   ]
+
+  const heroVideo = {
+    id: 1,
+    type: 'video',
+    url: 'https://stream.mux.com/vpLevFP00WhlAndl02evlfSAE00Q7IPpI4lhjlhebtmZks',
+    title: 'Cinematic Motion'
+  }
 
   // Calculate parallax values for depth effect
   const getParallaxValues = () => {
@@ -349,92 +358,90 @@ function Home() {
           />
         </div>
 
-        {/* Main Content - moves forward (scales and fades) */}
+        {/* Main Content - Centered Cinematic Focus */}
         <div
-          className="relative z-10 max-w-7xl mx-auto w-full transition-all duration-100"
+          className="relative z-10 max-w-5xl mx-auto w-full transition-all duration-100 px-4"
           style={{
             transform: `scale(${parallax.contentScale})`,
             opacity: parallax.contentOpacity,
             filter: `blur(${parallax.contentBlur}px)`
           }}
         >
-          <div className="grid lg:grid-cols-12 gap-8 items-center pointer-events-auto">
-            {/* Left Column - Brand & Text */}
-            <div className="lg:col-span-7 space-y-8">
-              {/* Brand label - Editorial style */}
-              <div className="inline-flex items-center gap-3 mb-6">
-                <div className="h-px w-16 bg-zinc-950/40" />
-                <span
-                  className="text-[10px] sm:text-xs font-bold text-zinc-950/60 uppercase tracking-[0.3em] letter-spacing-wider"
-                  style={{ letterSpacing: '0.3em' }}
-                >
-                  ÚÒa Production
-                </span>
-                <div className="h-px w-16 bg-zinc-950/40" />
-              </div>
+          <div className="flex flex-col items-center text-center pointer-events-auto">
+            {/* Top Brand Label */}
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="inline-flex items-center gap-4 mb-12"
+            >
+              <div className="h-px w-8 sm:w-16 bg-zinc-950/20" />
+              <span className="text-[10px] sm:text-xs font-bold text-zinc-950 uppercase tracking-[0.5em]">
+                ÚÒa Production
+              </span>
+              <div className="h-px w-8 sm:w-16 bg-zinc-950/20" />
+            </motion.div>
 
-              {/* Main Heading - Adjusted sizes to prevent overflow */}
-              <h1
-                className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black text-zinc-950 leading-[0.9] tracking-tighter"
-                style={{
-                  fontVariationSettings: '"wght" 900',
-                  textShadow: '0 0 40px rgba(0,0,0,0.1)'
-                }}
+            {/* The Main Stage - Central Video */}
+            <div className="relative w-full aspect-video sm:aspect-[16/9] lg:aspect-[21/9] max-w-6xl mx-auto">
+              {/* Background Glow */}
+              <div className="absolute inset-0 bg-[#e8bb69] blur-[150px] opacity-20 -z-10" />
+
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
+                className="relative w-full h-full overflow-hidden bg-zinc-900 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.4)] border border-white/10 group"
               >
-                <span className="block transition-transform duration-100 ease-out" style={{ transform: `translateX(${parallax.line1X}px)` }}>Khoảnh khắc</span>
-                <span className="block relative mt-2 transition-transform duration-100 ease-out" style={{ transform: `translateX(${parallax.line2X}px)` }}>
-                  chuyển động
-                  <span
-                    className="absolute -bottom-2 left-0 right-0 h-3 bg-zinc-950/15 -skew-x-12"
-                    style={{ transform: 'skewX(-12deg)' }}
-                  />
-                </span>
-                <div className="flex flex-col sm:flex-row gap-x-4 transition-transform duration-100 ease-out" style={{ transform: `translateX(${parallax.line3X}px)` }}>
-                  <span className="block mt-2">hình ảnh</span>
-                  <span className="block">dẫn lối</span>
-                </div>
-              </h1>
+                <video
+                  src={heroVideo.url}
+                  autoPlay
+                  loop
+                  playsInline
+                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-100"
+                />
 
-              {/* Subtitle - Refined typography */}
-              <p className="text-lg sm:text-xl md:text-2xl text-zinc-900/90 font-medium max-w-2xl leading-relaxed mt-8">
-                Bắt lấy những khoảnh khắc, tạo ra những câu chuyện, xây dựng những trải nghiệm thị giác không thể quên.
-              </p>
+                {/* Minimal Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-b from-zinc-950/20 via-transparent to-zinc-950/60" />
 
-              {/* CTA Buttons - Editorial style */}
-              <div className="flex flex-wrap gap-4 mt-10">
-                <Link
-                  to="/gallery"
-                  className="group relative px-8 py-4 bg-zinc-950 text-white font-bold text-sm uppercase tracking-wider overflow-hidden transition-all duration-300 hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-zinc-950 focus:ring-offset-2 focus:ring-offset-[#e8bb69] cursor-pointer"
-                >
-                  <span className="relative z-10">Xem dự án</span>
-                  <div className="absolute inset-0 bg-white/10 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300" />
-                </Link>
-
-                <Link
-                  to="/contact"
-                  className="group relative px-8 py-4 bg-transparent text-zinc-950 font-bold text-sm uppercase tracking-wider border-2 border-zinc-950 overflow-hidden transition-all duration-300 hover:bg-zinc-950 hover:text-white focus:outline-none focus:ring-2 focus:ring-zinc-950 focus:ring-offset-2 focus:ring-offset-[#e8bb69] cursor-pointer"
-                >
-                  <span className="relative z-10">Liên hệ</span>
-                </Link>
-              </div>
-            </div>
-
-            {/* Right Column - Visual Element */}
-            <div className="lg:col-span-5 relative">
-              <div className="relative aspect-square max-w-md mx-auto lg:max-w-none">
-                {/* Decorative frame */}
-                <div className="absolute inset-0 border-4 border-zinc-950/20 rotate-6" />
-                <div className="absolute inset-4 border-2 border-zinc-950/10 -rotate-3" />
-
-                {/* Content area with gradient */}
-                <div className="absolute inset-8 bg-gradient-to-br from-zinc-950/10 to-transparent flex items-center justify-center">
-                  <div className="text-center space-y-4">
-                    <div className="text-6xl sm:text-7xl md:text-8xl font-black text-zinc-950/20">∞</div>
-                    <p className="text-xs uppercase tracking-widest text-zinc-950/40 font-bold">Stories</p>
+                {/* Floating Content within Video */}
+                <div className="absolute bottom-8 left-8 right-8 flex items-end justify-between">
+                  <div className="text-left">
+                    <span className="text-[10px] font-bold text-[#e8bb69] uppercase tracking-widest block mb-1">Current Focus</span>
+                    <h2 className="text-xl sm:text-2xl font-black text-white uppercase tracking-tighter">{heroVideo.title}</h2>
+                  </div>
+                  <div className="hidden sm:block">
+                    <span className="text-[10px] font-bold text-white/40 uppercase tracking-[0.3em]">Cinematic Reels // 2024</span>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             </div>
+
+            {/* Subtle CTA Section */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1 }}
+              className="flex flex-col sm:flex-row gap-6 mt-16 items-center"
+            >
+              <Link
+                to="/gallery"
+                className="group flex items-center gap-4 text-zinc-950 hover:text-white transition-colors"
+              >
+                <span className="text-xs font-black uppercase tracking-[0.3em]">Khám phá Portfolio</span>
+                <div className="w-12 h-12 rounded-full border border-zinc-950/20 group-hover:bg-zinc-950 group-hover:border-zinc-950 flex items-center justify-center transition-all">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                </div>
+              </Link>
+
+              <div className="h-px w-12 bg-zinc-950/10 hidden sm:block" />
+
+              <Link
+                to="/contact"
+                className="text-[10px] font-bold text-zinc-950/60 uppercase tracking-[0.3em] hover:text-[#e8bb69] transition-colors"
+              >
+                Hợp tác sản xuất
+              </Link>
+            </motion.div>
           </div>
         </div>
 
@@ -571,11 +578,15 @@ function Home() {
                           />
                         ) : (
                           <video
-                            src={getStreamingVideoUrl(project.firstMedia.url, project.firstMedia.public_id, {
-                              quality: 'auto',
-                              format: 'auto'
-                            })}
-                            poster={getVideoThumbnail(project.firstMedia.url, project.firstMedia.public_id, 1)}
+                            src={project.firstMedia.provider === 'mux'
+                              ? getMuxPlaybackUrl(project.firstMedia.public_id)
+                              : getStreamingVideoUrl(project.firstMedia.url, project.firstMedia.public_id, {
+                                quality: 'auto',
+                                format: 'auto'
+                              })}
+                            poster={project.firstMedia.provider === 'mux'
+                              ? getMuxThumbnailUrl(project.firstMedia.public_id)
+                              : getVideoThumbnail(project.firstMedia.url, project.firstMedia.public_id, 1)}
                             className="w-full h-full object-cover"
                             muted
                             loop
@@ -873,25 +884,6 @@ function Home() {
                 </span>
               </h2>
             </div>
-          </div>
-        </section>
-
-        {/* CTA Section - Minimal */}
-        <section className="relative py-32 px-4 sm:px-6 lg:px-8 bg-zinc-950">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-5xl sm:text-6xl md:text-7xl font-black text-white uppercase tracking-tighter leading-[0.9] mb-8">
-              Hãy tạo ra<br />Điều gì đó<br />đáng chú ý
-            </h2>
-            <p className="text-xl text-white/80 font-medium mb-12 max-w-2xl mx-auto">
-              Sẵn sàng mang ý tưởng của bạn đến với hiện thực? Liên hệ ngay.
-            </p>
-            <Link
-              to="/contact"
-              className="group relative inline-flex items-center justify-center px-10 py-5 bg-[#e8bb69] text-zinc-950 font-black text-base sm:text-xl uppercase tracking-widest overflow-hidden transition-all duration-300 hover:bg-orange-400 hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-[#e8bb69] focus:ring-offset-2 focus:ring-offset-zinc-950 cursor-pointer"
-            >
-              <span className="relative z-10">Bắt đầu dự án</span>
-              <span className="absolute inset-0 bg-white/10 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300" />
-            </Link>
           </div>
         </section>
       </div>

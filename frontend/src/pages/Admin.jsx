@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from 'react'
+import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import client from '../api/client'
 import VideoUploader from '../components/VideoUploader'
@@ -246,56 +247,61 @@ function Admin() {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950 pt-20">
-      <section className="relative py-6 px-6 bg-gradient-to-br from-[#e8bb69] to-[#e8bb69] overflow-hidden">
+    <div className="min-h-screen bg-zinc-950 text-zinc-100 selection:bg-[#e8bb69] selection:text-zinc-950 pt-20">
+      {/* Header Section */}
+      <section className="relative pt-12 pb-8 px-6 overflow-hidden border-b border-white/5 bg-zinc-950">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-8">
+          <div>
+            <div className="inline-flex items-center gap-3 mb-4">
+              <div className="h-px w-8 bg-[#e8bb69]" />
+              <span className="text-[10px] uppercase tracking-[0.4em] text-[#e8bb69] font-bold">Control Panel</span>
+            </div>
+            <h1 className="text-6xl font-black text-white uppercase tracking-tighter leading-none">
+              Quản lý<br />
+              <span className="text-zinc-500">Hệ thống</span>
+            </h1>
+          </div>
 
-        <div className="relative max-w-7xl mx-auto text-center">
-          <h1 className="text-2xl md:text-8xl font-black text-zinc-950 uppercase tracking-tight">
-            Admin
-          </h1>
+          <div className="flex items-center gap-6 pb-2">
+            <div className="text-right hidden sm:block">
+              <span className="block text-[10px] uppercase tracking-widest text-zinc-500 font-bold mb-1">Phiên đăng nhập</span>
+              <span className="text-sm font-bold text-white uppercase tracking-wider">Administrator</span>
+            </div>
+            <button
+              onClick={handleLogout}
+              className="group flex items-center gap-3 px-6 py-3 border border-white/10 hover:border-[#e8bb69] hover:bg-[#e8bb69] hover:text-zinc-950 transition-all duration-300 transition-all"
+            >
+              <span className="text-[10px] font-black uppercase tracking-widest">Đăng xuất</span>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4-4H3" /></svg>
+            </button>
+          </div>
         </div>
       </section>
 
-      <div className="max-w-7xl mx-auto p-2">
-        <div className="flex justify-end items-center mb-8 flex-col md:flex-row md:items-center gap-4">
-          <button
-            onClick={handleLogout}
-            className="px-4 py-2 text-sm rounded transition-all duration-300 bg-[#e8bb69] text-zinc-950"
-          >
-            Logout
-          </button>
-        </div>
 
-        <div className="border-b-2 border-zinc-700 mb-4 overflow-x-auto overflow-y-hidden scrollbar-hide">
-          <div className="flex gap-2 md:gap-4 min-w-max px-4 md:px-0 pb-0">
+      <div className="max-w-7xl mx-auto px-6 py-12">
+        {/* Navigation Tabs */}
+        <div className="flex items-center gap-4 md:gap-8 mb-16 overflow-x-auto no-scrollbar border-b border-white/5">
+          {[
+            { id: 'posts', label: 'Bài viết' },
+            { id: 'bookings', label: 'Tin nhắn' },
+            { id: 'categories', label: 'Danh mục' }
+          ].map((tab) => (
             <button
-              className={`px-4 md:px-8 py-2 md:py-3 border-none text-sm md:text-base cursor-pointer border-b-2 -mb-[2px] transition-all duration-300 font-medium whitespace-nowrap ${activeTab === 'posts'
-                ? 'font-semibold bg-[#e8bb69] text-zinc-950 border-b-[#e8bb69]'
-                : 'bg-transparent text-[#e8bb69] border-b-transparent hover:text-[#e8bb69]'
+              key={tab.id}
+              className={`pb-6 text-sm md:text-lg font-black uppercase tracking-widest transition-all relative group cursor-pointer ${activeTab === tab.id ? 'text-[#e8bb69]' : 'text-zinc-600 hover:text-white'
                 }`}
-              onClick={() => setActiveTab('posts')}
+              onClick={() => setActiveTab(tab.id)}
             >
-              Posts
+              {tab.label}
+              {activeTab === tab.id && (
+                <motion.div
+                  layoutId="activeTab"
+                  className="absolute bottom-0 left-0 right-0 h-1 bg-[#e8bb69]"
+                />
+              )}
             </button>
-            <button
-              className={`px-4 md:px-8 py-2 md:py-3 border-none text-sm md:text-base cursor-pointer border-b-2 -mb-[2px] transition-all duration-300 font-medium whitespace-nowrap ${activeTab === 'bookings'
-                ? 'font-semibold bg-[#e8bb69] text-zinc-950 border-b-[#e8bb69]'
-                : 'bg-transparent text-[#e8bb69] border-b-transparent hover:text-[#e8bb69]'
-                }`}
-              onClick={() => setActiveTab('bookings')}
-            >
-              Contacts
-            </button>
-            <button
-              className={`px-4 md:px-8 py-2 md:py-3 border-none text-sm md:text-base cursor-pointer border-b-2 -mb-[2px] transition-all duration-300 font-medium whitespace-nowrap ${activeTab === 'categories'
-                ? 'font-semibold bg-[#e8bb69] text-zinc-950 border-b-[#e8bb69]'
-                : 'bg-transparent text-[#e8bb69] border-b-transparent hover:text-[#e8bb69]'
-                }`}
-              onClick={() => setActiveTab('categories')}
-            >
-              Categories
-            </button>
-          </div>
+          ))}
         </div>
 
         {loading ? (
@@ -304,43 +310,41 @@ function Admin() {
           <>
             {activeTab === 'posts' && (
               <div>
-                <div className="mb-4 flex gap-2 items-center">
-                  <input
-                    type="text"
-                    placeholder="Tìm kiếm..."
-                    value={postsSearchInput}
-                    onChange={(e) => setPostsSearchInput(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && handlePostsSearch()}
-                    className="flex-1 max-w-md p-2 border rounded focus:outline-none"
-                    style={{
-                      borderColor: '#e0e0e0',
-                      color: '#001f3f'
-                    }}
-                    onFocus={(e) => e.currentTarget.style.borderColor = '#e8bb69'}
-                    onBlur={(e) => e.currentTarget.style.borderColor = '#e0e0e0'}
-                  />
+                <div className="flex flex-col md:flex-row gap-6 mb-12">
+                  <div className="flex-1 flex gap-2">
+                    <div className="relative flex-1 group">
+                      <input
+                        type="text"
+                        placeholder="TÌM KIẾM..."
+                        value={postsSearchInput}
+                        onChange={(e) => setPostsSearchInput(e.target.value)}
+                        onKeyPress={(e) => e.key === 'Enter' && handlePostsSearch()}
+                        className="w-full bg-zinc-900 border border-white/5 p-4 text-sm font-bold uppercase tracking-widest focus:outline-none focus:border-[#e8bb69] transition-all"
+                      />
+                      <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none opacity-20 group-focus-within:opacity-100 transition-opacity">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                      </div>
+                    </div>
+                    <button
+                      onClick={handlePostsSearch}
+                      className="px-8 py-4 bg-[#e8bb69] text-zinc-950 font-black uppercase text-xs tracking-widest hover:bg-white transition-all cursor-pointer"
+                    >
+                      Lọc
+                    </button>
+                    <button
+                      onClick={handleClearPostsSearch}
+                      className="p-4 border border-white/10 hover:border-red-500/50 text-zinc-500 hover:text-red-500 transition-all cursor-pointer"
+                      title="Xóa bộ lọc"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                  </div>
+
                   <button
-                    onClick={handlePostsSearch}
-                    className="px-4 py-2 rounded border-2 transition-all duration-300"
-                    style={{
-                      backgroundColor: '#e8bb69',
-                      color: '#001f3f',
-                      borderColor: '#e8bb69'
-                    }}
+                    onClick={() => setShowPostForm(true)}
+                    className="px-8 py-4 bg-white text-zinc-950 font-black uppercase text-xs tracking-[0.2em] hover:bg-[#e8bb69] transition-all cursor-pointer flex items-center justify-center gap-3"
                   >
-                    Tìm
-                  </button>
-                  <button
-                    onClick={handleClearPostsSearch}
-                    className="px-4 py-2 rounded border-2 transition-all duration-300"
-                    style={{
-                      backgroundColor: 'transparent',
-                      color: '#e8bb69',
-                      borderColor: '#e8bb69'
-                    }}
-                    title="Xóa"
-                  >
-                    Xóa
+                    <span className="text-xl">+</span> Mẫu mới
                   </button>
                 </div>
                 {showPostForm && (
@@ -357,35 +361,41 @@ function Admin() {
                     post={editingPost}
                   />
                 )}
-                <div className="overflow-x-auto">
-                  <table className="w-full border-collapse bg-white rounded-lg overflow-hidden shadow-md min-w-[800px]">
+                <div className="overflow-x-auto border border-white/5">
+                  <table className="w-full border-collapse bg-zinc-900/50 backdrop-blur-md min-w-[800px]">
                     <thead>
-                      <tr>
-                        <th className="p-2 md:p-4 text-left border-b border-border bg-secondary font-semibold text-xs md:text-sm w-12">STT</th>
+                      <tr className="border-b border-white/5">
+                        <th className="p-6 text-left text-[10px] font-black uppercase tracking-widest text-zinc-500 w-16">STT</th>
                         <th
-                          className="p-2 md:p-4 text-left border-b border-border bg-secondary font-semibold cursor-pointer hover:bg-gray-200 transition-colors text-xs md:text-sm"
+                          className="p-6 text-left text-[10px] font-black uppercase tracking-widest text-zinc-500 cursor-pointer hover:text-[#e8bb69] transition-colors"
                           onClick={() => handleSort('title', 'posts', setPostsSortColumn, setPostsSortDirection, postsSortColumn, postsSortDirection)}
                         >
-                          Title
-                          <SortIcon column="title" sortColumn={postsSortColumn} sortDirection={postsSortDirection} />
+                          <div className="flex items-center gap-2">
+                            Tiêu đề
+                            <SortIcon column="title" sortColumn={postsSortColumn} sortDirection={postsSortDirection} />
+                          </div>
                         </th>
                         <th
-                          className="p-2 md:p-4 text-left border-b border-border bg-secondary font-semibold cursor-pointer hover:bg-gray-200 transition-colors text-xs md:text-sm"
+                          className="p-6 text-left text-[10px] font-black uppercase tracking-widest text-zinc-500 cursor-pointer hover:text-[#e8bb69] transition-colors"
                           onClick={() => handleSort('status', 'posts', setPostsSortColumn, setPostsSortDirection, postsSortColumn, postsSortDirection)}
                         >
-                          Status
-                          <SortIcon column="status" sortColumn={postsSortColumn} sortDirection={postsSortDirection} />
+                          <div className="flex items-center gap-2">
+                            Trạng thái
+                            <SortIcon column="status" sortColumn={postsSortColumn} sortDirection={postsSortDirection} />
+                          </div>
                         </th>
-                        <th className="p-2 md:p-4 text-left border-b border-border bg-secondary font-semibold text-xs md:text-sm hidden md:table-cell">Categories</th>
-                        <th className="p-2 md:p-4 text-left border-b border-border bg-secondary font-semibold text-xs md:text-sm hidden lg:table-cell">Media</th>
+                        <th className="p-6 text-left text-[10px] font-black uppercase tracking-widest text-zinc-500 hidden md:table-cell">Danh mục</th>
+                        <th className="p-6 text-left text-[10px] font-black uppercase tracking-widest text-zinc-500 hidden lg:table-cell">Phương tiện</th>
                         <th
-                          className="p-2 md:p-4 text-left border-b border-border bg-secondary font-semibold cursor-pointer hover:bg-gray-200 transition-colors text-xs md:text-sm"
+                          className="p-6 text-left text-[10px] font-black uppercase tracking-widest text-zinc-500 cursor-pointer hover:text-[#e8bb69] transition-colors"
                           onClick={() => handleSort('created', 'posts', setPostsSortColumn, setPostsSortDirection, postsSortColumn, postsSortDirection)}
                         >
-                          Created
-                          <SortIcon column="created" sortColumn={postsSortColumn} sortDirection={postsSortDirection} />
+                          <div className="flex items-center gap-2">
+                            Ngày tạo
+                            <SortIcon column="created" sortColumn={postsSortColumn} sortDirection={postsSortDirection} />
+                          </div>
                         </th>
-                        <th className="p-2 md:p-4 text-left border-b border-border bg-secondary font-semibold text-xs md:text-sm">Actions</th>
+                        <th className="p-6 text-right text-[10px] font-black uppercase tracking-widest text-zinc-500">Hành động</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -396,23 +406,21 @@ function Admin() {
                         const stt = (postsPage - 1) * itemsPerPage + index + 1
 
                         return (
-                          <tr key={post.id} className="hover:bg-secondary">
-                            <td className="p-2 md:p-4 text-left border-b border-border text-xs md:text-sm text-gray-600">{stt}</td>
-                            <td className="p-2 md:p-4 text-left border-b border-border text-xs md:text-sm">{post.title}</td>
-                            <td className="p-2 md:p-4 text-left border-b border-border">
-                              <span className={`status-badge ${post.status === 'published'
-                                ? 'bg-green-200 text-green-900 border border-green-400'
-                                : post.status === 'draft'
-                                  ? 'bg-yellow-200 text-yellow-900 border border-yellow-400'
-                                  : ''
+                          <tr key={post.id} className="hover:bg-zinc-800/50">
+                            <td className="p-2 md:p-4 text-left text-xs md:text-sm text-gray-600">{stt}</td>
+                            <td className="p-2 md:p-4 text-left text-xs md:text-sm">{post.title}</td>
+                            <td className="p-6 text-left border-b border-white/5">
+                              <span className={`px-3 py-1 text-[9px] font-black uppercase tracking-widest border ${post.status === 'published'
+                                ? 'bg-[#e8bb69]/10 text-[#e8bb69] border-[#e8bb69]/30'
+                                : 'bg-zinc-800 text-zinc-500 border-white/5'
                                 }`}>
                                 {post.status}
                               </span>
                             </td>
-                            <td className="p-2 md:p-4 text-left border-b border-border text-xs md:text-sm hidden md:table-cell">
+                            <td className="p-2 md:p-4 text-left text-xs md:text-sm hidden md:table-cell">
                               {post.categories?.map(c => c.name).join(', ') || '-'}
                             </td>
-                            <td className="p-2 md:p-4 text-left border-b border-border hidden lg:table-cell">
+                            <td className="p-2 md:p-4 text-left hidden lg:table-cell">
                               {representativeMedia ? (
                                 <div className="flex items-center gap-3">
                                   {representativeMedia.type === 'video' ? (
@@ -463,35 +471,25 @@ function Admin() {
                                 <span className="text-text-light text-xs md:text-sm">-</span>
                               )}
                             </td>
-                            <td className="p-2 md:p-4 text-left border-b border-border text-xs md:text-sm whitespace-nowrap">{formatDate(post.created_at)}</td>
-                            <td className="p-2 md:p-4 text-left border-b border-border">
-                              <div className="flex gap-1 md:gap-2">
+                            <td className="p-2 md:p-4 text-left text-xs md:text-sm whitespace-nowrap">{formatDate(post.created_at)}</td>
+                            <td className="p-6 text-right border-b border-white/5">
+                              <div className="flex justify-end gap-3">
                                 <button
-                                  className="p-1 md:p-2 rounded transition-colors duration-200"
-                                  style={{ color: '#001f3f' }}
-                                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(207, 185, 112, 0.1)'}
-                                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                                  className="p-3 bg-zinc-800 border border-white/5 hover:border-[#e8bb69] hover:text-[#e8bb69] transition-all cursor-pointer"
                                   onClick={() => {
                                     setEditingPost(post)
                                     setShowPostForm(true)
                                   }}
-                                  title="Edit"
+                                  title="Sửa"
                                 >
-                                  <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                  </svg>
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                                 </button>
                                 <button
-                                  className="p-1 md:p-2 rounded transition-colors duration-200"
-                                  style={{ color: '#001f3f' }}
-                                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(207, 185, 112, 0.1)'}
-                                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                                  className="p-3 bg-zinc-800 border border-white/5 hover:border-red-500 hover:text-red-500 transition-all cursor-pointer"
                                   onClick={() => handleDeletePost(post.id)}
-                                  title="Delete"
+                                  title="Xóa"
                                 >
-                                  <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                  </svg>
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                                 </button>
                               </div>
                             </td>
@@ -513,46 +511,44 @@ function Admin() {
 
             {activeTab === 'bookings' && (
               <div>
-                <div className="mb-4 flex gap-2 items-center">
-                  <input
-                    type="text"
-                    placeholder="Tìm kiếm..."
-                    value={bookingsSearchInput}
-                    onChange={(e) => setBookingsSearchInput(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && handleBookingsSearch()}
-                    className="flex-1 max-w-md p-2 border rounded focus:outline-none"
-                    style={{
-                      borderColor: '#e0e0e0',
-                      color: '#001f3f'
-                    }}
-                    onFocus={(e) => e.currentTarget.style.borderColor = '#e8bb69'}
-                    onBlur={(e) => e.currentTarget.style.borderColor = '#e0e0e0'}
-                  />
+                <div className="flex flex-col md:flex-row gap-6 mb-12">
+                  <div className="flex-1 flex gap-2">
+                    <div className="relative flex-1 group">
+                      <input
+                        type="text"
+                        placeholder="TÌM KIẾM..."
+                        value={bookingsSearchInput}
+                        onChange={(e) => setBookingsSearchInput(e.target.value)}
+                        onKeyPress={(e) => e.key === 'Enter' && handleBookingsSearch()}
+                        className="w-full bg-zinc-900 border border-white/5 p-4 text-sm font-bold uppercase tracking-widest focus:outline-none focus:border-[#e8bb69] transition-all"
+                      />
+                      <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none opacity-20 group-focus-within:opacity-100 transition-opacity">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                      </div>
+                    </div>
+                    <button
+                      onClick={handleBookingsSearch}
+                      className="px-8 py-4 bg-[#e8bb69] text-zinc-950 font-black uppercase text-xs tracking-widest hover:bg-white transition-all cursor-pointer"
+                    >
+                      Lọc
+                    </button>
+                    <button
+                      onClick={handleClearBookingsSearch}
+                      className="p-4 border border-white/10 hover:border-red-500/50 text-zinc-500 hover:text-red-500 transition-all cursor-pointer"
+                      title="Xóa bộ lọc"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                  </div>
+
                   <button
-                    onClick={handleBookingsSearch}
-                    className="px-4 py-2 rounded border-2 transition-all duration-300"
-                    style={{
-                      backgroundColor: '#e8bb69',
-                      color: '#001f3f',
-                      borderColor: '#e8bb69'
-                    }}
-                    title="Tìm"
+                    onClick={() => setShowBookingForm(true)}
+                    className="px-8 py-4 bg-white text-zinc-950 font-black uppercase text-xs tracking-[0.2em] hover:bg-[#e8bb69] transition-all cursor-pointer flex items-center justify-center gap-3"
                   >
-                    Tìm
-                  </button>
-                  <button
-                    onClick={handleClearBookingsSearch}
-                    className="px-4 py-2 rounded border-2 transition-all duration-300"
-                    style={{
-                      backgroundColor: 'transparent',
-                      color: '#e8bb69',
-                      borderColor: '#e8bb69'
-                    }}
-                    title="Xóa"
-                  >
-                    Xóa
+                    <span className="text-xl">+</span> Tin nhắn mới
                   </button>
                 </div>
+
                 {showBookingForm && (
                   <BookingForm
                     onClose={() => {
@@ -567,74 +563,69 @@ function Admin() {
                     booking={editingBooking}
                   />
                 )}
-                <div className="overflow-x-auto">
-                  <table className="w-full border-collapse bg-white rounded-lg overflow-hidden shadow-md min-w-[900px]">
+
+                <div className="overflow-x-auto border border-white/5">
+                  <table className="w-full border-collapse bg-zinc-900/50 backdrop-blur-md min-w-[900px]">
                     <thead>
-                      <tr>
-                        <th className="p-2 md:p-4 text-left border-b border-border bg-secondary font-semibold text-xs md:text-sm w-12">STT</th>
+                      <tr className="border-b border-white/5">
+                        <th className="p-6 text-left text-[10px] font-black uppercase tracking-widest text-zinc-500 w-16">STT</th>
                         <th
-                          className="p-2 md:p-4 text-left border-b border-border bg-secondary font-semibold cursor-pointer hover:bg-gray-200 transition-colors text-xs md:text-sm"
+                          className="p-6 text-left text-[10px] font-black uppercase tracking-widest text-zinc-500 cursor-pointer hover:text-[#e8bb69] transition-colors"
                           onClick={() => handleSort('client_name', 'bookings', setBookingsSortColumn, setBookingsSortDirection, bookingsSortColumn, bookingsSortDirection)}
                         >
-                          Client Name
-                          <SortIcon column="client_name" sortColumn={bookingsSortColumn} sortDirection={bookingsSortDirection} />
+                          <div className="flex items-center gap-2">
+                            Khách hàng
+                            <SortIcon column="client_name" sortColumn={bookingsSortColumn} sortDirection={bookingsSortDirection} />
+                          </div>
                         </th>
                         <th
-                          className="p-2 md:p-4 text-left border-b border-border bg-secondary font-semibold cursor-pointer hover:bg-gray-200 transition-colors text-xs md:text-sm"
+                          className="p-6 text-left text-[10px] font-black uppercase tracking-widest text-zinc-500 cursor-pointer hover:text-[#e8bb69] transition-colors"
                           onClick={() => handleSort('email', 'bookings', setBookingsSortColumn, setBookingsSortDirection, bookingsSortColumn, bookingsSortDirection)}
                         >
-                          Email
-                          <SortIcon column="email" sortColumn={bookingsSortColumn} sortDirection={bookingsSortDirection} />
+                          <div className="flex items-center gap-2">
+                            Email
+                            <SortIcon column="email" sortColumn={bookingsSortColumn} sortDirection={bookingsSortDirection} />
+                          </div>
                         </th>
-                        <th className="p-2 md:p-4 text-left border-b border-border bg-secondary font-semibold text-xs md:text-sm">Message</th>
-                        <th className="p-2 md:p-4 text-left border-b border-border bg-secondary font-semibold text-xs md:text-sm">Actions</th>
+                        <th className="p-6 text-left text-[10px] font-black uppercase tracking-widest text-zinc-500">Nội dung</th>
+                        <th className="p-6 text-right text-[10px] font-black uppercase tracking-widest text-zinc-500">Hành động</th>
                       </tr>
                     </thead>
                     <tbody>
                       {bookings.map((booking, index) => {
                         const stt = (bookingsPage - 1) * itemsPerPage + index + 1
                         return (
-                          <tr key={booking.id} className="hover:bg-secondary">
-                            <td className="p-2 md:p-4 text-left border-b border-border text-xs md:text-sm text-gray-600">{stt}</td>
-                            <td className="p-2 md:p-4 text-left border-b border-border text-xs md:text-sm">{booking.client_name}</td>
-                            <td className="p-2 md:p-4 text-left border-b border-border text-xs md:text-sm">{booking.client_email}</td>
-                            <td className="p-2 md:p-4 text-left border-b border-border text-xs md:text-sm">
+                          <tr key={booking.id} className="hover:bg-zinc-800/50 transition-colors border-b border-white/5 last:border-0">
+                            <td className="p-6 text-left text-xs font-bold text-zinc-500">{stt}</td>
+                            <td className="p-6 text-left text-sm font-black text-white uppercase tracking-tight">{booking.client_name}</td>
+                            <td className="p-6 text-left text-sm font-medium text-zinc-400">{booking.client_email}</td>
+                            <td className="p-6 text-left text-sm text-zinc-500">
                               {booking.message ? (
-                                <span className="block max-w-md line-clamp-2" title={booking.message}>
-                                  {booking.message}
+                                <span className="block max-w-md line-clamp-2 italic" title={booking.message}>
+                                  "{booking.message}"
                                 </span>
                               ) : (
-                                <span className="text-gray-400">-</span>
+                                <span className="text-zinc-700 uppercase text-[10px] tracking-widest">Không có nội dung</span>
                               )}
                             </td>
-                            <td className="p-2 md:p-4 text-left border-b border-border">
-                              <div className="flex gap-1 md:gap-2">
+                            <td className="p-6 text-right">
+                              <div className="flex justify-end gap-3">
                                 <button
-                                  className="p-1 md:p-2 rounded transition-colors duration-200"
-                                  style={{ color: '#001f3f' }}
-                                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(207, 185, 112, 0.1)'}
-                                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                                  className="p-3 bg-zinc-800 border border-white/5 hover:border-[#e8bb69] hover:text-[#e8bb69] transition-all cursor-pointer"
                                   onClick={() => {
                                     setEditingBooking(booking)
                                     setShowBookingForm(true)
                                   }}
-                                  title="Edit"
+                                  title="Sửa"
                                 >
-                                  <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                  </svg>
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                                 </button>
                                 <button
-                                  className="p-1 md:p-2 rounded transition-colors duration-200"
-                                  style={{ color: '#001f3f' }}
-                                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(207, 185, 112, 0.1)'}
-                                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                                  className="p-3 bg-zinc-800 border border-white/5 hover:border-red-500 hover:text-red-500 transition-all cursor-pointer"
                                   onClick={() => handleDeleteBooking(booking.id)}
-                                  title="Delete"
+                                  title="Xóa"
                                 >
-                                  <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                  </svg>
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                                 </button>
                               </div>
                             </td>
@@ -656,46 +647,44 @@ function Admin() {
 
             {activeTab === 'categories' && (
               <div>
-                <div className="mb-4 flex gap-2 items-center">
-                  <input
-                    type="text"
-                    placeholder="Tìm kiếm..."
-                    value={categoriesSearchInput}
-                    onChange={(e) => setCategoriesSearchInput(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && handleCategoriesSearch()}
-                    className="flex-1 max-w-md p-2 border rounded focus:outline-none"
-                    style={{
-                      borderColor: '#e0e0e0',
-                      color: '#001f3f'
-                    }}
-                    onFocus={(e) => e.currentTarget.style.borderColor = '#e8bb69'}
-                    onBlur={(e) => e.currentTarget.style.borderColor = '#e0e0e0'}
-                  />
+                <div className="flex flex-col md:flex-row gap-6 mb-12">
+                  <div className="flex-1 flex gap-2">
+                    <div className="relative flex-1 group">
+                      <input
+                        type="text"
+                        placeholder="TÌM KIẾM..."
+                        value={categoriesSearchInput}
+                        onChange={(e) => setCategoriesSearchInput(e.target.value)}
+                        onKeyPress={(e) => e.key === 'Enter' && handleCategoriesSearch()}
+                        className="w-full bg-zinc-900 border border-white/5 p-4 text-sm font-bold uppercase tracking-widest focus:outline-none focus:border-[#e8bb69] transition-all"
+                      />
+                      <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none opacity-20 group-focus-within:opacity-100 transition-opacity">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                      </div>
+                    </div>
+                    <button
+                      onClick={handleCategoriesSearch}
+                      className="px-8 py-4 bg-[#e8bb69] text-zinc-950 font-black uppercase text-xs tracking-widest hover:bg-white transition-all cursor-pointer"
+                    >
+                      Lọc
+                    </button>
+                    <button
+                      onClick={handleClearCategoriesSearch}
+                      className="p-4 border border-white/10 hover:border-red-500/50 text-zinc-500 hover:text-red-500 transition-all cursor-pointer"
+                      title="Xóa bộ lọc"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                  </div>
+
                   <button
-                    onClick={handleCategoriesSearch}
-                    className="px-4 py-2 rounded border-2 transition-all duration-300"
-                    style={{
-                      backgroundColor: '#e8bb69',
-                      color: '#001f3f',
-                      borderColor: '#e8bb69'
-                    }}
-                    title="Tìm"
+                    onClick={() => setShowCategoryForm(true)}
+                    className="px-8 py-4 bg-white text-zinc-950 font-black uppercase text-xs tracking-[0.2em] hover:bg-[#e8bb69] transition-all cursor-pointer flex items-center justify-center gap-3"
                   >
-                    Tìm
-                  </button>
-                  <button
-                    onClick={handleClearCategoriesSearch}
-                    className="px-4 py-2 rounded border-2 transition-all duration-300"
-                    style={{
-                      backgroundColor: 'transparent',
-                      color: '#e8bb69',
-                      borderColor: '#e8bb69'
-                    }}
-                    title="Xóa"
-                  >
-                    Xóa
+                    <span className="text-xl">+</span> Danh mục mới
                   </button>
                 </div>
+
                 {showCategoryForm && (
                   <CategoryForm
                     onClose={() => setShowCategoryForm(false)}
@@ -705,48 +694,48 @@ function Admin() {
                     }}
                   />
                 )}
-                <div className="overflow-x-auto">
-                  <table className="w-full border-collapse bg-white rounded-lg overflow-hidden shadow-md min-w-[600px]">
+
+                <div className="overflow-x-auto border border-white/5">
+                  <table className="w-full border-collapse bg-zinc-900/50 backdrop-blur-md min-w-[600px]">
                     <thead>
-                      <tr>
-                        <th className="p-2 md:p-4 text-left border-b border-border bg-secondary font-semibold text-xs md:text-sm w-12">STT</th>
+                      <tr className="border-b border-white/5">
+                        <th className="p-6 text-left text-[10px] font-black uppercase tracking-widest text-zinc-500 w-16">STT</th>
                         <th
-                          className="p-2 md:p-4 text-left border-b border-border bg-secondary font-semibold cursor-pointer hover:bg-gray-200 transition-colors text-xs md:text-sm"
+                          className="p-6 text-left text-[10px] font-black uppercase tracking-widest text-zinc-500 cursor-pointer hover:text-[#e8bb69] transition-colors"
                           onClick={() => handleSort('name', 'categories', setCategoriesSortColumn, setCategoriesSortDirection, categoriesSortColumn, categoriesSortDirection)}
                         >
-                          Name
-                          <SortIcon column="name" sortColumn={categoriesSortColumn} sortDirection={categoriesSortDirection} />
+                          <div className="flex items-center gap-2">
+                            Tên danh mục
+                            <SortIcon column="name" sortColumn={categoriesSortColumn} sortDirection={categoriesSortDirection} />
+                          </div>
                         </th>
                         <th
-                          className="p-2 md:p-4 text-left border-b border-border bg-secondary font-semibold cursor-pointer hover:bg-gray-200 transition-colors text-xs md:text-sm hidden md:table-cell"
+                          className="p-6 text-left text-[10px] font-black uppercase tracking-widest text-zinc-500 cursor-pointer hover:text-[#e8bb69] transition-colors hidden md:table-cell"
                           onClick={() => handleSort('created', 'categories', setCategoriesSortColumn, setCategoriesSortDirection, categoriesSortColumn, categoriesSortDirection)}
                         >
-                          Created
-                          <SortIcon column="created" sortColumn={categoriesSortColumn} sortDirection={categoriesSortDirection} />
+                          <div className="flex items-center gap-2">
+                            Ngày tạo
+                            <SortIcon column="created" sortColumn={categoriesSortColumn} sortDirection={categoriesSortDirection} />
+                          </div>
                         </th>
-                        <th className="p-2 md:p-4 text-left border-b border-border bg-secondary font-semibold text-xs md:text-sm">Actions</th>
+                        <th className="p-6 text-right text-[10px] font-black uppercase tracking-widest text-zinc-500">Hành động</th>
                       </tr>
                     </thead>
                     <tbody>
                       {categories.map((category, index) => {
                         const stt = index + 1
                         return (
-                          <tr key={category.id} className="hover:bg-secondary">
-                            <td className="p-2 md:p-4 text-left border-b border-border text-xs md:text-sm text-gray-600">{stt}</td>
-                            <td className="p-2 md:p-4 text-left border-b border-border text-xs md:text-sm">{category.name}</td>
-                            <td className="p-2 md:p-4 text-left border-b border-border text-xs md:text-sm whitespace-nowrap hidden md:table-cell">{formatDate(category.created_at)}</td>
-                            <td className="p-2 md:p-4 text-left border-b border-border">
+                          <tr key={category.id} className="hover:bg-zinc-800/50 transition-colors border-b border-white/5 last:border-0">
+                            <td className="p-6 text-left text-xs font-bold text-zinc-500">{stt}</td>
+                            <td className="p-6 text-left text-sm font-black text-white uppercase tracking-tight">{category.name}</td>
+                            <td className="p-6 text-left text-sm text-zinc-400 whitespace-nowrap hidden md:table-cell">{formatDate(category.created_at)}</td>
+                            <td className="p-6 text-right">
                               <button
-                                className="p-1 md:p-2 rounded transition-colors duration-200"
-                                style={{ color: '#001f3f' }}
-                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(207, 185, 112, 0.1)'}
-                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                                className="p-3 bg-zinc-800 border border-white/5 hover:border-red-500 hover:text-red-500 transition-all cursor-pointer"
                                 onClick={() => handleDeleteCategory(category.id)}
-                                title="Delete"
+                                title="Xóa"
                               >
-                                <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                </svg>
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                               </button>
                             </td>
                           </tr>
@@ -769,29 +758,6 @@ function Admin() {
         onConfirm={modalState.onConfirm}
         onCancel={modalState.onCancel}
       />
-
-      {/* Fixed Add Button */}
-      <button
-        onClick={() => {
-          if (activeTab === 'posts') {
-            setShowPostForm(true)
-          } else if (activeTab === 'bookings') {
-            setShowBookingForm(true)
-          } else if (activeTab === 'categories') {
-            setShowCategoryForm(true)
-          }
-        }}
-        className="fixed bottom-6 right-6 w-12 h-12 rounded-full shadow-lg flex items-center justify-center text-2xl font-bold transition-all duration-300 hover:scale-110 z-50"
-        style={{
-          backgroundColor: '#e8bb69',
-          color: '#001f3f'
-        }}
-        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#ea580c'}
-        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e8bb69'}
-        aria-label="Add new item"
-      >
-        +
-      </button>
     </div>
   )
 }
@@ -930,8 +896,11 @@ function PostForm({ onClose, onSuccess, post }) {
         console.log('existingMedia before mapping:', existingMedia.map(m => ({ id: m.id, is_featured: m.is_featured })))
         const existingMediaInput = existingMedia.map((m, idx) => {
           const mediaItem = {
+            type: m.type,
+            provider: m.provider || 'cloudinary',
             public_id: m.public_id,
             secure_url: m.url, // url field maps to secure_url
+            asset_id: m.meta_data?.asset_id || m.metadata?.asset_id,
             duration: m.duration,
             width: m.width,
             height: m.height,
@@ -940,7 +909,7 @@ function PostForm({ onClose, onSuccess, post }) {
             is_featured: Boolean(m.is_featured), // Ensure boolean value
             display_order: m.display_order !== undefined ? m.display_order : idx
           }
-          console.log(`Media ${idx}:`, { public_id: m.public_id?.substring(0, 20), is_featured: mediaItem.is_featured })
+          console.log(`Media ${idx}:`, { public_id: m.public_id?.substring(0, 20), is_featured: mediaItem.is_featured, provider: mediaItem.provider })
           return mediaItem
         })
         finalMediaData = [...existingMediaInput, ...mediaData.map((m, idx) => ({

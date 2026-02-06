@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import client from '../api/client'
+import { motion } from 'framer-motion'
 
 function Contact() {
   const [formData, setFormData] = useState({
@@ -40,245 +41,166 @@ function Contact() {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950 pt-20">
-      {/* Hero Section */}
-      <section className="relative py-20 px-6 bg-gradient-to-br from-[#e8bb69] to-[#e8bb69] overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0" style={{
-            backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(0,0,0,.1) 35px, rgba(0,0,0,.1) 70px)'
-          }}></div>
+    <div className="min-h-screen bg-zinc-950 text-zinc-100 selection:bg-[#e8bb69] selection:text-zinc-950 pt-20">
+      {/* Hero Section - Editorial style */}
+      <section className="relative pt-24 pb-12 px-6 overflow-hidden">
+        <div className="max-w-7xl mx-auto relative z-10">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8 }}
+            >
+              <div className="inline-flex items-center gap-3 mb-6">
+                <div className="h-px w-12 bg-[#e8bb69]" />
+                <span className="text-[10px] uppercase tracking-[0.4em] text-[#e8bb69] font-bold">Hit us up</span>
+              </div>
+              <h1 className="text-7xl md:text-9xl font-black text-white uppercase tracking-tighter leading-[0.8] mb-6">
+                Khởi đầu<br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#e8bb69] to-[#cfb970]">Câu chuyện mới</span>
+              </h1>
+            </motion.div>
+            <div className="md:max-w-md text-right md:text-left">
+              <p className="text-zinc-400 text-lg md:text-xl font-medium leading-relaxed italic border-r-4 border-[#e8bb69] pr-6 md:border-r-0 md:border-l-4 md:pl-6">
+                Hãy để chúng tôi đồng hành cùng bạn tạo ra những giá trị hình ảnh khác biệt và đầy cảm hứng.
+              </p>
+            </div>
+          </div>
         </div>
 
-        <div className="relative max-w-7xl mx-auto text-center">
-          <h1 className="text-6xl md:text-8xl font-black text-zinc-950 uppercase tracking-tight mb-4">
-            Get In Touch
-          </h1>
-          <div className="h-1 w-32 bg-zinc-950 mx-auto mb-6"></div>
-          <p className="text-xl md:text-2xl text-zinc-900 font-medium max-w-2xl mx-auto">
-            Hãy tạo ra điều gì đó đáng chú ý
-          </p>
+        {/* Background Background text */}
+        <div className="absolute top-20 right-10 text-[20vw] font-black text-white opacity-[0.01] pointer-events-none select-none uppercase">
+          Connect
         </div>
       </section>
 
-      {/* Contact Content */}
-      <section className="py-16 px-6">
+      {/* Main Content */}
+      <section className="py-24 px-6 relative">
         <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-16">
-            {/* Contact Information */}
-            <div>
-              <h2 className="text-4xl md:text-5xl font-black text-white uppercase tracking-tight mb-4">
-                Let's Talk
-              </h2>
-              <div className="h-1 w-24 bg-[#e8bb69] mb-8"></div>
+          <div className="grid lg:grid-cols-12 gap-16 lg:gap-24">
 
-              <p className="text-zinc-400 text-lg mb-12 leading-relaxed">
-                Chúng tôi sẵn sàng giúp bạn tạo ra những câu chuyện đầy sáng tạo và tính thử nghiệm bằng hình ảnh.
-              </p>
+            {/* Contact Details Column */}
+            <div className="lg:col-span-5 space-y-16">
+              <div className="space-y-4">
+                <h2 className="text-4xl font-black text-white uppercase tracking-tighter">Liên hệ trực tiếp</h2>
+                <div className="h-1 w-24 bg-[#e8bb69]" />
+              </div>
 
-              {/* Contact Details */}
-              <div className="space-y-8">
-                {/* Email */}
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-[#e8bb69] flex items-center justify-center flex-shrink-0">
-                    <svg className="w-6 h-6 text-zinc-950" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="text-white font-bold uppercase tracking-wider mb-1">Email</h3>
-                    <a
-                      href="mailto:hello@uoaproduction.com"
-                      className="text-[#e8bb69] hover:text-[#e8bb69] focus:outline-none focus:ring-2 focus:ring-[#e8bb69] focus:ring-offset-2 focus:ring-offset-zinc-900 rounded transition-colors cursor-pointer"
-                    >
-                      hello@uoaproduction.com
-                    </a>
-                  </div>
+              <div className="space-y-12">
+                {/* Item: Email */}
+                <div className="group cursor-pointer">
+                  <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest block mb-1 group-hover:text-[#e8bb69] transition-colors">Digital reach</span>
+                  <a href="mailto:hello@uoaproduction.com" className="text-2xl md:text-3xl font-black text-white hover:text-[#e8bb69] transition-colors tracking-tighter uppercase break-words">
+                    hello@uoaproduction.com
+                  </a>
                 </div>
 
-                {/* Phone */}
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-[#e8bb69] flex items-center justify-center flex-shrink-0">
-                    <svg className="w-6 h-6 text-zinc-950" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="text-white font-bold uppercase tracking-wider mb-1">Phone</h3>
-                    <a
-                      href="tel:+15551234567"
-                      className="text-[#e8bb69] hover:text-[#e8bb69] focus:outline-none focus:ring-2 focus:ring-[#e8bb69] focus:ring-offset-2 focus:ring-offset-zinc-900 rounded transition-colors cursor-pointer"
-                    >
-                      +1 (555) 123-4567
-                    </a>
-                  </div>
+                {/* Item: Phone */}
+                <div className="group cursor-pointer">
+                  <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest block mb-1 group-hover:text-[#e8bb69] transition-colors">Direct line</span>
+                  <a href="tel:+84900000000" className="text-2xl md:text-3xl font-black text-white hover:text-[#e8bb69] transition-colors tracking-tighter uppercase">
+                    +84 (0) 90 000 0000
+                  </a>
                 </div>
 
-                {/* Location */}
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-[#e8bb69] flex items-center justify-center flex-shrink-0">
-                    <svg className="w-6 h-6 text-zinc-950" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="text-white font-bold uppercase tracking-wider mb-1">Studio</h3>
-                    <p className="text-zinc-400">
-                      Hà Nội, Việt Nam
-                    </p>
-                  </div>
-                </div>
-
-                {/* Hours */}
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-[#e8bb69] flex items-center justify-center flex-shrink-0">
-                    <svg className="w-6 h-6 text-zinc-950" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="text-white font-bold uppercase tracking-wider mb-1">Hours</h3>
-                    <p className="text-zinc-400">
-                      Thứ Hai - Thứ Sáu: 9:00 - 18:00<br />
-                      Thứ Bảy: 10:00 - 16:00
-                    </p>
-                  </div>
+                {/* Item: Office */}
+                <div className="group">
+                  <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest block mb-1">Our Studio</span>
+                  <p className="text-2xl md:text-3xl font-black text-white tracking-tighter uppercase leading-tight">
+                    Hà Nội, Việt Nam
+                  </p>
                 </div>
               </div>
 
-              {/* Social Links */}
-              <div className="mt-12">
-                <h3 className="text-white font-bold uppercase tracking-wider mb-4">Theo dõi chúng tôi</h3>
+              {/* Socials Grid */}
+              <div className="pt-8 border-t border-white/5">
+                <span className="text-[10px] font-bold text-transparent bg-clip-text bg-gradient-to-r from-zinc-500 to-zinc-700 uppercase tracking-widest block mb-8">Follow our journey</span>
                 <div className="flex gap-4">
-                  <a
-                    href="https://facebook.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-12 h-12 bg-zinc-900 hover:bg-[#e8bb69] text-zinc-400 hover:text-zinc-950 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-[#e8bb69] focus:ring-offset-2 focus:ring-offset-zinc-900 transition-all duration-300 cursor-pointer"
-                    aria-label="Visit our Facebook page"
-                  >
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-                    </svg>
-                  </a>
-                  <a
-                    href="https://instagram.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-12 h-12 bg-zinc-900 hover:bg-[#e8bb69] text-zinc-400 hover:text-zinc-950 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-[#e8bb69] focus:ring-offset-2 focus:ring-offset-zinc-900 transition-all duration-300 cursor-pointer"
-                    aria-label="Visit our Instagram page"
-                  >
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.073-1.644-.073-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
-                    </svg>
-                  </a>
-                  <a
-                    href="https://youtube.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-12 h-12 bg-zinc-900 hover:bg-[#e8bb69] text-zinc-400 hover:text-zinc-950 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-[#e8bb69] focus:ring-offset-2 focus:ring-offset-zinc-900 transition-all duration-300 cursor-pointer"
-                    aria-label="Visit our YouTube channel"
-                  >
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                      <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
-                    </svg>
-                  </a>
+                  {['Facebook', 'Instagram', 'Youtube'].map((social) => (
+                    <a
+                      key={social}
+                      href="#"
+                      className="px-6 py-3 border border-white/10 text-[10px] font-bold uppercase tracking-widest hover:bg-[#e8bb69] hover:text-zinc-950 hover:border-[#e8bb69] transition-all duration-300"
+                    >
+                      {social}
+                    </a>
+                  ))}
                 </div>
               </div>
             </div>
 
-            {/* Contact Form */}
-            <div className="bg-zinc-900 p-8 lg:p-12">
-              <h2 className="text-3xl md:text-4xl font-black text-white uppercase tracking-tight mb-8">
-                Gửi tin nhắn
-              </h2>
+            {/* Form Column */}
+            <div className="lg:col-span-7 bg-zinc-900 border border-white/5 p-10 md:p-16 relative">
+              {/* Corner accent */}
+              <div className="absolute top-0 right-0 w-24 h-24 border-t-2 border-r-2 border-[#e8bb69] opacity-20" />
 
-              {success && (
-                <div className="mb-6 p-4 bg-green-500/20 border-2 border-green-500 text-green-400">
-                  <div className="flex items-center gap-3">
-                    <svg className="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <div>
-                      <p className="font-bold uppercase tracking-wider text-sm">Success!</p>
-                      <p className="text-sm">Cảm ơn bạn đã gửi tin nhắn. Chúng tôi sẽ liên hệ với bạn sớm nhất có thể.</p>
-                    </div>
-                  </div>
-                </div>
-              )}
+              <h2 className="text-3xl md:text-4xl font-black text-white uppercase tracking-tighter mb-12">Gửi yêu cầu hợp tác</h2>
 
-              {error && (
-                <div className="mb-6 p-4 bg-red-500/20 border-2 border-red-500 text-red-400">
-                  <div className="flex items-center gap-3">
-                    <svg className="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <p className="text-sm font-medium">{error}</p>
-                  </div>
-                </div>
-              )}
-
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div>
-                  <label htmlFor="name" className="block mb-3 font-bold text-white uppercase tracking-wider text-sm">
-                    Tên của bạn *
-                  </label>
-                  <input
-                    type="text"
-                    id="name"
-                    className="w-full p-4 bg-zinc-950 border-2 border-zinc-800 text-white transition-colors"
-                    placeholder="Nguyễn Văn A"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="email" className="block mb-3 font-bold text-white uppercase tracking-wider text-sm">
-                    Email *
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    className="w-full p-4 bg-zinc-950 border-2 border-zinc-800 text-white transition-colors"
-                    placeholder="nguyenvana@example.com"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="message" className="block mb-3 font-bold text-white uppercase tracking-wider text-sm">
-                    Tin nhắn
-                  </label>
-                  <textarea
-                    id="message"
-                    className="w-full p-4 bg-zinc-950 border-2 border-zinc-800 text-white transition-colors resize-none h-40"
-                    placeholder="Nhắc lại về dự án hoặc yêu cầu của bạn..."
-                    value={formData.message}
-                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  className="w-full py-4 bg-[#e8bb69] text-zinc-950 font-bold text-lg uppercase tracking-wider hover:bg-[#e8bb69] transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-                  disabled={loading}
+              {success ? (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-[#e8bb69] text-zinc-950 p-12 text-center space-y-6"
                 >
-                  {loading ? (
-                    <span className="flex items-center justify-center gap-3">
-                      <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      Gửi...
-                    </span>
-                  ) : 'Gửi tin nhắn'}
-                </button>
-              </form>
+                  <div className="w-16 h-16 rounded-full border-2 border-zinc-950 flex items-center justify-center mx-auto text-3xl font-bold">✓</div>
+                  <h3 className="text-2xl font-black uppercase tracking-tight">Thành công!</h3>
+                  <p className="font-bold">Chúng tôi đã nhận được tin nhắn và sẽ phản hồi trong 24h tới.</p>
+                  <button
+                    onClick={() => setSuccess(false)}
+                    className="px-8 py-3 border-2 border-zinc-950 font-black uppercase text-xs tracking-widest hover:bg-zinc-950 hover:text-[#e8bb69] transition-colors"
+                  >
+                    Gửi thêm tin nhắn
+                  </button>
+                </motion.div>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-12">
+                  <div className="group relative">
+                    <label className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] block mb-4 group-focus-within:text-[#e8bb69] transition-colors">Tên của bạn*</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="NGUYỄN VĂN A"
+                      className="w-full bg-transparent border-b border-white/10 py-4 text-xl md:text-2xl font-black text-white focus:outline-none focus:border-[#e8bb69] transition-colors placeholder:text-zinc-800 uppercase"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    />
+                  </div>
+
+                  <div className="group relative">
+                    <label className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] block mb-4 group-focus-within:text-[#e8bb69] transition-colors">Email nhận thông tin*</label>
+                    <input
+                      type="email"
+                      required
+                      placeholder="EMAIL@EXAMPLE.COM"
+                      className="w-full bg-transparent border-b border-white/10 py-4 text-xl md:text-2xl font-black text-white focus:outline-none focus:border-[#e8bb69] transition-colors placeholder:text-zinc-800 uppercase"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    />
+                  </div>
+
+                  <div className="group relative">
+                    <label className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] block mb-4 group-focus-within:text-[#e8bb69] transition-colors">Bạn cần chúng tôi giúp gì?</label>
+                    <textarea
+                      placeholder="MÔ TẢ DỰ ÁN HOẶC NHU CẦU CỦA BẠN..."
+                      className="w-full bg-transparent border-b border-white/10 py-4 text-xl md:text-2xl font-black text-white focus:outline-none focus:border-[#e8bb69] transition-colors placeholder:text-zinc-800 min-h-[150px] resize-none uppercase"
+                      value={formData.message}
+                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                    />
+                  </div>
+
+                  {error && <p className="text-red-500 font-bold uppercase text-xs tracking-widest">{error}</p>}
+
+                  <button
+                    disabled={loading}
+                    className="w-full py-6 bg-[#e8bb69] text-zinc-950 font-black uppercase text-sm tracking-[0.3em] overflow-hidden group relative cursor-pointer disabled:opacity-50"
+                  >
+                    <span className="relative z-10">{loading ? 'Đang gửi...' : 'Gửi yêu cầu ngay'}</span>
+                    <div className="absolute inset-0 bg-white translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+                  </button>
+                </form>
+              )}
             </div>
+
           </div>
         </div>
       </section>

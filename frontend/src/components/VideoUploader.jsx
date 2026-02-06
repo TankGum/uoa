@@ -1,5 +1,6 @@
 import { useState, useRef, useImperativeHandle, forwardRef } from 'react'
 import { uploadToCloudinary } from '../utils/cloudinaryUpload'
+import { uploadToMux } from '../utils/muxUpload'
 
 const VideoUploader = forwardRef(function VideoUploader({ onFileSelect, onProgress }, ref) {
   const [selectedFile, setSelectedFile] = useState(null)
@@ -38,10 +39,9 @@ const VideoUploader = forwardRef(function VideoUploader({ onFileSelect, onProgre
       setError(null)
       setUploadProgress(0)
 
-      // Upload directly to Cloudinary (get metadata)
-      const result = await uploadToCloudinary(
+      // Upload directly to Mux
+      const result = await uploadToMux(
         file,
-        'video',
         (progress) => {
           setUploadProgress(progress)
           if (onProgress) {
@@ -56,7 +56,7 @@ const VideoUploader = forwardRef(function VideoUploader({ onFileSelect, onProgre
       return result
 
     } catch (err) {
-      handleUploadError(err, () => {})
+      handleUploadError(err, () => { })
       throw err
     }
   }
@@ -64,7 +64,7 @@ const VideoUploader = forwardRef(function VideoUploader({ onFileSelect, onProgre
   const handleUploadError = (err, reject) => {
     setError(err.message)
     setUploading(false)
-    
+
     if (retryCountRef.current < maxRetries) {
       retryCountRef.current += 1
       setTimeout(() => {
@@ -90,7 +90,7 @@ const VideoUploader = forwardRef(function VideoUploader({ onFileSelect, onProgre
       setError('Please select a video file')
       return
     }
-    
+
     // Validate file size (max 500MB)
     const maxSize = 500 * 1024 * 1024 // 500MB
     if (file.size > maxSize) {
@@ -102,7 +102,7 @@ const VideoUploader = forwardRef(function VideoUploader({ onFileSelect, onProgre
     setSelectedFile(file)
     setError(null)
     retryCountRef.current = 0
-    
+
     if (onFileSelect) {
       onFileSelect(file)
     }
@@ -159,20 +159,18 @@ const VideoUploader = forwardRef(function VideoUploader({ onFileSelect, onProgre
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        className={`border-2 border-dashed rounded-lg p-6 transition-all duration-300 ${
-          isDragging
-            ? 'border-[#cfb970] bg-[#cfb970]/10'
-            : 'border-gray-300 bg-gray-50'
-        } ${uploading ? 'opacity-50 pointer-events-none' : ''}`}
+        className={`border-2 border-dashed rounded-lg p-6 transition-all duration-300 ${isDragging
+          ? 'border-[#cfb970] bg-[#cfb970]/10'
+          : 'border-gray-300 bg-gray-50'
+          } ${uploading ? 'opacity-50 pointer-events-none' : ''}`}
       >
         <div className="text-center">
           <label
             htmlFor="video-upload"
-            className={`inline-block px-6 py-3 rounded cursor-pointer transition-colors duration-300 ${
-              uploading
-                ? 'bg-gray-400 cursor-not-allowed'
-                : 'bg-primary text-white hover:bg-[#333]'
-            }`}
+            className={`inline-block px-6 py-3 rounded cursor-pointer transition-colors duration-300 ${uploading
+              ? 'bg-gray-400 cursor-not-allowed'
+              : 'bg-primary text-white hover:bg-[#333]'
+              }`}
           >
             {uploading ? 'Uploading...' : selectedFile ? 'Change Video File' : 'Select Video File'}
           </label>

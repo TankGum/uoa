@@ -85,9 +85,12 @@ class PostBase(BaseModel):
     status: str = 'draft'
 
 class MediaCreateInput(BaseModel):
-    """Media data from Cloudinary upload"""
-    public_id: str
-    secure_url: str
+    """Media data from upload provider"""
+    type: str = "image"
+    provider: str = "cloudinary"
+    public_id: str # Mux PlaybackID or Cloudinary PublicID
+    secure_url: str # Mux HLS URL or Cloudinary URL
+    asset_id: Optional[str] = None # For Mux Asset ID
     duration: Optional[float] = None
     width: Optional[int] = None
     height: Optional[int] = None
@@ -95,6 +98,7 @@ class MediaCreateInput(BaseModel):
     size: Optional[int] = None
     is_featured: Optional[bool] = False
     display_order: Optional[int] = 0
+    metadata: Optional[dict] = None
 
 class PostCreate(PostBase):
     category_ids: Optional[List[UUID]] = []  # Tags/Categories
