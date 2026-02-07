@@ -81,7 +81,7 @@ function Home() {
     },
     {
       id: 2,
-      name: 'Trần Văn A',
+      name: 'Trần Văn B',
       role: 'Lead Photographer',
       staticImage: '/members/static/Upright1.webp',
       gifImage: '/members/gif/Upright1.gif'
