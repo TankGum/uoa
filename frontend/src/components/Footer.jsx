@@ -84,13 +84,22 @@ function Footer() {
             </p>
 
             <div className="flex justify-between pt-4">
-              {['Facebook', 'Youtube', 'Insta', 'TikTok'].map((platform) => (
+              {[
+                { name: 'Facebook', href: 'https://www.facebook.com/profile.php?id=61583844592645' },
+                { name: 'Youtube', href: 'https://www.youtube.com/@UOA_Production' },
+                { name: 'Insta', href: 'https://www.instagram.com/uoa_production/' },
+                { name: 'TikTok', href: 'https://www.tiktok.com/@uoa_production' },
+              ].map((platform) => (
                 <a
-                  key={platform}
-                  href="#"
-                  className="px-4 py-2 border border-white/5 text-[10px] font-black text-zinc-600 uppercase tracking-widest hover:border-[#e8bb69] hover:text-[#e8bb69] transition-all duration-300 bg-zinc-900/30"
+                  key={platform.name}
+                  href={platform.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-2 border border-white/5 text-[10px] font-black text-zinc-600 uppercase tracking-widest
+                            hover:border-[#e8bb69] hover:text-[#e8bb69]
+                            transition-all duration-300 bg-zinc-900/30"
                 >
-                  {platform}
+                  {platform.name}
                 </a>
               ))}
             </div>
@@ -104,14 +113,14 @@ function Footer() {
               <div className="space-y-4">
                 <span className="block text-[10px] font-black uppercase tracking-[0.3em] text-zinc-700">Địa chỉ</span>
                 <p className="text-sm font-bold text-zinc-300 tracking-tight leading-relaxed">
-                  Thủ đô Hà Nội, Việt Nam
+                  Hà Nội, Việt Nam
                 </p>
               </div>
 
               <div className="space-y-4">
                 <span className="block text-[10px] font-black uppercase tracking-[0.3em] text-zinc-700">Email</span>
-                <a href="mailto:hello@uoaproduction.com" className="text-sm font-bold text-zinc-300 tracking-tight leading-relaxed hover:text-[#e8bb69] transition-colors">
-                  hello@uoaproduction.com
+                <a href="mailto:uoafilmproduction@gmail.com" className="text-sm font-bold text-zinc-300 tracking-tight leading-relaxed hover:text-[#e8bb69] transition-colors">
+                  uoafilmproduction@gmail.com
                 </a>
               </div>
             </div>

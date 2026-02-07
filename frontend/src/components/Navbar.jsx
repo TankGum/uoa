@@ -192,7 +192,7 @@ function Navbar() {
           {/* Background Glass Plate */}
           <div
             className={`absolute inset-0 transition-all duration-500 ease-out border-[#e8bb69]/10 ${scrolled
-              ? 'bg-zinc-950/80 backdrop-blur-xl border-b shadow-[0_10px_40px_-15px_rgba(0,0,0,0.5)]'
+              ? 'bg-zinc-900 backdrop-blur-xl border-y shadow-[0_10px_40px_-15px_rgba(0,0,0,0.5)]'
               : 'bg-transparent border-transparent'
               }`}
           />
@@ -200,20 +200,20 @@ function Navbar() {
           <div className="relative px-8 flex items-center justify-between">
             {/* Brand - Left */}
             <Link
-              to="/home"
+              to="/"
               className="group flex items-center gap-4 focus:outline-none"
               aria-label="Go to homepage"
             >
               <div className="flex items-baseline gap-1">
                 <span className={`font-black uppercase tracking-tighter transition-all duration-500 ${scrolled ? 'text-2xl' : 'text-3xl'
-                  } text-white group-hover:text-[#e8bb69]`}>
+                  } text-white`}>
                   ÚÒa
                 </span>
                 <span className="w-1.5 h-1.5 bg-[#e8bb69] rounded-full" />
               </div>
-              <div className={`h-6 w-px bg-white/10 transition-transform duration-500 ${scrolled ? 'scale-y-75' : 'scale-y-100'}`} />
-              <div className={`overflow-hidden transition-all duration-500 ${scrolled ? 'w-0 opacity-0' : 'w-auto opacity-100'}`}>
-                <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-[#e8bb69] block whitespace-nowrap">
+              <div className={`h-6 w-px bg-[#e8bb69] transition-transform duration-500 ${scrolled ? 'scale-y-75' : 'scale-y-100'}`} />
+              <div className={`overflow-hidden transition-all duration-500 ${scrolled ? 'w-auto opacity-100' : 'w-auto opacity-100'}`}>
+                <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-white block whitespace-nowrap">
                   Production
                 </span>
               </div>
@@ -250,9 +250,6 @@ function Navbar() {
                 to="/admin"
                 className={`text-[10px] font-bold uppercase tracking-widest transition-all duration-300 flex items-center gap-2 ${scrolled ? 'opacity-0 scale-90 pointer-events-none' : 'opacity-40 hover:opacity-100 text-white'}`}
               >
-                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
                 <span>Admin</span>
               </Link>
 
@@ -264,7 +261,7 @@ function Navbar() {
               >
                 <div className="absolute inset-0 bg-[#e8bb69] translate-y-full group-hover:translate-y-0 transition-transform duration-300 -z-10" />
                 <span className="relative text-[10px] font-black uppercase tracking-[0.3em] transition-colors duration-300">
-                  Book A Call
+                  Hit us up
                 </span>
               </Link>
             </div>

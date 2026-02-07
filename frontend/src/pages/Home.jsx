@@ -11,11 +11,11 @@ function Home() {
   const [categories, setCategories] = useState([])
   const [loading, setLoading] = useState(true)
   const manifestoKeywords = [
-    { text: 'EMOTION', x: '10%', y: '20%', delay: 0 },
-    { text: 'STORY', x: '60%', y: '40%', delay: 0.2 },
-    { text: 'VISION', x: '20%', y: '60%', delay: 0.4 },
-    { text: 'CRAFT', x: '70%', y: '15%', delay: 0.6 },
-    { text: 'IMPACT', x: '45%', y: '80%', delay: 0.8 }
+    { role: 'DRIVEN BY', text: 'EMOTION', color: '#e8bb69' },
+    { role: 'TOLD THROUGH', text: 'STORY', color: '#7d9aa1' },
+    { role: 'CAPTURED WITH', text: 'VISION', color: '#e8bb69' },
+    { role: 'SHAPED BY', text: 'CRAFT', color: '#e8bb69' },
+    { role: 'BORN FROM', text: 'IMPACT', color: '#7d9aa1' }
   ]
 
   useEffect(() => {
@@ -24,13 +24,15 @@ function Home() {
 
   const { scrollY } = useScroll()
 
-  // Hero calculations - Use raw scrollY for maximum performance
-  const heroProgress = useTransform(scrollY, [0, window.innerHeight * 2.5], [0, 1])
-  const globalProgress = useTransform(scrollY, [0, window.innerHeight * 3], [0, 1])
+  // Hero calculations - Extra long journey for credit feeling
+  const journeyLimit = typeof window !== 'undefined' ? window.innerHeight * 6 : 6000
+  const heroProgress = useTransform(scrollY, [0, journeyLimit], [0, 1])
+  const globalProgress = useTransform(scrollY, [0, journeyLimit * 1.1], [0, 1])
 
   // Parallax Motion Values
-  const heroOpacity = useTransform(heroProgress, [0, 0.6], [1, 0])
-  const heroScale = useTransform(heroProgress, [0, 1], [1, 1.2])
+  // Hero fades out QUICKER to give room for credits
+  const heroOpacity = useTransform(heroProgress, [0, 0.15], [1, 0])
+  const heroScale = useTransform(heroProgress, [0, 0.2], [1, 1.2])
   const heroZ = useTransform(scrollY, (y) => y * 0.05)
 
   // Background - Raw GPU transforms
@@ -50,24 +52,35 @@ function Home() {
 
   const scrollOpacity = useTransform(scrollY, [0, window.innerHeight * 0.3], [1, 0])
 
-  const sectionsOpacity = useTransform(heroProgress, [0.5, 0.8], [0, 1])
-  const sectionsScale = useTransform(heroProgress, [0.7, 1], [0.9, 1])
+  // Sections ONLY start appearing after ALL manifesto items are finished
+  const sectionsOpacity = useTransform(heroProgress, [0.92, 0.98], [0, 1])
+  const sectionsScale = useTransform(heroProgress, [0.92, 1], [0.95, 1])
 
-  // Manifesto transforms
+  // Manifesto transforms - Re-timed to fit within the journey
   const manifestoTransforms = manifestoKeywords.map((_, i) => {
-    const start = 0.2 + (i * 0.1)
-    const end = start + 0.4
-    // We use useTransform for each keyword - NO BLUR
-    const opacity = useTransform(heroProgress, [start, start + 0.1, end - 0.1, end], [0, 0.4, 0.4, 0])
-    const scale = useTransform(heroProgress, [start, end], [0.8, 2.5])
-    const z = useTransform(heroProgress, [start, end], [0, 200])
+    // Start after hero fade (0.15), space items by 0.15, each lasts 0.3
+    // Last item starts at 0.15 + (4 * 0.15) = 0.75, ends at 1.05
+    // We adjust step to 0.12 to finish earlier: 0.15 + 0.48 + 0.3 = 0.93
+    const step = 0.12
+    const start = 0.15 + (i * step)
+    const duration = 0.3
+    const end = start + duration
 
-    return { opacity, scale, z }
+    // Opacity: Visible across almost the entire Y path
+    const opacity = useTransform(heroProgress, [start, start + 0.05, end - 0.05, end], [0, 1, 1, 0])
+
+    // Y Position: Full screen travel
+    const yValue = useTransform(heroProgress, [start, end], ['150%', '-150%'])
+
+    return { opacity, y: yValue, scale: useTransform(heroProgress, [start, end], [0.98, 1.05]) }
   })
+
 
   // Hero visibility based on opacity
   const heroVisibility = useTransform(heroOpacity, (o) => o > 0 ? 'visible' : 'hidden')
-  const manifestoVisibility = useTransform(heroProgress, (p) => p > 0.1 && p < 0.9 ? 'visible' : 'hidden')
+  // Global fade for the container - Stays visible until the last word is gone
+  const manifestoContainerOpacity = useTransform(heroProgress, [0.1, 0.2, 0.92, 0.96], [0, 1, 1, 0])
+  const manifestoVisibility = useTransform(manifestoContainerOpacity, (o) => o > 0 ? 'visible' : 'hidden')
 
   const heroRef = useRef(null)
   const [activeProcess, setActiveProcess] = useState(0)
@@ -201,7 +214,7 @@ function Home() {
   const heroVideo = {
     id: 1,
     type: 'video',
-    url: 'https://stream.mux.com/vpLevFP00WhlAndl02evlfSAE00Q7IPpI4lhjlhebtmZks',
+    url: 'https://res.cloudinary.com/dafrqitiv/video/upload/v1770483212/demo_e8jiu4.mp4',
     title: 'Cinematic Motion'
   }
 
@@ -427,29 +440,40 @@ function Home() {
         `}</style>
       </motion.section>
 
-      {/* Spacer to allow scrolling - Increased for a longer journey */}
-      <div className="h-[300vh]" />
+      {/* Spacer to allow scrolling - Long journey for credits */}
+      <div className="h-[650vh]" />
 
       {/* Manifesto Layer - Shown during transition */}
       <motion.div
         className="fixed inset-0 pointer-events-none z-20 flex items-center justify-center overflow-hidden"
-        style={{ visibility: manifestoVisibility }}
+        style={{
+          opacity: manifestoContainerOpacity,
+          visibility: manifestoVisibility
+        }}
       >
         {manifestoKeywords.map((kw, i) => (
           <motion.div
             key={i}
-            className="absolute font-black text-white mix-blend-overlay tracking-[0.2em] whitespace-nowrap"
+            className="absolute flex flex-col items-center text-center w-full"
             style={{
-              left: kw.x,
-              top: kw.y,
               opacity: manifestoTransforms[i].opacity,
+              y: manifestoTransforms[i].y,
               scale: manifestoTransforms[i].scale,
-              translateZ: manifestoTransforms[i].z,
-              fontSize: '8vw',
               willChange: 'transform, opacity'
             }}
           >
-            {kw.text}
+            <span className="text-[10px] sm:text-xs font-bold tracking-[0.5em] text-zinc-500 mb-2 uppercase">
+              {kw.role}
+            </span>
+            <span
+              className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-[0.2em] uppercase"
+              style={{
+                color: kw.color,
+                textShadow: `0 0 40px ${kw.color}33`
+              }}
+            >
+              {kw.text}
+            </span>
           </motion.div>
         ))}
       </motion.div>
@@ -648,7 +672,7 @@ function Home() {
 
                 <Link
                   to="/about"
-                  className="inline-block px-8 py-4 bg-[#e8bb69] text-zinc-950 font-bold text-sm uppercase tracking-wider hover:bg-orange-400 focus:outline-none focus:ring-2 focus:ring-[#e8bb69] focus:ring-offset-2 focus:ring-offset-zinc-900 transition-colors duration-300 cursor-pointer"
+                  className="inline-block px-8 py-4 bg-[#e8bb69] text-zinc-950 font-bold text-sm uppercase tracking-wider hover:bg-[#e8bb69]/80 focus:outline-none focus:ring-2 focus:ring-[#e8bb69] focus:ring-offset-2 focus:ring-offset-zinc-900 transition-colors duration-300 cursor-pointer"
                 >
                   Tìm hiểu thêm
                 </Link>

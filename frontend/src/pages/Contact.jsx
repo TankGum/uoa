@@ -90,16 +90,16 @@ function Contact() {
                 {/* Item: Email */}
                 <div className="group cursor-pointer">
                   <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest block mb-1 group-hover:text-[#e8bb69] transition-colors">Digital reach</span>
-                  <a href="mailto:hello@uoaproduction.com" className="text-2xl md:text-3xl font-black text-white hover:text-[#e8bb69] transition-colors tracking-tighter uppercase break-words">
-                    hello@uoaproduction.com
+                  <a href="mailto:uoafilmproduction@gmail.com" className="text-2xl md:text-3xl font-black text-white hover:text-[#e8bb69] transition-colors tracking-tighter uppercase break-words">
+                    uoafilmproduction@gmail.com
                   </a>
                 </div>
 
                 {/* Item: Phone */}
                 <div className="group cursor-pointer">
                   <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest block mb-1 group-hover:text-[#e8bb69] transition-colors">Direct line</span>
-                  <a href="tel:+84900000000" className="text-2xl md:text-3xl font-black text-white hover:text-[#e8bb69] transition-colors tracking-tighter uppercase">
-                    +84 (0) 90 000 0000
+                  <a href="tel:089 984 62 50" className="text-2xl md:text-3xl font-black text-white hover:text-[#e8bb69] transition-colors tracking-tighter uppercase">
+                    +84 (0) 89 984 62 50
                   </a>
                 </div>
 
@@ -109,22 +109,6 @@ function Contact() {
                   <p className="text-2xl md:text-3xl font-black text-white tracking-tighter uppercase leading-tight">
                     Hà Nội, Việt Nam
                   </p>
-                </div>
-              </div>
-
-              {/* Socials Grid */}
-              <div className="pt-8 border-t border-white/5">
-                <span className="text-[10px] font-bold text-transparent bg-clip-text bg-gradient-to-r from-zinc-500 to-zinc-700 uppercase tracking-widest block mb-8">Follow our journey</span>
-                <div className="flex gap-4">
-                  {['Facebook', 'Instagram', 'Youtube'].map((social) => (
-                    <a
-                      key={social}
-                      href="#"
-                      className="px-6 py-3 border border-white/10 text-[10px] font-bold uppercase tracking-widest hover:bg-[#e8bb69] hover:text-zinc-950 hover:border-[#e8bb69] transition-all duration-300"
-                    >
-                      {social}
-                    </a>
-                  ))}
                 </div>
               </div>
             </div>
@@ -159,7 +143,7 @@ function Contact() {
                     <input
                       type="text"
                       required
-                      placeholder="NGUYỄN VĂN A"
+                      placeholder="HỌ VÀ TÊN"
                       className="w-full bg-transparent border-b border-white/10 py-4 text-xl md:text-2xl font-black text-white focus:outline-none focus:border-[#e8bb69] transition-colors placeholder:text-zinc-800 uppercase"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}

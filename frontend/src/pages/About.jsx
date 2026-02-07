@@ -50,7 +50,7 @@ function About() {
             <div className="lg:col-span-5 relative group">
               <div className="aspect-[3/4] overflow-hidden bg-zinc-900 border border-white/5">
                 <img
-                  src="https://media.istockphoto.com/id/974238866/vi/anh/kh%C3%A1n-gi%E1%BA%A3-l%E1%BA%AFng-nghe-gi%E1%BA%A3ng-vi%C3%AAn-t%E1%BA%A1i-h%E1%BB%99i-ngh%E1%BB%8B.jpg?s=2048x2048&w=is&k=20&c=2ZeitlVnJR0nyr3O1WqIZ_poLk3AfitfipOcFsUA1fs="
+                  src="https://instagram.fhan2-3.fna.fbcdn.net/v/t15.5256-10/485127525_1764339070806863_8481621297115392356_n.jpg?stp=dst-jpg_e15_tt6&_nc_cat=101&ig_cache_key=MzU5MDI3NTQ0MjM5OTczMDA4OA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjEwODB4MTkyMC5zZHIuQzMifQ%3D%3D&_nc_ohc=pFS36wu73PIQ7kNvwE-nJHr&_nc_oc=AdlRyzTZynnzFhWF8srrgL0Xj91SLxQ3-RpdpUm8QHs9MmPLrHBbB1ZsLIllBi0fU0s&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fhan2-3.fna&_nc_gid=3puzN1xG0-OffCCrsZelRw&oh=00_AftbgfwS5eV2bgbzCFU4vW7nz5rkujSnQtUwoxJbzxettQ&oe=698D214E"
                   alt="Photography art"
                   className="w-full h-full object-cover grayscale brightness-75 group-hover:grayscale-0 transition-all duration-1000"
                 />
