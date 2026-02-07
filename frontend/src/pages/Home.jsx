@@ -1,6 +1,6 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { motion, useScroll, useTransform, useSpring } from 'framer-motion'
 import client from '../api/client'
 import { getStreamingVideoUrl, getVideoThumbnail } from '../utils/cloudinary'
 import { getMuxPlaybackUrl, getMuxThumbnailUrl } from '../utils/mux'
@@ -10,17 +10,67 @@ function Home() {
   const [posts, setPosts] = useState([])
   const [categories, setCategories] = useState([])
   const [loading, setLoading] = useState(true)
-  const [scrollY, setScrollY] = useState(0)
-  const heroRef = useRef(null)
-  const [activeProcess, setActiveProcess] = useState(0)
+  const manifestoKeywords = [
+    { text: 'EMOTION', x: '10%', y: '20%', delay: 0 },
+    { text: 'STORY', x: '60%', y: '40%', delay: 0.2 },
+    { text: 'VISION', x: '20%', y: '60%', delay: 0.4 },
+    { text: 'CRAFT', x: '70%', y: '15%', delay: 0.6 },
+    { text: 'IMPACT', x: '45%', y: '80%', delay: 0.8 }
+  ]
 
   useEffect(() => {
     fetchData()
-
-    const handleScroll = () => setScrollY(window.scrollY)
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  const { scrollY } = useScroll()
+
+  // Hero calculations - Use raw scrollY for maximum performance
+  const heroProgress = useTransform(scrollY, [0, window.innerHeight * 2.5], [0, 1])
+  const globalProgress = useTransform(scrollY, [0, window.innerHeight * 3], [0, 1])
+
+  // Parallax Motion Values
+  const heroOpacity = useTransform(heroProgress, [0, 0.6], [1, 0])
+  const heroScale = useTransform(heroProgress, [0, 1], [1, 1.2])
+  const heroZ = useTransform(scrollY, (y) => y * 0.05)
+
+  // Background - Raw GPU transforms
+  const bgTransform = useTransform(scrollY, (y) => y * 0.2)
+  const particlesY = useTransform(scrollY, (y) => -y * 0.1)
+
+  // Flare - Use position move instead of dynamic gradient string
+  const flareX = useTransform(scrollY, (y) => y * 0.2)
+  const flareOpacity = useTransform(scrollY, [0, window.innerHeight], [0.3, 0])
+
+  const patternOpacity = useTransform(heroProgress, [0, 1], [0.1, 0])
+  const patternScale = useTransform(globalProgress, [0, 1], [1, 3])
+
+  const contentOpacity = useTransform(heroProgress, [0, 0.5], [1, 0])
+  const contentScale = useTransform(heroProgress, [0, 1], [1, 1.1]) // Subtle scale
+  // Removed contentBlur entirely
+
+  const scrollOpacity = useTransform(scrollY, [0, window.innerHeight * 0.3], [1, 0])
+
+  const sectionsOpacity = useTransform(heroProgress, [0.5, 0.8], [0, 1])
+  const sectionsScale = useTransform(heroProgress, [0.7, 1], [0.9, 1])
+
+  // Manifesto transforms
+  const manifestoTransforms = manifestoKeywords.map((_, i) => {
+    const start = 0.2 + (i * 0.1)
+    const end = start + 0.4
+    // We use useTransform for each keyword - NO BLUR
+    const opacity = useTransform(heroProgress, [start, start + 0.1, end - 0.1, end], [0, 0.4, 0.4, 0])
+    const scale = useTransform(heroProgress, [start, end], [0.8, 2.5])
+    const z = useTransform(heroProgress, [start, end], [0, 200])
+
+    return { opacity, scale, z }
+  })
+
+  // Hero visibility based on opacity
+  const heroVisibility = useTransform(heroOpacity, (o) => o > 0 ? 'visible' : 'hidden')
+  const manifestoVisibility = useTransform(heroProgress, (p) => p > 0.1 && p < 0.9 ? 'visible' : 'hidden')
+
+  const heroRef = useRef(null)
+  const [activeProcess, setActiveProcess] = useState(0)
 
   const fetchData = async () => {
     try {
@@ -141,14 +191,6 @@ function Home() {
     }
   ]
 
-  const manifestoKeywords = [
-    { text: 'EMOTION', x: '10%', y: '20%', delay: 0 },
-    { text: 'STORY', x: '60%', y: '40%', delay: 0.2 },
-    { text: 'VISION', x: '20%', y: '60%', delay: 0.4 },
-    { text: 'CRAFT', x: '70%', y: '15%', delay: 0.6 },
-    { text: 'IMPACT', x: '45%', y: '80%', delay: 0.8 }
-  ]
-
   const stats = [
     { number: '100+', label: 'Câu chuyện được kể' },
     { number: '50+', label: 'Wedding & Personal Projects' },
@@ -163,135 +205,37 @@ function Home() {
     title: 'Cinematic Motion'
   }
 
-  // Calculate parallax values for depth effect
-  const getParallaxValues = () => {
-    // Extended scroll journey: 300vh
-    const journeyLimit = window.innerHeight * 3
-    const progress = Math.min(scrollY / journeyLimit, 1)
 
-    // Hero fades out over the first 80% of the journey
-    const heroProgress = Math.min(scrollY / (window.innerHeight * 2.5), 1)
-
-    // Specific progress stages
-    const stage1 = Math.min(scrollY / window.innerHeight, 1) // First fold
-    const stage2 = Math.max(0, Math.min((scrollY - window.innerHeight) / window.innerHeight, 1)) // Second fold
-
-    return {
-      // Hero veil effect - creates the "diving through" feeling
-      heroOpacity: Math.max(0, 1 - heroProgress * 1.5),
-      heroScale: 1 + heroProgress * 1.2,
-      heroBlur: heroProgress * 30,
-      heroZ: heroProgress * 200,
-
-      // Background moves slower (creates depth)
-      bgTransform: scrollY * 0.4,
-      bgHueRotate: scrollY * 0.05,
-
-      // Lens Flare
-      flareX: scrollY * 0.5,
-      flareOpacity: Math.max(0, 0.4 - stage1 * 0.5),
-
-      // Pattern fades and zooms
-      patternOpacity: 0.1 * (1 - heroProgress),
-      patternScale: 1 + progress * 2,
-
-      // Kinetic Typography - subtle movements to prevent overflow
-      line1X: scrollY * 0.1,
-      line2X: -scrollY * 0.08,
-      line3X: scrollY * 0.05,
-
-      // Floating particles
-      particlesY: -scrollY * 0.3,
-
-      // Geometric elements move at different speeds
-      geo1: {
-        rotate: scrollY * 0.15,
-        translateX: scrollY * 0.3,
-        translateY: scrollY * 0.5,
-        opacity: 1 - heroProgress
-      },
-      geo2: {
-        translateX: -scrollY * 0.2,
-        translateY: -scrollY * 0.4,
-        opacity: 1 - heroProgress
-      },
-      geo3: {
-        rotate: -scrollY * 0.3,
-        translateX: scrollY * 0.4,
-        translateY: -scrollY * 0.2,
-        opacity: 1 - heroProgress
-      },
-
-      // Content fades and scales
-      contentOpacity: 1 - heroProgress * 2,
-      contentScale: 1 + heroProgress * 0.5,
-      contentBlur: heroProgress * 15,
-
-      // Scroll indicator fades fast
-      scrollOpacity: 1 - stage1 * 3,
-
-      // Sections reveal later in the journey
-      sectionsOpacity: Math.max(0, (heroProgress - 0.5) * 2),
-      sectionsScale: 0.9 + (heroProgress * 0.1),
-      heroProgress,
-
-      // Manifesto transformations
-      manifesto: manifestoKeywords.map((_, i) => {
-        const start = 0.2 + (i * 0.1)
-        const end = start + 0.4
-        const localProgress = Math.max(0, Math.min((heroProgress - start) / (end - start), 1))
-
-        return {
-          opacity: localProgress > 0 && localProgress < 1 ? Math.sin(localProgress * Math.PI) : 0,
-          scale: 0.5 + localProgress * 4,
-          z: localProgress * 500,
-          blur: localProgress > 0.8 ? (localProgress - 0.8) * 50 : 0
-        }
-      })
-    }
-  }
-
-  const parallax = getParallaxValues()
 
   return (
     <div className="min-h-screen bg-zinc-950 relative">
-      {/* Grain texture overlay */}
-      <div
-        className="fixed inset-0 pointer-events-none z-[9999] opacity-[0.03] mix-blend-overlay"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-          backgroundSize: '200px 200px'
-        }}
-      />
-
       {/* Hero Section - Fixed Veil that reveals content behind */}
-      <section
+      <motion.section
         ref={heroRef}
         className="fixed inset-0 flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-40 sm:pt-48 pb-20 overflow-hidden pointer-events-none"
         style={{
-          opacity: parallax.heroOpacity,
-          transform: `scale(${parallax.heroScale}) translateZ(${parallax.heroZ}px)`,
-          filter: `blur(${parallax.heroBlur}px)`,
+          opacity: heroOpacity,
+          scale: heroScale,
+          translateZ: heroZ,
           zIndex: 50,
-          visibility: parallax.heroOpacity > 0 ? 'visible' : 'hidden'
+          visibility: heroVisibility,
+          willChange: 'transform, opacity'
         }}
       >
-        {/* Background layer - moves slowest */}
-        <div
+        {/* Background layer - Simple & Fast */}
+        <motion.div
           className="absolute inset-0"
           style={{
             background: 'linear-gradient(135deg, #e8bb69 0%, #f5b134ff 25%, #eedcbaff 50%, #e8bb69 75%, #e8bb69 100%)',
-            backgroundSize: '400% 400%',
-            animation: 'gradientShift 15s ease infinite',
-            transform: `translateY(${parallax.bgTransform}px)`,
-            filter: `hue-rotate(${parallax.bgHueRotate}deg)`
+            y: bgTransform,
+            willChange: 'transform'
           }}
         />
 
         {/* Floating Particles Layer */}
-        <div
+        <motion.div
           className="absolute inset-0 pointer-events-none"
-          style={{ transform: `translateY(${parallax.particlesY}px)` }}
+          style={{ y: particlesY, willChange: 'transform' }}
         >
           {[...Array(20)].map((_, i) => (
             <div
@@ -307,13 +251,14 @@ function Home() {
               }}
             />
           ))}
-        </div>
+        </motion.div>
 
         {/* Animated mesh gradient background */}
-        <div
+        <motion.div
           className="absolute inset-0 opacity-40"
           style={{
-            transform: `translateY(${parallax.bgTransform * 0.7}px)`
+            y: useTransform(scrollY, (y) => y * 0.2),
+            willChange: 'transform'
           }}
         >
           <div
@@ -326,45 +271,43 @@ function Home() {
               `
             }}
           />
-        </div>
+        </motion.div>
 
-        {/* Diagonal grid pattern - zooms and fades */}
-        <div
-          className="absolute inset-0 transition-opacity duration-300"
+        {/* Diagonal grid pattern - Simpler zoom */}
+        <motion.div
+          className="absolute inset-0 opacity-10"
           style={{
-            opacity: parallax.patternOpacity,
-            transform: `scale(${parallax.patternScale}) translateY(${parallax.bgTransform * 0.3}px)`,
-            backgroundImage: `repeating-linear-gradient(
-              45deg,
-              transparent,
-              transparent 2px,
-              rgba(0,0,0,0.3) 2px,
-              rgba(0,0,0,0.3) 4px
-            )`,
-            backgroundSize: '40px 40px'
+            opacity: patternOpacity,
+            scale: patternScale,
+            y: useTransform(scrollY, (y) => y * 0.05),
+            backgroundImage: `radial-gradient(rgba(0,0,0,0.2) 1px, transparent 0)`,
+            backgroundSize: '30px 30px',
+            willChange: 'transform'
           }}
         />
 
-        {/* Lens Flare Overlay */}
-        <div
+        {/* Lens Flare - Fixed Gradient, Animated Movement */}
+        <motion.div
           className="absolute inset-0 pointer-events-none mix-blend-screen overflow-hidden"
-          style={{ opacity: parallax.flareOpacity }}
+          style={{ opacity: flareOpacity }}
         >
-          <div
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200%] h-[200%]"
+          <motion.div
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%]"
             style={{
-              background: `radial-gradient(circle at calc(50% + ${parallax.flareX}px) 50%, rgba(251, 146, 60, 0.15) 0%, transparent 40%)`
+              x: flareX,
+              background: `radial-gradient(circle at center, rgba(251, 146, 60, 0.1) 0%, transparent 50%)`,
+              willChange: 'transform'
             }}
           />
-        </div>
+        </motion.div>
 
-        {/* Main Content - Centered Cinematic Focus */}
-        <div
+        {/* Main Content - Centered */}
+        <motion.div
           className="relative z-10 max-w-5xl mx-auto w-full transition-all duration-100 px-4"
           style={{
-            transform: `scale(${parallax.contentScale})`,
-            opacity: parallax.contentOpacity,
-            filter: `blur(${parallax.contentBlur}px)`
+            scale: contentScale,
+            opacity: contentOpacity,
+            willChange: 'transform, opacity'
           }}
         >
           <div className="flex flex-col items-center text-center pointer-events-auto">
@@ -397,7 +340,7 @@ function Home() {
                   autoPlay
                   loop
                   playsInline
-                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-100"
+                  className="w-full h-full object-cover transition-transform duration-1000 scale-100"
                 />
 
                 {/* Minimal Overlay */}
@@ -428,9 +371,6 @@ function Home() {
                 className="group flex items-center gap-4 text-zinc-950 hover:text-white transition-colors"
               >
                 <span className="text-xs font-black uppercase tracking-[0.3em]">Khám phá Portfolio</span>
-                <div className="w-12 h-12 rounded-full border border-zinc-950/20 group-hover:bg-zinc-950 group-hover:border-zinc-950 flex items-center justify-center transition-all">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
-                </div>
               </Link>
 
               <div className="h-px w-12 bg-zinc-950/10 hidden sm:block" />
@@ -443,14 +383,15 @@ function Home() {
               </Link>
             </motion.div>
           </div>
-        </div>
+        </motion.div>
 
         {/* Scroll Indicator - fades out */}
-        <div
+        <motion.div
           className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce transition-opacity duration-300 pointer-events-auto"
           aria-hidden="true"
           style={{
-            opacity: parallax.scrollOpacity
+            opacity: scrollOpacity,
+            willChange: 'opacity'
           }}
         >
           <div className="flex flex-col items-center gap-2">
@@ -459,7 +400,7 @@ function Home() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
             </svg>
           </div>
-        </div>
+        </motion.div>
 
         {/* Custom Animations */}
         <style>{`
@@ -484,40 +425,42 @@ function Home() {
             }
           }
         `}</style>
-      </section>
+      </motion.section>
 
       {/* Spacer to allow scrolling - Increased for a longer journey */}
       <div className="h-[300vh]" />
 
       {/* Manifesto Layer - Shown during transition */}
-      <div
+      <motion.div
         className="fixed inset-0 pointer-events-none z-20 flex items-center justify-center overflow-hidden"
-        style={{ visibility: parallax.heroProgress > 0.1 && parallax.heroProgress < 0.9 ? 'visible' : 'hidden' }}
+        style={{ visibility: manifestoVisibility }}
       >
         {manifestoKeywords.map((kw, i) => (
-          <div
+          <motion.div
             key={i}
-            className="absolute font-black text-white mix-blend-overlay tracking-[0.2em] whitespace-nowrap transition-all duration-75"
+            className="absolute font-black text-white mix-blend-overlay tracking-[0.2em] whitespace-nowrap"
             style={{
               left: kw.x,
               top: kw.y,
-              opacity: parallax.manifesto[i].opacity * 0.4,
-              transform: `scale(${parallax.manifesto[i].scale}) translateZ(${parallax.manifesto[i].z}px)`,
-              filter: `blur(${parallax.manifesto[i].blur}px)`,
-              fontSize: '8vw'
+              opacity: manifestoTransforms[i].opacity,
+              scale: manifestoTransforms[i].scale,
+              translateZ: manifestoTransforms[i].z,
+              fontSize: '8vw',
+              willChange: 'transform, opacity'
             }}
           >
             {kw.text}
-          </div>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
 
       {/* Content Sections - Revealed behind the hero veil */}
-      <div
-        className="relative z-10 transition-all duration-300"
+      <motion.div
+        className="relative z-10"
         style={{
-          opacity: parallax.sectionsOpacity,
-          transform: `scale(${parallax.sectionsScale})`
+          opacity: sectionsOpacity,
+          scale: sectionsScale,
+          willChange: 'transform, opacity'
         }}
       >
         {/* Projects Section - Asymmetric Grid */}
@@ -886,7 +829,7 @@ function Home() {
             </div>
           </div>
         </section>
-      </div>
+      </motion.div>
     </div>
   )
 }
