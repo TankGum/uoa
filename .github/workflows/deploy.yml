@@ -8,7 +8,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: VPS_SSH_KEY  # Tên environment của bạn
+    environment: VPS_SSH_KEY
 
     steps:
       - uses: actions/checkout@v4
@@ -32,6 +32,7 @@ jobs:
           ssh "$VPS_USER@$VPS_HOST" << 'EOF'
             set -e
             cd "${{ secrets.VPS_PATH }}"
-            git pull origin main
+            git fetch origin main
+            git reset --hard origin/main
             docker compose up -d --build
           EOF
