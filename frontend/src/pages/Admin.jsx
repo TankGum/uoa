@@ -9,6 +9,7 @@ import Modal from '../components/Modal'
 import { useModal } from '../hooks/useModal'
 import { getVideoThumbnail } from '../utils/cloudinary'
 import { authService } from '../services/auth'
+import { useUploads } from '../context/UploadContext'
 
 function Admin() {
   const navigate = useNavigate()
@@ -135,6 +136,16 @@ function Admin() {
   useEffect(() => {
     fetchData()
   }, [activeTab, postsPage, bookingsPage, postsSortColumn, postsSortDirection, bookingsSortColumn, bookingsSortDirection, categoriesSortColumn, categoriesSortDirection, postsSearch, bookingsSearch, categoriesSearch])
+
+  useEffect(() => {
+    const handleUpdate = () => {
+      if (activeTab === 'posts') {
+        fetchData()
+      }
+    }
+    window.addEventListener('posts-updated', handleUpdate)
+    return () => window.removeEventListener('posts-updated', handleUpdate)
+  }, [activeTab])
 
   // Reset page when search changes
   useEffect(() => {
@@ -772,6 +783,7 @@ function PostForm({ onClose, onSuccess, post }) {
   const [categories, setCategories] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const { startPostUploadJob } = useUploads()
   const [existingMedia, setExistingMedia] = useState(post?.media || []) // Media hiện có của post
   const [categoryDropdownOpen, setCategoryDropdownOpen] = useState(false)
   const [categorySearch, setCategorySearch] = useState('')
@@ -854,101 +866,26 @@ function PostForm({ onClose, onSuccess, post }) {
     setError('')
 
     try {
-      let mediaData = []
+      const videoFile = videoUploaderRef.current?.getFile()
+      const imageFiles = imageUploaderRef.current?.getFiles()
 
-      // Upload video to Cloudinary if file is selected (for both new and edit)
-      if (videoUploaderRef.current) {
-        const file = videoUploaderRef.current.getFile()
-        if (file) {
-          try {
-            // Upload video - VideoUploader component will handle progress display
-            const result = await videoUploaderRef.current.upload()
-            mediaData.push(result)
-          } catch (uploadErr) {
-            setError(`Video upload failed: ${uploadErr.message}`)
-            setLoading(false)
-            return
-          }
+      // Start the background job
+      startPostUploadJob({
+        formData,
+        videoFile,
+        imageFiles,
+        post,
+        existingMedia,
+        onSuccess: () => {
+          // Tell Admin component to refresh if needed
+          // Since we close the modal immediately, this will happen in bg
         }
-      }
+      })
 
-      // Upload images to Cloudinary if files are selected
-      if (imageUploaderRef.current) {
-        const files = imageUploaderRef.current.getFiles()
-        if (files && files.length > 0) {
-          try {
-            // Upload images - ImageUploader component will handle progress display
-            const results = await imageUploaderRef.current.upload()
-            mediaData.push(...results)
-          } catch (uploadErr) {
-            setError(`Image upload failed: ${uploadErr.message}`)
-            setLoading(false)
-            return
-          }
-        }
-      }
-
-      // Create/update post with media data
-      let finalMediaData = []
-
-      if (post) {
-        // Editing: convert existing media to MediaCreateInput format + add new media
-        console.log('existingMedia before mapping:', existingMedia.map(m => ({ id: m.id, is_featured: m.is_featured })))
-        const existingMediaInput = existingMedia.map((m, idx) => {
-          const mediaItem = {
-            type: m.type,
-            provider: m.provider || 'cloudinary',
-            public_id: m.public_id,
-            secure_url: m.url, // url field maps to secure_url
-            asset_id: m.meta_data?.asset_id || m.metadata?.asset_id,
-            duration: m.duration,
-            width: m.width,
-            height: m.height,
-            format: m.format,
-            size: m.size,
-            is_featured: Boolean(m.is_featured), // Ensure boolean value
-            display_order: m.display_order !== undefined ? m.display_order : idx
-          }
-          console.log(`Media ${idx}:`, { public_id: m.public_id?.substring(0, 20), is_featured: mediaItem.is_featured, provider: mediaItem.provider })
-          return mediaItem
-        })
-        finalMediaData = [...existingMediaInput, ...mediaData.map((m, idx) => ({
-          ...m,
-          is_featured: false, // New media is not featured by default
-          display_order: existingMediaInput.length + idx
-        }))]
-      } else {
-        // Creating: only new media, mark first one as featured
-        finalMediaData = mediaData.map((m, idx) => ({
-          ...m,
-          is_featured: idx === 0, // First media is featured by default
-          display_order: idx
-        }))
-      }
-
-      const payload = {
-        ...formData,
-        // Always include media array when editing (even if empty, to allow deletion)
-        // For new posts, only include if there's media
-        ...(post ? { media: finalMediaData } : (mediaData.length > 0 ? { media: mediaData } : {}))
-      }
-
-      // Debug: log payload to check is_featured
-      console.log('Payload media:', finalMediaData.map(m => ({
-        public_id: m.public_id?.substring(0, 20),
-        is_featured: m.is_featured,
-        display_order: m.display_order
-      })))
-
-      if (post) {
-        await client.put(`/posts/${post.id}`, payload)
-      } else {
-        await client.post('/posts', payload)
-      }
+      // Close modal immediately so user can continue working
       onSuccess()
     } catch (err) {
-      setError(err.response?.data?.detail || 'Failed to save post')
-    } finally {
+      setError('Failed to initiate upload')
       setLoading(false)
     }
   }
