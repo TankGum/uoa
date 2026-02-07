@@ -91,11 +91,11 @@ const VideoUploader = forwardRef(function VideoUploader({ onFileSelect, onProgre
       return
     }
 
-    // Validate file size (max 500MB)
-    const maxSize = 500 * 1024 * 1024 // 500MB
+    // Validate file size (max 5000MB)
+    const maxSize = 5000 * 1024 * 1024 // 5GB
     if (file.size > maxSize) {
       const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2)
-      setError(`File size (${fileSizeMB} MB) exceeds maximum limit of 500MB. Please compress your video or use a smaller file.`)
+      setError(`File size (${fileSizeMB} MB) exceeds maximum limit of 5GB. Please compress your video or use a smaller file.`)
       return
     }
 
