@@ -139,29 +139,29 @@ function Home() {
       id: 1,
       name: 'Gia Bảo',
       role: 'Creative Director',
-      staticImage: '/members/static/giabao.png',
-      gifImage: '/members/static/giabao2.png'
+      staticImage: 'https://res.cloudinary.com/dafrqitiv/image/upload/v1770564598/giabao_duaugs.png',
+      gifImage: 'https://res.cloudinary.com/dafrqitiv/image/upload/v1770564599/giabao2_wvnzt4.png'
     },
     {
       id: 2,
       name: 'Thế Trường',
       role: 'Lead Photographer',
-      staticImage: '/members/static/thetruong.png',
-      gifImage: '/members/static/thetruong2.png'
+      staticImage: 'https://res.cloudinary.com/dafrqitiv/image/upload/v1770564602/thetruong_jqjror.png',
+      gifImage: 'https://res.cloudinary.com/dafrqitiv/image/upload/v1770564598/thetruong2_yqrna0.jpg'
     },
     {
       id: 3,
       name: 'Minh Đức',
       role: 'Photographer',
-      staticImage: '/members/static/minhduc.png',
-      gifImage: '/members/static/minhduc2.png'
+      staticImage: 'https://res.cloudinary.com/dafrqitiv/image/upload/v1770564596/minhduc_zucpba.jpg',
+      gifImage: 'https://res.cloudinary.com/dafrqitiv/image/upload/v1770564599/minhduc2_bsqqhf.png'
     },
     {
       id: 4,
       name: 'Thanh Thủy',
       role: 'Sales & Marketing',
-      staticImage: '/members/static/thanhthuy.png',
-      gifImage: '/members/static/thanhthuy2.png'
+      staticImage: 'https://res.cloudinary.com/dafrqitiv/image/upload/v1770564599/thanhthuy_d023zi.png',
+      gifImage: 'https://res.cloudinary.com/dafrqitiv/image/upload/v1770564601/thanhthuy2_lwrmbu.png'
     },
   ]
 
