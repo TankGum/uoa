@@ -189,9 +189,6 @@ function AllVideos() {
                           {/* Video Container - Editorial 16:9 style for film gallery */}
                           <div className="relative aspect-video overflow-hidden bg-zinc-900 mb-6">
                             <video
-                              muted
-                              loop
-                              autoPlay
                               preload="metadata"
                               poster={thumbnailUrl || undefined}
                               className="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-110"

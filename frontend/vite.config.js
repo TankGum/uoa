@@ -20,7 +20,10 @@ export default defineConfig({
         target: process.env.VITE_API_URL || (process.env.DOCKER ? 'http://backend:8000' : 'http://localhost:8000'),
         changeOrigin: true,
       }
-    }
+    },
+    build: {
+      sourcemap: false,
+    },
   }
 })
 
