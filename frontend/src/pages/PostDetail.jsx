@@ -324,10 +324,10 @@ function PostDetail() {
               {allMedia.length > 1 && (
                 <button
                   onClick={(e) => { e.stopPropagation(); navigateLightbox('prev'); }}
-                  className="absolute left-8 z-20 group hidden md:flex items-center gap-4 text-white hover:text-[#e8bb69] transition-all"
+                  className="absolute left-4 md:left-8 z-20 group flex items-center gap-4 text-white hover:text-[#e8bb69] transition-all"
                 >
-                  <div className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center group-hover:border-[#e8bb69] backdrop-blur-sm">
-                    <svg className="w-5 h-5 -translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-white/10 flex items-center justify-center group-hover:border-[#e8bb69] backdrop-blur-sm bg-black/20 md:bg-transparent">
+                    <svg className="w-4 h-4 md:w-5 md:h-5 -translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                     </svg>
                   </div>
@@ -338,10 +338,10 @@ function PostDetail() {
               {allMedia.length > 1 && (
                 <button
                   onClick={(e) => { e.stopPropagation(); navigateLightbox('next'); }}
-                  className="absolute right-8 z-20 group hidden md:flex items-center gap-4 text-white hover:text-[#e8bb69] transition-all"
+                  className="absolute right-4 md:right-8 z-20 group flex items-center gap-4 text-white hover:text-[#e8bb69] transition-all"
                 >
-                  <div className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center group-hover:border-[#e8bb69] backdrop-blur-sm">
-                    <svg className="w-5 h-5 translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-white/10 flex items-center justify-center group-hover:border-[#e8bb69] backdrop-blur-sm bg-black/20 md:bg-transparent">
+                    <svg className="w-4 h-4 md:w-5 md:h-5 translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
                   </div>
@@ -355,17 +355,30 @@ function PostDetail() {
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 1.1, y: -20 }}
                 transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                className="w-full h-full max-w-7xl max-h-[85vh] p-4 md:p-12 flex items-center justify-center"
+                className="w-full h-full max-w-7xl max-h-[85vh] p-4 md:p-12 flex items-center justify-center touch-pan-y"
                 onClick={(e) => e.stopPropagation()}
+                drag="x"
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={0.6}
+                onDragEnd={(e, { offset, velocity }) => {
+                  const swipe = Math.abs(offset.x) > 50 && Math.abs(velocity.x) > 500;
+                  if (swipe || Math.abs(offset.x) > 100) {
+                    if (offset.x > 0) {
+                      navigateLightbox('prev');
+                    } else {
+                      navigateLightbox('next');
+                    }
+                  }
+                }}
               >
                 {allMedia[lightboxIndex].type === 'image' ? (
                   <img
                     src={allMedia[lightboxIndex].url}
                     alt={post.title}
-                    className="max-w-full max-h-full object-contain shadow-2xl"
+                    className="max-w-full max-h-full object-contain shadow-2xl pointer-events-none select-none"
                   />
                 ) : (
-                  <div className="relative w-full aspect-video max-h-full">
+                  <div className="relative w-full aspect-video max-h-full pointer-events-auto" onClick={(e) => e.stopPropagation()}>
                     <video
                       controls
                       autoPlay

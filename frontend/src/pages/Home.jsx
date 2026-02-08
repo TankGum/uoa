@@ -11,11 +11,11 @@ function Home() {
   const [categories, setCategories] = useState([])
   const [loading, setLoading] = useState(true)
   const manifestoKeywords = [
-    { role: 'DRIVEN BY', text: 'EMOTION', color: '#e8bb69' },
-    { role: 'TOLD THROUGH', text: 'STORY', color: '#7d9aa1' },
-    { role: 'CAPTURED WITH', text: 'VISION', color: '#e8bb69' },
-    { role: 'SHAPED BY', text: 'CRAFT', color: '#e8bb69' },
-    { role: 'BORN FROM', text: 'IMPACT', color: '#7d9aa1' }
+    { role: 'ĐƯỢC DẪN DẮT BỞI', text: 'CẢM XÚC', color: '#e8bb69' },
+    { role: 'KỂ NÊN', text: 'CÂU CHUYỆN', color: '#7d9aa1' },
+    { role: 'HƯỚNG TỚI', text: 'TẦM NHÌN', color: '#e8bb69' },
+    { role: 'ĐƯỢC TẠO DỰNG BẰNG', text: 'TAY NGHỀ', color: '#e8bb69' },
+    { role: 'ĐỂ LẠI', text: 'DẤU ẤN', color: '#7d9aa1' }
   ]
 
   useEffect(() => {
@@ -137,46 +137,32 @@ function Home() {
   const teamMembers = [
     {
       id: 1,
-      name: 'Laiyi',
+      name: 'Gia Bảo',
       role: 'Creative Director',
-      staticImage: '/members/static/Upright.webp',
-      gifImage: '/members/gif/Upright.gif'
+      staticImage: '/members/static/giabao.png',
+      gifImage: '/members/static/giabao2.png'
     },
     {
       id: 2,
-      name: 'Trần Văn B',
+      name: 'Thế Trường',
       role: 'Lead Photographer',
-      staticImage: '/members/static/Upright1.webp',
-      gifImage: '/members/gif/Upright1.gif'
+      staticImage: '/members/static/thetruong.png',
+      gifImage: '/members/static/thetruong2.png'
     },
     {
       id: 3,
-      name: 'Nguyễn Văn B',
-      role: 'Videographer',
-      staticImage: '/members/static/Upright2.webp',
-      gifImage: '/members/gif/Upright2.gif'
+      name: 'Minh Đức',
+      role: 'Photographer',
+      staticImage: '/members/static/minhduc.png',
+      gifImage: '/members/static/minhduc2.png'
     },
     {
       id: 4,
-      name: 'Nguyễn Văn C',
-      role: 'Production Manager',
-      staticImage: '/members/static/Upright3.webp',
-      gifImage: '/members/gif/Upright3.gif'
+      name: 'Thanh Thủy',
+      role: 'Sales & Marketing',
+      staticImage: '/members/static/thanhthuy.png',
+      gifImage: '/members/static/thanhthuy2.png'
     },
-    {
-      id: 5,
-      name: 'Nguyễn Văn D',
-      role: 'Art Director',
-      staticImage: '/members/static/Upright.webp',
-      gifImage: '/members/gif/Upright.gif'
-    },
-    {
-      id: 6,
-      name: 'Nguyễn Văn E',
-      role: 'Editor',
-      staticImage: '/members/static/Upright1.webp',
-      gifImage: '/members/gif/Upright1.gif'
-    }
   ]
 
   const processSteps = [
@@ -441,7 +427,7 @@ function Home() {
       </motion.section>
 
       {/* Spacer to allow scrolling - Long journey for credits */}
-      <div className="h-[650vh]" />
+      <div className="h-[700vh]" />
 
       {/* Manifesto Layer - Shown during transition */}
       <motion.div
@@ -625,13 +611,13 @@ function Home() {
                     <img
                       src={member.staticImage}
                       alt={`${member.name}, ${member.role}`}
-                      className="w-full h-full object-cover absolute inset-0 transition-opacity duration-300 group-hover:opacity-0"
+                      className="w-full h-auto object-cover absolute inset-0 transition-opacity duration-300 group-hover:opacity-0"
                       loading="lazy"
                     />
                     <img
                       src={member.gifImage}
                       alt={`${member.name} animated`}
-                      className="w-full h-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                      className="w-full h-auto object-cover absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
                       loading="lazy"
                     />
                     <div className="absolute inset-0 bg-[#e8bb69]/0 group-hover:bg-[#e8bb69]/10 group-focus-within:bg-[#e8bb69]/10 transition-colors duration-300" />
