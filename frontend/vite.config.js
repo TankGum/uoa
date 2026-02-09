@@ -10,13 +10,11 @@ export default defineConfig({
       'uoaproduction.online'
     ],
     watch: {
-      usePolling: true, // Enable polling for file changes in Docker
-      interval: 1000, // Poll every 1 second
+      usePolling: true,
+      interval: 1000,
     },
     proxy: {
       '/api': {
-        // When running in Docker, proxy to backend container
-        // When running locally, proxy to localhost:8000
         target: process.env.VITE_API_URL || (process.env.DOCKER ? 'http://backend:8000' : 'http://localhost:8000'),
         changeOrigin: true,
       }
@@ -27,7 +25,20 @@ export default defineConfig({
       terserOptions: {
         compress: {
           drop_console: true,
-          drop_debugger: true
+          drop_debugger: true,
+          pure_funcs: ['console.log', 'console.info', 'console.debug']
+        },
+        mangle: true,
+        format: {
+          comments: false
+        }
+      },
+      rollupOptions: {
+        output: {
+          manualChunks: undefined,
+          entryFileNames: 'assets/[hash].js',
+          chunkFileNames: 'assets/[hash].js',
+          assetFileNames: 'assets/[hash].[ext]'
         }
       }
     },
